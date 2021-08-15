@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Custom
+    'custom_user',
+    'admin_user',
+
     # ThrirdParty
     'rest_framework',
     'drf_yasg',
