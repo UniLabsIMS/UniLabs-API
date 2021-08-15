@@ -1,7 +1,8 @@
+from custom_user.views import UserLoginAPIView
 from django.urls import path
-from admin_user.views import AdminRegisterView,InitialSystemAdminRegiterView
+from knox import views as knox_views
 
 urlpatterns = [
-    path('register/',AdminRegisterView.as_view(),name='admin-register'),
-    path('register/first/',InitialSystemAdminRegiterView.as_view(),name='init-admin-register'), # to add first admin to the system
+    path('login/',UserLoginAPIView.as_view(),name='admin-register'),
+    path('logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
 ]

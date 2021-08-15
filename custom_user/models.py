@@ -23,10 +23,11 @@ class UserManager(BaseUserManager):
             
         user=self.model(email=self.normalize_email(email))
         password = self.make_random_password() # password is randomly generated when a user is created
+        print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         user.set_password(password)
         user.role=role
         user.save()
-        # add email functionality here
+        # TODO: add email functionality here
         return user
 
     def create_superuser(self,username,email,role=Role.ADMIN):
@@ -45,7 +46,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     last_name = models.CharField(max_length=255,blank=True)
     contact_number = models.CharField(max_length=255,blank=True)
     image = models.ImageField(upload_to='users/',blank=True) 
-    is_default_password = models.BooleanField(default=True)
+    is_default_password = models.BooleanField(default=True) # whether the account has the default password given at registration
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -56,6 +57,6 @@ class User(AbstractBaseUser,PermissionsMixin):
     def __str__(self):
         return self.email
 
-    def user_token(self):
+    def token(self):
         token = AuthToken.objects.create(self)[1]
         return str(token)

@@ -6,7 +6,7 @@ from .serializers import AdminRegisterSerializer
 from rest_framework.permissions import IsAuthenticated
 
 # Admin Register View
-class AdminRegisterView(generics.GenericAPIView):
+class AdminRegisterAPIView(generics.GenericAPIView):
     serializer_class = AdminRegisterSerializer
     permission_classes = (IsAuthenticated,IsAdmin) # Only admins may add other admins
 
@@ -19,7 +19,7 @@ class AdminRegisterView(generics.GenericAPIView):
         return Response(admin_data,status=status.HTTP_201_CREATED)
 
 
-class InitialSystemAdminRegiterView(generics.GenericAPIView):
+class InitialSystemAdminRegiterAPIView(generics.GenericAPIView):
     serializer_class = AdminRegisterSerializer
 
     def post(self,request): # post request to register admin

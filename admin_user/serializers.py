@@ -17,4 +17,4 @@ class AdminRegisterSerializer(serializers.ModelSerializer):
 class AdminDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        exclude = ['password']
+        exclude = "__all__"
