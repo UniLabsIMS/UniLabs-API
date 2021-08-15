@@ -23,7 +23,6 @@ class InitialSystemAdminRegiterView(generics.GenericAPIView):
     serializer_class = AdminRegisterSerializer
 
     def post(self,request): # post request to register admin
-
         if(User.objects.all().count() != 0):
             return Response({'error': 'system already has at least one admin'},status=status.HTTP_400_BAD_REQUEST)
         admin = request.data

@@ -1,10 +1,9 @@
-from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,BaseUserManager,PermissionsMixin)
 from knox.models import AuthToken
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from uuid import uuid4
 
 # Role Field options
 class Role(models.TextChoices):
@@ -19,6 +18,9 @@ class UserManager(BaseUserManager):
     def create_user(self,email,role):
         if email is None:
             raise TypeError('Users should have an email')
+        if role is None:
+            raise TypeError('Users should have a role')
+            
         user=self.model(email=self.normalize_email(email))
         password = self.make_random_password() # password is randomly generated when a user is created
         user.set_password(password)
@@ -36,6 +38,7 @@ class UserManager(BaseUserManager):
 
 # Custom user class which extends django user class
 class User(AbstractBaseUser,PermissionsMixin):
+    id = models.UUIDField(default=uuid4, primary_key=True,editable=False)
     email=models.EmailField(max_length=255,unique=True,db_index=True)
     role =  models.CharField(max_length=31, choices=Role.choices)
     first_name = models.CharField(max_length=255,blank=True)

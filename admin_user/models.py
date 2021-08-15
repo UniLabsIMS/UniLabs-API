@@ -1,12 +1,12 @@
   
-from django.contrib.auth.base_user import BaseUserManager
-from custom_user.models import User
+
+from custom_user.models import User, UserManager
 from custom_user.models import Role
 
 # Admin manager to create admins
-class AdminManager(BaseUserManager):
+class AdminManager(UserManager):
     def create_admin(self, email):
-        admin = self.model(email=self.normalize_email(email), role=Role.ADMIN)
+        admin = self.create_user(email=self.normalize_email(email), role=Role.ADMIN)
         admin.save()
         return admin
 
