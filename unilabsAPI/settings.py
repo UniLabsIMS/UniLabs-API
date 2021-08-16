@@ -10,6 +10,7 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -159,3 +160,6 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = config("SENDGRID_API_KEY")
 SENDGRID_SANDBOX_MODE_IN_DEBUG=config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')==True # set to true in debug mode to use sandbox
 SENDGRID_ECHO_TO_STDOUT=True # Echo the mail output to console
+
+# Heroku deployment
+django_heroku.settings(locals())
