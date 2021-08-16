@@ -20,6 +20,7 @@ urlpatterns = [
     # User main routes
     path('auth/', include('custom_user.urls')),
     path('admin-user/', include('admin_user.urls')),
+    path('departments/',include('department.urls')),
 
     # Swagger Documentation
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

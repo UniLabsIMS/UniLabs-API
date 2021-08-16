@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Custom
     'custom_user',
     'admin_user',
+    'department',
 
     # ThrirdParty
     'rest_framework',
