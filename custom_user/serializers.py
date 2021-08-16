@@ -1,5 +1,5 @@
 from rest_framework.exceptions import AuthenticationFailed
-from custom_user.utils.Utils import Util
+from custom_user.utils.utils import Util
 from rest_framework import serializers
 from .models import User
 from django.contrib import auth

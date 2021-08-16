@@ -1,3 +1,4 @@
+from custom_user.utils.email import Email
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,BaseUserManager,PermissionsMixin)
 from knox.models import AuthToken
@@ -26,8 +27,11 @@ class UserManager(BaseUserManager):
         print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         user.set_password(password)
         user.role=role
+        try:
+            Email.send_new_registration_email(email,role,password)
+        except:
+            raise Exception('Error sending new registration email')
         user.save()
-        # TODO: add email functionality here
         return user
 
     def create_superuser(self,username,email,role=Role.ADMIN):
