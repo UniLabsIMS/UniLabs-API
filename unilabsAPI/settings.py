@@ -24,7 +24,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG',"False")=="True"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1',] # Add Deployed URL here
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://unilabs-api.herokuapp.com/']
 
 AUTH_USER_MODEL = 'custom_user.User'
 
@@ -163,4 +163,4 @@ SENDGRID_SANDBOX_MODE_IN_DEBUG=config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')==
 SENDGRID_ECHO_TO_STDOUT=True # Echo the mail output to console
 
 # Heroku deployment setup
-django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
