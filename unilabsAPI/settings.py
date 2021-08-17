@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'custom_user',
     'admin_user',
     'department',
+    'lab',
 
     # ThrirdParty
     'rest_framework',
