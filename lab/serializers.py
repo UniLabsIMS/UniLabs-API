@@ -14,12 +14,12 @@ class LabReadSerializer(serializers.ModelSerializer):
 class LabWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lab
-        fields=('name','department_name','location','contact_no','contact_email',)
+        fields=('name','department_id','location','contact_no','contact_email',)
 
     def validate(self,data):
         # To add department code infront of the given lab name
         try:
-            department = Department.objects.get(name=data.get('department_name').name)
+            department = Department.objects.get(id=data.get('department_id').id)
         except:
             raise serializers.ValidationError('An already existing department name is required')
         lab_name = data.get('name')

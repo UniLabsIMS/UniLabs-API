@@ -6,7 +6,7 @@ from department.models import Department
 class Lab(models.Model):
     lab_id = models.UUIDField(default=uuid4, primary_key=True,editable=False)
     name = models.CharField(max_length=255,unique=True)
-    department_name = models.ForeignKey(Department,to_field='name', on_delete=models.CASCADE)
+    department_id= models.ForeignKey(Department, on_delete=models.CASCADE)
     location=models.CharField(max_length=1023,blank=True)
     contact_no=models.CharField(max_length=255,blank=True)
     contact_email=models.EmailField(max_length=255,blank=True)
