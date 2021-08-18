@@ -1,6 +1,6 @@
-from django.db.models.fields.related import RelatedField
+from department.models import Department
 from .models import Lab
-from rest_framework import serializers,viewsets
+from rest_framework import serializers
 
 #data visible as the response
 class LabReadSerializer(serializers.ModelSerializer):
@@ -8,14 +8,20 @@ class LabReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lab
         fields='__all__'
+    
 
 #data for editing and creating lab
 class LabWriteSerializer(serializers.ModelSerializer):
-    name=serializers.CharField(max_length=255)
-    location=serializers.CharField(max_length=1023)
-    contact_no=serializers.CharField(max_length=255)
-    contact_email=serializers.EmailField(max_length=255)
-
     class Meta:
         model = Lab
         fields=('name','department_name','location','contact_no','contact_email',)
+
+    def validate(self,data):
+        # To add department code infront of the given lab name
+        try:
+            department = Department.objects.get(name=data.get('department_name').name)
+        except:
+            raise serializers.ValidationError('An already existing department name is required')
+        lab_name = data.get('name')
+        data['name'] = department.code +' - ' + lab_name # example CSE - given lab name
+        return data
