@@ -16,12 +16,12 @@ class LabWriteSerializer(serializers.ModelSerializer):
         model = Lab
         fields=('name','department_id','location','contact_no','contact_email',)
 
-    def validate(self,data):
-        # To add department code infront of the given lab name
-        try:
-            department = Department.objects.get(id=data.get('department_id').id)
-        except:
-            raise serializers.ValidationError('An already existing department name is required')
-        lab_name = data.get('name')
-        data['name'] = department.code +' - ' + lab_name # example CSE - given lab name
-        return data
+    # def validate(self,data):
+    #     # To add department code infront of the given lab name
+    #     try:
+    #         department = Department.objects.get(id=data.get('department_id').id)
+    #     except:
+    #         raise serializers.ValidationError('An already existing department name is required')
+    #     lab_name = data.get('name')
+    #     data['name'] = department.code +' - ' + lab_name # example CSE - given lab name
+    #     return data
