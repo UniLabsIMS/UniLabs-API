@@ -21,11 +21,11 @@ class LabRetrieveAPIView(RetrieveAPIView):
     serializer_class = LabReadSerializer
     queryset = Lab.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
-    lookup_field='lab_id'
+    lookup_field='id'
 
 #PUT request to edit lab
 class LabUpdateAPIView(UpdateAPIView):
     serializer_class = LabWriteSerializer
     queryset = Lab.objects.all()
     permission_classes = (permissions.IsAuthenticated,IsAdmin)
-    lookup_field='lab_id'
+    lookup_field='id'

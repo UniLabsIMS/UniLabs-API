@@ -4,9 +4,9 @@ from department.models import Department
 
 # Lab Model.
 class Lab(models.Model):
-    lab_id = models.UUIDField(default=uuid4, primary_key=True,editable=False)
+    id = models.UUIDField(default=uuid4, primary_key=True,editable=False)
     name = models.CharField(max_length=255,unique=True)
-    department_id= models.ForeignKey(Department, on_delete=models.CASCADE)
+    department= models.ForeignKey(Department, on_delete=models.CASCADE)
     location=models.CharField(max_length=1023,blank=True)
     contact_no=models.CharField(max_length=255,blank=True)
     contact_email=models.EmailField(max_length=255,blank=True)
