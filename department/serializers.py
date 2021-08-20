@@ -10,8 +10,6 @@ class DepartmentReadSerializer(serializers.ModelSerializer):
 
 #data for editing and creating department
 class DepartmentWriteSerializer(serializers.ModelSerializer):
-    name=serializers.CharField(max_length=255)
-
     class Meta:
         model = Department
-        fields=('name',)
+        fields=('name','code')

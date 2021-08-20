@@ -1,9 +1,10 @@
 from django.urls import path,include
 from . import views
-from rest_framework.routers import DefaultRouter
+from .views import DepartmentListAPIView,DepartmentRetrieveAPIView,DepartmentCreateAPIView,DepartmentUpdateAPIView
 
-router = DefaultRouter()
-router.register(r'', views.DepartmentViewSet, basename='department')
 urlpatterns = [
-     path('', include(router.urls)),
+     path('', views.DepartmentListAPIView.as_view(), name="departments"),
+     path('<str:id>', views.DepartmentRetrieveAPIView.as_view(), name="department"),
+     path('create/',views.DepartmentCreateAPIView.as_view(),name="department-create"),
+     path('update/<str:id>',views.DepartmentUpdateAPIView.as_view(),name="department-update")
 ]
