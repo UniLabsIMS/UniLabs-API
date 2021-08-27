@@ -7,43 +7,43 @@ from lab.models import Lab
 
 
 class GlobalTestSetUp(APITestCase):
-
-    def setUp(self):
-        self.fake = Faker()
+    @classmethod
+    def setUpTestData(cls):
+        cls.fake = Faker()
 
         # Admin for tests
-        self.test_admin_user_data = {
+        cls.test_admin_user_data = {
             'email': 'test_admin1@gmail.com',
             'role': Role.ADMIN,
         }
-        self.test_admin = Admin.objects.create_admin(email=self.test_admin_user_data['email'])
+        cls.test_admin = Admin.objects.create_admin(email=cls.test_admin_user_data['email'])
 
 
         # Department for test
-        self.test_department_data = {
+        cls.test_department_data = {
             'name': 'Test Department 1',
             'code': 'Test 1'
         }
 
-        self.test_department = Department.objects.create(
-            name=self.test_department_data["name"],
-            code=self.test_department_data["code"]
+        cls.test_department = Department.objects.create(
+            name=cls.test_department_data["name"],
+            code=cls.test_department_data["code"]
         )
 
         # Lab for tests
 
-        self.test_lab_data = {
+        cls.test_lab_data = {
             'name': 'Test Lab 1',
-            'department': self.test_department
+            'department': cls.test_department
         }
 
-        self.test_lab = Lab.objects.create(
-            name=self.test_lab_data["name"],
-            department=self.test_lab_data["department"]
+        cls.test_lab = Lab.objects.create(
+            name=cls.test_lab_data["name"],
+            department=cls.test_lab_data["department"]
         )
 
 
-        return super().setUp()
+        return
 
     def tearDown(self):
         return super().tearDown()

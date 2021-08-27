@@ -4,17 +4,18 @@ from django.urls import reverse
 
 
 class TestSetUp(GlobalTestSetUp):
-    def setUp(self):
-        super().setUp()
-        self.new_lab_url = reverse('lab-create')
-        self.all_labs_url = reverse('all-labs')
-        self.single_lab_url = reverse('single-lab', args=["id"])
-        self.lab_data = {
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.new_lab_url = reverse('lab-create')
+        cls.all_labs_url = reverse('all-labs')
+        cls.single_lab_url = reverse('single-lab', args=["id"])
+        cls.lab_data = {
             'name': 'TEST LAB NAME',
-            'department': self.test_department.id,
-            'location': self.fake.text(),
+            'department': cls.test_department.id,
+            'location': cls.fake.text(),
             'contact_no': '0777568456',
-            'contact_email': self.fake.email(),
+            'contact_email': cls.fake.email(),
         }
         return 
 

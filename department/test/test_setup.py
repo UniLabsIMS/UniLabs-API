@@ -4,12 +4,13 @@ from django.urls import reverse
 
 
 class TestSetUp(GlobalTestSetUp):
-    def setUp(self):
-        super().setUp()
-        self.new_department_url = reverse('department-create')
-        self.all_departments_url = reverse('all-departments')
-        self.single_department_url = reverse('single-department', args=["id"])
-        self.department_data = {
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.new_department_url = reverse('department-create')
+        cls.all_departments_url = reverse('all-departments')
+        cls.single_department_url = reverse('single-department', args=["id"])
+        cls.department_data = {
             'name': 'TEST NAME',
             'code': 'TEST CODE',
         }
