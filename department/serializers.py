@@ -12,4 +12,4 @@ class DepartmentReadSerializer(serializers.ModelSerializer):
 class DepartmentWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields=('name','code')
+        fields=('id','name','code') # id wont show up as, required as editable is set to false

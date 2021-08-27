@@ -18,4 +18,4 @@ class LabInDepthReadSerializer(serializers.ModelSerializer):
 class LabWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lab
-        fields=('name','department','location','contact_no','contact_email',)
+        fields=('id','name','department','location','contact_no','contact_email',)# id wont show up as required, as editable is set to false
