@@ -14,28 +14,11 @@ class Role(models.TextChoices):
     LECTURER = 'Lecturer', _('Lecturer')
     STUDENT = 'Student', _('Student')
 
-# UserManager class to manage user creation
+# UserManager class to manage django superuser creation
 class UserManager(BaseUserManager):
-    def create_user(self,email,role):
-        if email is None:
-            raise TypeError('Users should have an email')
-        if role is None:
-            raise TypeError('Users should have a role')
-            
-        user=self.model(email=self.normalize_email(email))
-        password = self.make_random_password() # password is randomly generated when a user is created
-        print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
-        user.set_password(password)
-        user.role=role
-        try:
-            Email.send_new_registration_email(email,role,password)
-        except:
-            raise Exception('Error sending new registration email')
-        user.save()
-        return user
 
-    def create_superuser(self,username,email,role=Role.ADMIN):
-        user = self.create_user(username,email,role)
+    def create_superuser(self,email,role=Role.ADMIN):
+        user = self.model(email,role)
         user.save()
         return user
 
