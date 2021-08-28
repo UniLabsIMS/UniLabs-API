@@ -32,6 +32,13 @@ class TestViews(TestSetUp):
         res = self.client.post(self.new_lab_manager_url,data,format="json")
         self.assertEqual(res.status_code, 400)
 
+    def test_cannot_add_lab_manager_with_invalid_email(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.lab_manager_data.copy()
+        data["email"]=self.global_test_lab_manager.email
+        res = self.client.post(self.new_lab_manager_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
+
     def test_cannot_add_lab_manager_with_invalid_lab(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.lab_manager_data.copy()

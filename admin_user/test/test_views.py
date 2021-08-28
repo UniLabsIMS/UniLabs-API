@@ -31,3 +31,10 @@ class TestViews(TestSetUp):
         data["email"]="test"
         res = self.client.post(self.new_admin_url,data,format="json")
         self.assertEqual(res.status_code, 400)
+    
+    def test_cannot_add_admin_with_an_already_used_email(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_data.copy()
+        data["email"]=self.global_test_admin.email
+        res = self.client.post(self.new_admin_url,data,format="json")
+        self.assertEqual(res.status_code, 400)

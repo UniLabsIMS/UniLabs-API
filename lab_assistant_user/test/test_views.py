@@ -31,6 +31,13 @@ class TestViews(TestSetUp):
         data["email"]="test"
         res = self.client.post(self.new_lab_assistant_url,data,format="json")
         self.assertEqual(res.status_code, 400)
+    
+    def test_cannot_add_lab_assistant_with_inuse_email(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.lab_assistant_data.copy()
+        data["email"]=self.global_test_lab_assistant.email
+        res = self.client.post(self.new_lab_assistant_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
 
     def test_cannot_add_lab_assistant_with_invalid_lab(self):
         self.client.force_authenticate(user=self.global_test_admin)
