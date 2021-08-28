@@ -12,7 +12,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.single_lab_url = reverse('single-lab', args=["id"])
         cls.lab_data = {
             'name': 'TEST LAB NAME',
-            'department': cls.test_department.id,
+            'department': cls.global_test_department.id,
             'location': cls.fake.text(),
             'contact_no': '0777568456',
             'contact_email': cls.fake.email(),

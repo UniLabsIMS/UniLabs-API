@@ -1,3 +1,4 @@
+from lab_manager_user.models import LabManager
 from department.models import Department
 from rest_framework.test import APITestCase
 from faker import Faker
@@ -12,34 +13,48 @@ class GlobalTestSetUp(APITestCase):
         cls.fake = Faker()
 
         # Admin for tests
-        cls.test_admin_user_data = {
+        cls.global_test_admin_user_data = {
             'email': 'test_admin1@gmail.com',
             'role': Role.ADMIN,
         }
-        cls.test_admin = Admin.objects.create_admin(email=cls.test_admin_user_data['email'])
+        cls.global_test_admin = Admin.objects.create_admin(email=cls.global_test_admin_user_data['email'])
 
 
         # Department for test
-        cls.test_department_data = {
+        cls.global_test_department_data = {
             'name': 'Test Department 1',
-            'code': 'Test 1'
+            'code': 'TestDepCode1'
         }
 
-        cls.test_department = Department.objects.create(
-            name=cls.test_department_data["name"],
-            code=cls.test_department_data["code"]
+        cls.global_test_department = Department.objects.create(
+            name=cls.global_test_department_data["name"],
+            code=cls.global_test_department_data["code"]
         )
 
-        # Lab for tests
+        # Labs for tests
 
-        cls.test_lab_data = {
+        cls.global_test_lab_data = {
             'name': 'Test Lab 1',
-            'department': cls.test_department
+            'department': cls.global_test_department
         }
 
-        cls.test_lab = Lab.objects.create(
-            name=cls.test_lab_data["name"],
-            department=cls.test_lab_data["department"]
+        cls.global_test_lab = Lab.objects.create(
+            name=cls.global_test_lab_data["name"],
+            department=cls.global_test_lab_data["department"]
+        )
+
+        # Lab Managers for tests
+
+        cls.global_test_lab_manager_data = {
+            'email': cls.fake.email(),
+            'lab': cls.global_test_lab,
+            'department': cls.global_test_department
+        }
+
+        cls.global_test_lab_manager = LabManager.objects.create_lab_manager(
+            email = cls.global_test_lab_manager_data["email"],
+            lab = cls.global_test_lab_manager_data["lab"],
+            department = cls.global_test_lab_manager_data["department"]
         )
 
 
