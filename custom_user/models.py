@@ -10,7 +10,7 @@ from uuid import uuid4
 class Role(models.TextChoices):
     ADMIN = 'Admin', _('Admin')
     LAB_MANAGER = 'Lab_Manager', _('Lab_Manager')
-    LAB_STAFF = 'Lab_Staff', _('Lab_Staff')
+    LAB_ASSISTANT = 'Lab_Assistant', _('Lab_Assistant')
     LECTURER = 'Lecturer', _('Lecturer')
     STUDENT = 'Student', _('Student')
 

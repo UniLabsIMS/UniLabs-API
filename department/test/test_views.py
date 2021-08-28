@@ -43,13 +43,13 @@ class TestViews(TestSetUp):
     def test_cannot_create_department_with_duplicate_name(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.department_data.copy()
-        data['name']=self.global_test_department_data["name"] # this department name is already used in global test setup
+        data['name']=self.global_test_department.name # this department name is already used in global test setup
         res = self.client.post(self.new_department_url,data,format="json")
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_create_department_with_duplicate_code(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.department_data.copy()
-        data['code']=self.global_test_department_data["code"]  # this department code is already is used in global test setup
+        data['code']=self.global_test_department.code  # this department code is already is used in global test setup
         res = self.client.post(self.new_department_url,data,format="json")
         self.assertEqual(res.status_code, 400)

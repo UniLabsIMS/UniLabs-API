@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'department',
     'lab',
     'lab_manager_user',
+    'lab_assistant_user',
 
     # ThrirdParty
     'rest_framework',

@@ -17,12 +17,13 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # User main routes
+    # main routes
     path('auth/', include('custom_user.urls')),
     path('admin/', include('admin_user.urls')),
     path('departments/',include('department.urls')),
     path('labs/',include('lab.urls')),
     path('lab-manager/',include('lab_manager_user.urls')),
+    path('lab-assistant/',include('lab_assistant_user.urls')),
 
     # Swagger Documentation
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

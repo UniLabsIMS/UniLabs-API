@@ -1,10 +1,13 @@
+from lab_assistant_user.models import LabAssistant
 from lab_manager_user.models import LabManager
 from admin_user.serializers import AdminDetailSerializer
 from lab_manager_user.serializers import LabManagerDetailSerializer
 from custom_user.models import Role
 from admin_user.models import Admin
+from decouple import config
 
 class Util:
+    
     @staticmethod
     def get_role_specific_details(user):
         details = None
@@ -15,6 +18,12 @@ class Util:
             elif(user.role == Role.LAB_MANAGER):
                 serializer = LabManagerDetailSerializer(LabManager.objects.get(user_ptr=user))
                 details = serializer.data
+            elif(user.role == Role.LAB_ASSISTANT):
+                serializer = LabManagerDetailSerializer(LabAssistant.objects.get(user_ptr=user))
+                details = serializer.data
         except:
             details=None
         return details
+
+    
+    

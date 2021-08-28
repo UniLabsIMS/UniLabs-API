@@ -1,5 +1,4 @@
 from custom_user.permissions import IsAdmin
-from custom_user.models import User
 from rest_framework import generics,status
 from rest_framework.response import Response
 from .serializers import LabManagerRegisterSerializer
