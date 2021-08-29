@@ -41,7 +41,7 @@ class TestViews(TestSetUp):
         data['code']=self.global_test_department.code  # this department code is already is used in global test setup
         res = self.client.post(self.new_department_url,data,format="json")
         self.assertEqual(res.status_code, 400)
-        
+
     # GET - departments 
 
     def test_authnaticated_user_can_get_departments(self):
@@ -54,7 +54,7 @@ class TestViews(TestSetUp):
         res = self.client.get(self.all_departments_url,format='json')
         self.assertEqual(res.status_code, 401)
 
-    # GET - single department by is_default_password
+    # GET - single department by id
     def test_authenticated_user_can_get_a_department(self):
         self.client.force_authenticate(user=self.global_test_admin)
         res = self.client.get(reverse(
