@@ -1,19 +1,7 @@
 
 from .test_setup import TestSetUp
-
+from django.urls import reverse
 class TestViews(TestSetUp):
-    # GET - departments 
-
-    def test_unauthenticated_user_cannot_get_departments(self):
-        res = self.client.get(self.all_departments_url,format='json')
-        self.assertEqual(res.status_code, 401)
-
-    def test_authnaticated_user_can_get_departments(self):
-        self.client.force_authenticate(user=self.global_test_admin)
-        res = self.client.get(self.all_departments_url,format='json')
-        self.assertEqual(res.status_code, 200)
-        self.assertGreaterEqual(len(res.data),0)
-
     # POST - new department
     def test_authenticated_admin_can_create_departments(self):
         self.client.force_authenticate(user=self.global_test_admin)
@@ -53,3 +41,39 @@ class TestViews(TestSetUp):
         data['code']=self.global_test_department.code  # this department code is already is used in global test setup
         res = self.client.post(self.new_department_url,data,format="json")
         self.assertEqual(res.status_code, 400)
+        
+    # GET - departments 
+
+    def test_authnaticated_user_can_get_departments(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.get(self.all_departments_url,format='json')
+        self.assertEqual(res.status_code, 200)
+        self.assertGreaterEqual(len(res.data),1)
+
+    def test_unauthenticated_user_cannot_get_departments(self):
+        res = self.client.get(self.all_departments_url,format='json')
+        self.assertEqual(res.status_code, 401)
+
+    # GET - single department by is_default_password
+    def test_authenticated_user_can_get_a_department(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.get(reverse(
+            self.single_department_url_name,kwargs={'id':self.global_test_department.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data["id"],str(self.global_test_department.id))
+
+    def test_unauthenticated_user_cannot_get_a_department(self):
+        res = self.client.get(reverse(
+            self.single_department_url_name,kwargs={'id':self.global_test_department.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+
+    def test_cannot_get_a_department_with_invalid_id(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.get(reverse(
+            self.single_department_url_name,kwargs={'id':'error_id'}
+        ),format='json')
+        self.assertEqual(res.status_code,404)
+
+    
