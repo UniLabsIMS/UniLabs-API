@@ -16,16 +16,16 @@ class Item_CategoryCreateAPIView(CreateAPIView):
 class Item_CategoryListAPIView(ListAPIView):
     serializer_class=Item_CategoryInDepthReadSerializer
     queryset=Item_Category.objects.all()
-    permissions_classes=(permissions.IsAuthenticated)
+    permission_classes=(permissions.IsAuthenticated,)
 
 #GET request to get one category
 class Item_CategoryRetrieveAPIView(RetrieveAPIView):
     serializer_class=Item_CategoryInDepthReadSerializer
     queryset=Item_Category.objects.all()
-    permissions_classes=(permissions.IsAuthenticated)
+    permission_classes=(permissions.IsAuthenticated,)
     lookup_field='id'
 
-#PUT request to edit lab
+#PUT request to edit labs
 class Item_CategoryUpdateAPIView(UpdateAPIView):
     serializer_class=Item_CategoryWriteSerializer
     queryset=Item_Category.objects.all()
