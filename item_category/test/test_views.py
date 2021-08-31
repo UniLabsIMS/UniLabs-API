@@ -2,14 +2,15 @@ from django.urls.base import reverse
 from .test_setup import TestSetUp
 
 class TestViews(TestSetUp):
-    #POST - new item_category
+    #POST - new item category
 
-    #authenticated user=Lab Manager
+    # authenticated user=Lab Manager
     def test_authenticated_user_can_create_item_categories(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.post(self.new_item_category_url,self.item_category_data,format='json')
         self.assertEqual(res.status_code,201)
         self.assertIsNotNone('id')
+        self.assertEqual(res.data["name"],self.item_category_data["name"])
     
     def test_authenticated_other_users_cannot_create_item_category(self):
         self.client.force_authenticate(user=self.global_test_admin)
@@ -56,7 +57,7 @@ class TestViews(TestSetUp):
         res=self.client.get(self.all_item_categories_url,format='json')
         self.assertEqual(res.status_code,401)
 
-    #GET - single item_category by id
+    #GET - single item category by id
 
     def test_authenticated_user_can_get_lab(self):
         self.client.force_authenticate(user=self.global_test_admin)
@@ -78,5 +79,26 @@ class TestViews(TestSetUp):
             self.single_item_category_url_name,kwargs={'id':'error_id'}
         ),format='json')
         self.assertEqual(res.status_code,404)
+
+    # GET filtered categories of a specific lab
+
+    def test_authenticated_user_can_get_categories_of_a_lab(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.item_categories_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),2)
     
+    def test_unauthenticated_user_cannot_get_categories_of_a_lab(self):
+        res=self.client.get(reverse(
+            self.item_categories_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
     
+    def test_can_not_get_labs_if_lab_id_is_invalid(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.item_categories_of_a_lab_url_name,kwargs={'lab_id':"123"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)

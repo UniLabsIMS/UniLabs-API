@@ -1,9 +1,10 @@
-from django.urls import path,include
-from . import views
+from django.urls import path
+from .views import ItemCategoryCreateAPIView, ItemCategoryListAPIView, ItemCategoryListByLabAPIView, ItemCategoryRetrieveAPIView, ItemCategoryUpdateAPIView
 
 urlpatterns = [
-     path('',views.Item_CategoryListAPIView.as_view(), name='all_item_categories'),
-     path('<str:id>', views.Item_CategoryRetrieveAPIView.as_view(), name='single-item_category'),
-     path('create/',views.Item_CategoryCreateAPIView.as_view(), name='item_category-create'),
-     path('update/<str:id>', views.Item_CategoryUpdateAPIView.as_view(), name='item_category-update')
+     path('', ItemCategoryListAPIView.as_view(), name='all-item-categories'),
+     path('<str:id>', ItemCategoryRetrieveAPIView.as_view(), name='single-item-category'),
+     path('create/',ItemCategoryCreateAPIView.as_view(), name='new-item-category'),
+     path('update/<str:id>', ItemCategoryUpdateAPIView.as_view(), name='update-item-category'),
+     path('of-lab/<str:lab_id>', ItemCategoryListByLabAPIView.as_view(), name='item-categories-of-a-lab'),
 ]
