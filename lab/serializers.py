@@ -7,6 +7,7 @@ class LabReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lab
         fields="__all__"
+        
 class LabInDepthReadSerializer(serializers.ModelSerializer):
     department=DepartmentReadSerializer()
     class Meta:

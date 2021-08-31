@@ -1,3 +1,4 @@
+from item_category.models import ItemCategory
 from lab_manager_user.models import LabManager
 from lab_assistant_user.models import LabAssistant
 from department.models import Department
@@ -30,6 +31,11 @@ class GlobalTestSetUp(APITestCase):
             department=cls.global_test_department
         )
 
+        cls.global_test_lab_two = Lab.objects.create(
+            name='Test Lab 2',
+            department=cls.global_test_department
+        )
+
         # Lab Managers for tests
         cls.global_test_lab_manager = LabManager.objects.create_lab_manager(
             email = cls.fake.email(),
@@ -42,6 +48,23 @@ class GlobalTestSetUp(APITestCase):
             email = cls.fake.email(),
             lab = cls.global_test_lab,
             department = cls.global_test_department
+        )
+
+
+        # Item Categories for tests
+        cls.global_test_item_category=ItemCategory.objects.create(
+            name='Test Item Category 1',
+            lab=cls.global_test_lab
+        )
+
+        cls.global_test_item_category_two=ItemCategory.objects.create(
+            name='Test Item Category 2',
+            lab=cls.global_test_lab_two
+        )
+
+        cls.global_test_item_category_three=ItemCategory.objects.create(
+            name='Test Item Category 3',
+            lab=cls.global_test_lab
         )
 
 
