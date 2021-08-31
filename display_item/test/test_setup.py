@@ -14,7 +14,6 @@ class TestSetUp(GlobalTestSetUp):
             'item_category':cls.global_test_item_category.id,
             'lab':cls.global_test_lab.id,
             'description':'SAMPLE DESCRIPTION',
-            'item_count':10,
         }
         return
 

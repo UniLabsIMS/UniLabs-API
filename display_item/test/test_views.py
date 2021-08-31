@@ -31,13 +31,6 @@ class TestViews(TestSetUp):
         data['description']=""
         res=self.client.post(self.new_display_item_url,data,format='json')
         self.assertEqual(res.status_code,400)
-
-    def test_cannot_create_display_item_without_item_count(self):
-        self.client.force_authenticate(user=self.global_test_lab_manager)
-        data=self.display_item_data.copy()
-        data['item_count']=""
-        res=self.client.post(self.new_display_item_url,data,format='json')
-        self.assertEqual(res.status_code,400)
     
     def test_display_item_creation_must_fail_if_lab_id_is_invalid(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)

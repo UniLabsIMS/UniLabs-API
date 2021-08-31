@@ -14,7 +14,7 @@ class DisplayItem(models.Model):
     name=models.CharField(max_length=255,blank=False)
     image=models.ImageField(upload_to='display_items',blank=True)
     description=models.CharField(max_length=1023,blank=False)
-    item_count=models.IntegerField(blank=False)
+    item_count=models.IntegerField(blank=False,default=0)
     added_on=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -23,6 +23,6 @@ class DisplayItemInDepthReadSerializer(serializers.ModelSerializer):
 class DisplayItemWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model=DisplayItem
-        fields=('id','item_category','lab','name','description','item_count') # id wont show up as required, as editable is set to false
+        fields=('id','item_category','lab','name','description') # id wont show up as required, as editable is set to false
 
 
