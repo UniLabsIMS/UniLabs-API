@@ -1,33 +1,45 @@
-from item_category.serializers import Item_CategoryInDepthReadSerializer, Item_CategoryReadSerializer, Item_CategoryWriteSerializer
-from django.shortcuts import render
+from .serializers import ItemCategoryInDepthReadSerializer, ItemCategoryWriteSerializer
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
-from item_category.models import Item_Category
+from item_category.models import ItemCategory
 from rest_framework import permissions
 from custom_user.permissions import IsLabManager
+from rest_framework.exceptions import ValidationError
 
-
-#POST request to create Item_Category
-class Item_CategoryCreateAPIView(CreateAPIView):
-    serializer_class=Item_CategoryWriteSerializer
-    queryset=Item_Category.objects.all()
+#POST request to create ItemCategory
+class ItemCategoryCreateAPIView(CreateAPIView):
+    serializer_class=ItemCategoryWriteSerializer
+    queryset=ItemCategory.objects.all()
     permission_classes=(permissions.IsAuthenticated,IsLabManager)
 
 #GET request to get all item_categories
-class Item_CategoryListAPIView(ListAPIView):
-    serializer_class=Item_CategoryInDepthReadSerializer
-    queryset=Item_Category.objects.all()
+class ItemCategoryListAPIView(ListAPIView):
+    serializer_class=ItemCategoryInDepthReadSerializer
+    queryset=ItemCategory.objects.all()
     permission_classes=(permissions.IsAuthenticated,)
 
 #GET request to get one category
-class Item_CategoryRetrieveAPIView(RetrieveAPIView):
-    serializer_class=Item_CategoryInDepthReadSerializer
-    queryset=Item_Category.objects.all()
+class ItemCategoryRetrieveAPIView(RetrieveAPIView):
+    serializer_class=ItemCategoryInDepthReadSerializer
+    queryset=ItemCategory.objects.all()
     permission_classes=(permissions.IsAuthenticated,)
     lookup_field='id'
 
 #PUT request to edit labs
-class Item_CategoryUpdateAPIView(UpdateAPIView):
-    serializer_class=Item_CategoryWriteSerializer
-    queryset=Item_Category.objects.all()
+class ItemCategoryUpdateAPIView(UpdateAPIView):
+    serializer_class=ItemCategoryWriteSerializer
+    queryset=ItemCategory.objects.all()
     permissions_classes=(permissions.IsAuthenticated,IsLabManager)
     lookup_field='id'
+
+
+# GET request to get categories of a specific lab
+class ItemCategoryListByLabAPIView(ListAPIView):
+    serializer_class=ItemCategoryInDepthReadSerializer
+    queryset=ItemCategory.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            return self.queryset.filter(lab = self.kwargs.get('lab_id', None)) # get only labs for the passed id in url
+        except:
+            raise ValidationError("Provided lab id not valid")

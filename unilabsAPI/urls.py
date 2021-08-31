@@ -24,7 +24,7 @@ urlpatterns = [
     path('labs/',include('lab.urls')),
     path('lab-manager/',include('lab_manager_user.urls')),
     path('lab-assistant/',include('lab_assistant_user.urls')),
-    path('item_categories/',include('item_category.urls')),
+    path('categories/',include('item_category.urls')),
 
     # Swagger Documentation
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
