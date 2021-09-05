@@ -14,7 +14,7 @@ from custom_user.models import Role
 class LabAssistantManager(BaseUserManager):
     def create_lab_assistant(self, email, lab, department):
         lab_assistant=self.model(email=self.normalize_email(email),lab=lab, department=department, role= Role.LAB_ASSISTANT)
-        password = DefaultPasswords.DEFAULT_DEBUG_LAB_ASSISTANT_PASSWORD if config('DEBUG') else self.make_random_password()
+        password = DefaultPasswords.DEFAULT_DEBUG_LAB_ASSISTANT_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
         print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         lab_assistant.set_password(password)
         try:
