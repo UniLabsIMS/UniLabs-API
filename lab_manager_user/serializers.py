@@ -32,4 +32,4 @@ class LabManagerReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LabManager
-        fields= ["email","first_name","last_name","contact_number","image","role","lab","department",]
+        fields= ["id","email","first_name","last_name","contact_number","image","role","lab","department",]

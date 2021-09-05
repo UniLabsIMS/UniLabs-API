@@ -1,3 +1,5 @@
+from student_user.models import Student
+from student_user.serializers import StudentDetailSerializer
 from lab_assistant_user.models import LabAssistant
 from lab_manager_user.models import LabManager
 from admin_user.serializers import AdminDetailSerializer
@@ -20,6 +22,9 @@ class Util:
                 details = serializer.data
             elif(user.role == Role.LAB_ASSISTANT):
                 serializer = LabManagerDetailSerializer(LabAssistant.objects.get(user_ptr=user))
+                details = serializer.data
+            elif(user.role == Role.STUDENT):
+                serializer = StudentDetailSerializer(Student.objects.get(user_ptr=user))
                 details = serializer.data
         except:
             details=None

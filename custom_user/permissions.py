@@ -27,3 +27,11 @@ class IsLabManagerOrAssistant(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return (request.user.role == Role.LAB_ASSISTANT) or (request.user.role == Role.LAB_MANAGER)
+
+
+# Class to check whether the user is a student
+
+class IsStudent(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.role == Role.STUDENT
