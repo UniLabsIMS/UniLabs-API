@@ -20,6 +20,9 @@ jobs:
       SENDGRID_SANDBOX_MODE_IN_DEBUG: ${{ secrets.SENDGRID_SANDBOX_MODE_IN_DEBUG }}
       EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
       FRONTEND_URL: ${{ secrets.FRONTEND_URL}}
+      CLOUDINARY_NAME: ${{secrets.CLOUDINARY_NAME}}
+      CLOUDINARY_KEY: ${{secrets.CLOUDINARY_KEY}}
+      CLOUDINARY_SECRET: ${{secrets.CLOUDINARY_SECRET}}
       
 
     steps:
