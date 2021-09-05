@@ -68,3 +68,42 @@ class TestViews(TestSetUp):
         data["new_password"] = "12345"
         res = self.client.post(self.change_password_url,data,format="json")
         self.assertEqual(res.status_code, 400)
+
+    # Update Profile Tests
+
+    def test_authenticated_users_can_change_their_profile_details(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.patch(self.update_profile_url,self.update_profile_data,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["first_name"],self.update_profile_data["first_name"])
+        self.assertEqual(res.data["last_name"],self.update_profile_data["last_name"])
+        self.assertEqual(res.data["contact_number"],self.update_profile_data["contact_number"])
+    
+    def test_unauthenticated_users_can_not_edit_profile(self):
+        res = self.client.patch(self.update_profile_url,self.update_profile_data,format="json")
+        self.assertEqual(res.status_code, 401)
+    
+    def test_authenticated_users_can_change_any_field_without_changing_others(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        contact_number = "0753462786"
+        res = self.client.patch(self.update_profile_url,{"contact_number": contact_number},format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["contact_number"],contact_number)
+    
+    def test_contact_number_can_only_contain_digits(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        contact_number = "07534627ae"
+        res = self.client.patch(self.update_profile_url,{"contact_number": contact_number},format="json")
+        self.assertEqual(res.status_code, 400)
+    
+    def test_contact_number_if_given_must_be_minimum_6_digits(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        contact_number = "075"
+        res = self.client.patch(self.update_profile_url,{"contact_number": contact_number},format="json")
+        self.assertEqual(res.status_code, 400)
+
+    def test_contact_number_if_given_must_be_maximum_15_digits(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        contact_number = "0753456253425346"
+        res = self.client.patch(self.update_profile_url,{"contact_number": contact_number},format="json")
+        self.assertEqual(res.status_code, 400)

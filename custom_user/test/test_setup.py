@@ -10,6 +10,7 @@ class TestSetUp(GlobalTestSetUp):
         super().setUpTestData()
         cls.login_url = reverse('login')
         cls.change_password_url = reverse('change-password')
+        cls.update_profile_url = reverse('update-profile')
         cls.new_password="#newPassword"
         cls.admin_login_data={
             'email':cls.global_test_admin.email,
@@ -30,6 +31,11 @@ class TestSetUp(GlobalTestSetUp):
         cls.admin_change_back_password_data={
             'current_password': cls.new_password,
             'new_password': DefaultPasswords.DEFAULT_DEBUG_ADMIN_PASSWORD,
+        }
+        cls.update_profile_data={
+            'first_name': "NewFirstName",
+            "last_name": "NewLastName",
+            "contact_number": "023456472",
         }
         return 
 

@@ -1,5 +1,5 @@
 from custom_user.models import User
-from custom_user.serializers import ChangePasswordSerializer, LoginSerializer
+from custom_user.serializers import ChangePasswordSerializer, LoginSerializer, UpdateProfileDetailsSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
@@ -16,26 +16,24 @@ class UserLoginAPIView(GenericAPIView):
 
 
 # API endpoint to change user password
-class ChangePasswordView(GenericAPIView):
+class ChangePasswordAPIView(GenericAPIView):
         serializer_class = ChangePasswordSerializer
         model = User
         permission_classes = (IsAuthenticated,)
-
-        def get_object(self, queryset=None):
-            obj = self.request.user
-            return obj
+        
 
         def post(self, request, *args, **kwargs):
-            self.object = self.get_object()
+            user = self.request.user
             serializer = self.get_serializer(data=request.data)
 
             if serializer.is_valid():
                 # Check current password
-                if not self.object.check_password(serializer.data.get("current_password")):
+                if not user.check_password(serializer.data.get("current_password")):
                     return Response({"current_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
                 # set_password also hashes the password that the user will get
-                self.object.set_password(serializer.data.get("new_password"))
-                self.object.save()
+                user.set_password(serializer.data.get("new_password"))
+                if(user.is_default_password):user.is_default_password=False
+                user.save()
                 response = {
                     'status': 'success',
                     'code': status.HTTP_200_OK,
@@ -46,3 +44,21 @@ class ChangePasswordView(GenericAPIView):
                 return Response(response)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# API end point to edit profile details
+class UpdateProfileDetialsAPIView(GenericAPIView):
+    serializer_class = UpdateProfileDetailsSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def patch(self, request):
+        user = self.request.user
+        serializer = self.get_serializer(data=request.data,partial=True)
+        if serializer.is_valid():
+            data = serializer.data
+            user.first_name = data.get('first_name',user.first_name)
+            user.last_name = data.get('last_name',user.last_name)
+            user.contact_number = data.get('contact_number',user.contact_number)
+            user.image = data.get('image',user.image)
+            user.save()
+            return Response(data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
