@@ -8,10 +8,11 @@ class LabAssistantRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model= LabAssistant
-        fields=["email","lab","department"]
+        fields=["email","lab"]
 
     def create(self,validated_data):
-        lab_assistant = LabAssistant.objects.create_lab_assistant(**validated_data,)
+        department = validated_data.get("lab").department
+        lab_assistant = LabAssistant.objects.create_lab_assistant(**validated_data,department=department)
         return lab_assistant
 
 # Lab Assistant specific data that should be returned as login reponse

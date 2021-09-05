@@ -45,10 +45,3 @@ class TestViews(TestSetUp):
         data["lab"]="xx"
         res = self.client.post(self.new_lab_manager_url,data,format="json")
         self.assertEqual(res.status_code, 400)
-    
-    def test_cannot_add_lab_manager_with_invalid_department(self):
-        self.client.force_authenticate(user=self.global_test_admin)
-        data = self.lab_manager_data.copy()
-        data["department"]="xx"
-        res = self.client.post(self.new_lab_manager_url,data,format="json")
-        self.assertEqual(res.status_code, 400)

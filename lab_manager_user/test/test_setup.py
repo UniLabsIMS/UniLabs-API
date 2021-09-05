@@ -10,8 +10,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.new_lab_manager_url = reverse('lab-manager-register')
         cls.lab_manager_data = {
             'email': cls.fake.email(),
-            'lab': cls.global_test_lab.id,
-            'department': cls.global_test_department.id
+            'lab': cls.global_test_lab.id
         }
         return 
 

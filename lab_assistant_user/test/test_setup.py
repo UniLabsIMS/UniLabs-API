@@ -10,8 +10,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.new_lab_assistant_url = reverse('lab-assistant-register')
         cls.lab_assistant_data = {
             'email': cls.fake.email(),
-            'lab': cls.global_test_lab.id,
-            'department': cls.global_test_department.id
+            'lab': cls.global_test_lab.id
         }
         return 
 
