@@ -5,7 +5,7 @@ from sendgrid import SendGridAPIClient
 class Email:
     @staticmethod
     def send_new_registration_email(to_email,role,password):
-        if(not config('SENDGRID_SANDBOX_MODE_IN_DEBUG')): 
+        if(config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')=='False'): 
             # create Mail object and populate
             message = Mail(
                 from_email=config('EMAIL_HOST_USER'),
