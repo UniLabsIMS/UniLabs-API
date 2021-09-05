@@ -52,13 +52,8 @@ class UpdateProfileDetialsAPIView(GenericAPIView):
 
     def patch(self, request):
         user = self.request.user
-        serializer = self.get_serializer(data=request.data,partial=True)
+        serializer = self.get_serializer(data=request.data,partial=True,instance=user)
         if serializer.is_valid():
-            data = serializer.data
-            user.first_name = data.get('first_name',user.first_name)
-            user.last_name = data.get('last_name',user.last_name)
-            user.contact_number = data.get('contact_number',user.contact_number)
-            user.image = data.get('image',user.image)
-            user.save()
-            return Response(data, status=status.HTTP_200_OK)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

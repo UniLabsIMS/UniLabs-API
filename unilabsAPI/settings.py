@@ -54,7 +54,9 @@ INSTALLED_APPS = [
     'drf_yasg',
     'dj_database_url',
     'django_extensions',
-    'knox'
+    'knox',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 SWAGGER_SETTINGS = {
@@ -158,6 +160,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 DISABLE_COLLECTSTATIC=1
 STATIC_URL = '/static/'
+
+#Cloudinary settings
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_NAME'), # add these to heroku and github
+    'API_KEY': config('CLOUDINARY_KEY'),
+    'API_SECRET': config('CLOUDINARY_SECRET'),
+}
+
+if config("ENVIRONMENT", '') == 'PRODUCTION':
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = config('BASE_DIR', 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
