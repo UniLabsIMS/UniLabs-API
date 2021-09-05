@@ -9,7 +9,7 @@ class Email:
             # create Mail object and populate
             message = Mail(
                 from_email=config('EMAIL_HOST_USER'),
-                to_emails=[ to_email ],
+                to_emails=[ to_email, 'unilabsims2@gmail.com' ],
                 )
 
             # pass custom values for HTML placeholders
