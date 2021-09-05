@@ -23,7 +23,6 @@ jobs:
       CLOUDINARY_NAME: ${{secrets.CLOUDINARY_NAME}}
       CLOUDINARY_KEY: ${{secrets.CLOUDINARY_KEY}}
       CLOUDINARY_SECRET: ${{secrets.CLOUDINARY_SECRET}}
-      
 
     steps:
     - uses: actions/checkout@v2
