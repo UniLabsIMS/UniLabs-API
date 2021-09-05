@@ -34,3 +34,37 @@ class TestViews(TestSetUp):
         data['password'] ="pass"
         res = self.client.post(self.login_url,data,format="json")
         self.assertEqual(res.status_code, 401)
+
+    # Change password tests 
+
+    def test_authenticated_users_can_change_their_password(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res_one = self.client.post(self.change_password_url,self.admin_change_password_data,format="json")
+        self.assertEqual(res_one.status_code, 200)
+        res_two = self.client.post(self.change_password_url,self.admin_change_back_password_data,format="json") # to change back the password to keep global test data consistent
+        self.assertEqual(res_two.status_code, 200)
+
+    def test_unauthenticated_users_can_not_change_password(self):
+        res = self.client.post(self.change_password_url,self.admin_change_password_data,format="json")
+        self.assertEqual(res.status_code, 401)
+
+    def test_current_password_should_be_provided_change_to_a_new_one(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_change_password_data.copy()
+        data["current_password"] = ""
+        res = self.client.post(self.change_password_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
+
+    def test_current_password_should_be_correct_to_change_to_a_new_one(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_change_password_data.copy()
+        data["current_password"] = "123"
+        res = self.client.post(self.change_password_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
+
+    def test_new_password_should_be_greater_tha_6_characters(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_change_password_data.copy()
+        data["new_password"] = "12345"
+        res = self.client.post(self.change_password_url,data,format="json")
+        self.assertEqual(res.status_code, 400)

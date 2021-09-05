@@ -44,3 +44,13 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Invalid credentials, try again')
 
         return user
+
+# serializer to change user password
+
+class ChangePasswordSerializer(serializers.Serializer):
+    
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True,min_length=6,max_length=31)
+
+    class Meta:
+        fields = ['current_password', 'new_password']
