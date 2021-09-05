@@ -18,3 +18,9 @@ class AdminDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         exclude = "__all__"
+
+# Admin Details for Admins
+class AdminReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields= ["email","first_name","last_name","contact_number","image","role",]

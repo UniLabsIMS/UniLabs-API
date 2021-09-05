@@ -1,4 +1,4 @@
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from custom_user.utils.utils import Util
 from rest_framework import serializers
 from .models import User
@@ -44,3 +44,25 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Invalid credentials, try again')
 
         return user
+
+# Serializer to change user password
+class ChangePasswordSerializer(serializers.Serializer):
+    
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True,min_length=6,max_length=31)
+
+    class Meta:
+        fields = ['current_password', 'new_password']
+
+# Serializer to change user profile details
+class UpdateProfileDetailsSerializer(serializers.ModelSerializer):
+    contact_number = serializers.CharField(required=False,min_length=5,max_length=15)
+    class Meta:
+        model = User
+        fields=("first_name","last_name","contact_number","image")
+
+    def validate(self,data): #to makie sure contact number is only digits
+        contact_number = data.get('contact_number',"")
+        if contact_number !="" and (contact_number.isdigit()==False):
+            raise ValidationError("Mobile Number Not Valid")  
+        return data

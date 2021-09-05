@@ -19,11 +19,11 @@ schema_view = get_schema_view(
 urlpatterns = [
     # main routes
     path('auth/', include('custom_user.urls')),
-    path('admin/', include('admin_user.urls')),
+    path('admins/', include('admin_user.urls')),
     path('departments/',include('department.urls')),
     path('labs/',include('lab.urls')),
-    path('lab-manager/',include('lab_manager_user.urls')),
-    path('lab-assistant/',include('lab_assistant_user.urls')),
+    path('lab-managers/',include('lab_manager_user.urls')),
+    path('lab-assistants/',include('lab_assistant_user.urls')),
     path('categories/',include('item_category.urls')),
     path('display-items/',include('display_item.urls')),
 

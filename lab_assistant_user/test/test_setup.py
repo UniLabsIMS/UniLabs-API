@@ -8,10 +8,10 @@ class TestSetUp(GlobalTestSetUp):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.new_lab_assistant_url = reverse('lab-assistant-register')
+        cls.all_lab_assistants_url = reverse('all-lab-assistants')
         cls.lab_assistant_data = {
             'email': cls.fake.email(),
-            'lab': cls.global_test_lab.id,
-            'department': cls.global_test_department.id
+            'lab': cls.global_test_lab.id
         }
         return 
 
