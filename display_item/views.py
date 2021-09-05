@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.serializers import Serializer
-from .serializers import DisplayItemInDepthReadSerializer,DisplayItemWriteSerializer,DisplayItemReadSerializer
+from .serializers import DisplayItemInDepthReadSerializer, DisplayItemUpdateSerializer,DisplayItemWriteSerializer,DisplayItemReadSerializer
 from display_item.models import DisplayItem
 from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView
 from rest_framework import permissions
@@ -28,7 +28,7 @@ class DisplayRetrieveAPIView(RetrieveAPIView):
 
 #PUT request to edit labs
 class DisplayItemUpdateAPIView(UpdateAPIView):
-    serializer_class=DisplayItemWriteSerializer
+    serializer_class=DisplayItemUpdateSerializer
     queryset=DisplayItem.objects.all()
     permissions_classes=(permissions.IsAuthenticated,IsLabManager)
     lookup_field='id'
@@ -43,4 +43,4 @@ class DisplayItemListByItemCategoryAPIView(ListAPIView):
         try:
             return self.queryset.filter(item_category=self.kwargs.get('item_category_id',None)) # get only item_category for the passed id in url
         except:
-            raise ValidationError('Provided item_category id not valid')
+            raise ValidationError('Provided item category id not valid')

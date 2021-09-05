@@ -2,7 +2,7 @@ from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,Up
 from lab.models import Lab
 from rest_framework import permissions
 from custom_user.permissions import IsAdmin
-from .serializers import LabInDepthReadSerializer,LabWriteSerializer
+from .serializers import LabInDepthReadSerializer, LabUpdateSerializer,LabWriteSerializer
 
 #POST request to create lab
 class LabCreateAPIView(CreateAPIView):
@@ -25,7 +25,7 @@ class LabRetrieveAPIView(RetrieveAPIView):
 
 #PUT request to edit lab
 class LabUpdateAPIView(UpdateAPIView):
-    serializer_class = LabWriteSerializer
+    serializer_class = LabUpdateSerializer
     queryset = Lab.objects.all()
     permission_classes = (permissions.IsAuthenticated,IsAdmin)
     lookup_field='id'

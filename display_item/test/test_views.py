@@ -32,20 +32,6 @@ class TestViews(TestSetUp):
         res=self.client.post(self.new_display_item_url,data,format='json')
         self.assertEqual(res.status_code,400)
     
-    def test_display_item_creation_must_fail_if_lab_id_is_invalid(self):
-        self.client.force_authenticate(user=self.global_test_lab_manager)
-        data=self.display_item_data.copy()
-        data['lab']='123'  #Invalid Lab Id
-        res=self.client.post(self.new_display_item_url,data,format='json')
-        self.assertEqual(res.status_code,400)
-    
-    def test_cannot_create_display_item_without_lab(self):
-        self.client.force_authenticate(user=self.global_test_lab_manager)
-        data=self.display_item_data.copy()
-        data['lab']="" 
-        res=self.client.post(self.new_display_item_url,data,format='json')
-        self.assertEqual(res.status_code,400)
-    
     def test_display_item_creation_must_fail_if_item_category_id_is_invalid(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.display_item_data.copy()

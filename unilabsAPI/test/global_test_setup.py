@@ -73,21 +73,21 @@ class GlobalTestSetUp(APITestCase):
             name='Test Display Item 1',
             item_category=cls.global_test_item_category,
             lab=cls.global_test_lab,
-            item_count=10,
+            item_count=0,
         )
 
         cls.global_test_display_item_two=DisplayItem.objects.create(
             name='Test Display Item 2',
             item_category=cls.global_test_item_category_two,
             lab=cls.global_test_lab_two,
-            item_count=1000,
+            item_count=0,
         )
 
         cls.global_test_display_item_three=DisplayItem.objects.create(
             name='Test Display Item 3',
             item_category=cls.global_test_item_category_three,
             lab=cls.global_test_lab_two,
-            item_count=100000,
+            item_count=0,
         )
 
 

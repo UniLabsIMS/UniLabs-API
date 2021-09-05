@@ -20,3 +20,9 @@ class ItemCategoryWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemCategory
         fields=('id','lab','name','description',)# id wont show up as required, as editable is set to false
+
+#data for editing ItemCategory
+class ItemCategoryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCategory
+        fields=('id','name','description',)# lab is not editable
