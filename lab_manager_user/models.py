@@ -12,7 +12,7 @@ from custom_user.models import Role
 class LabManagerUserManager(BaseUserManager):
     def create_lab_manager(self, email, lab, department):
         lab_manager=self.model(email=self.normalize_email(email),lab=lab, department=department, role= Role.LAB_MANAGER)
-        password = DefaultPasswords.DEFAULT_DEBUG_LAB_MANAGER_PASSWORD if config('DEBUG') else self.make_random_password()
+        password = DefaultPasswords.DEFAULT_DEBUG_LAB_MANAGER_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
         print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         lab_manager.set_password(password)
         try:

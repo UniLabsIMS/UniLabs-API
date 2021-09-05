@@ -9,7 +9,7 @@ from decouple import config
 class AdminManager(BaseUserManager):
     def create_admin(self,email):
         admin=self.model(email=self.normalize_email(email),role=Role.ADMIN)
-        password = DefaultPasswords.DEFAULT_DEBUG_ADMIN_PASSWORD if config('DEBUG') else self.make_random_password() # password is randomly generated when an admin is created
+        password = DefaultPasswords.DEFAULT_DEBUG_ADMIN_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password() # password is randomly generated when an admin is created
         print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         admin.set_password(password)
         try:

@@ -10,7 +10,7 @@ from decouple import config
 class StudentManager(BaseUserManager):
     def create_student(self, email, student_id, department):
         student=self.model(email=self.normalize_email(email),department=department, student_id=student_id,role= Role.STUDENT)
-        password = DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD if config('DEBUG') else self.make_random_password()
+        password = DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
         print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         student.set_password(password)
         try:
