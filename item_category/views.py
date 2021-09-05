@@ -1,4 +1,4 @@
-from .serializers import ItemCategoryInDepthReadSerializer, ItemCategoryWriteSerializer
+from .serializers import ItemCategoryInDepthReadSerializer, ItemCategoryUpdateSerializer, ItemCategoryWriteSerializer
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from item_category.models import ItemCategory
 from rest_framework import permissions
@@ -26,7 +26,7 @@ class ItemCategoryRetrieveAPIView(RetrieveAPIView):
 
 #PUT request to edit labs
 class ItemCategoryUpdateAPIView(UpdateAPIView):
-    serializer_class=ItemCategoryWriteSerializer
+    serializer_class=ItemCategoryUpdateSerializer
     queryset=ItemCategory.objects.all()
     permissions_classes=(permissions.IsAuthenticated,IsLabManager)
     lookup_field='id'

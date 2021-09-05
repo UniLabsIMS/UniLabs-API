@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'lab_manager_user',
     'lab_assistant_user',
     'item_category',
+    'display_item',
 
     # ThrirdParty
     'rest_framework',

@@ -1,3 +1,4 @@
+from display_item.models import DisplayItem
 from item_category.models import ItemCategory
 from lab_manager_user.models import LabManager
 from lab_assistant_user.models import LabAssistant
@@ -65,6 +66,28 @@ class GlobalTestSetUp(APITestCase):
         cls.global_test_item_category_three=ItemCategory.objects.create(
             name='Test Item Category 3',
             lab=cls.global_test_lab
+        )
+
+        # Display Items for tests
+        cls.global_test_display_item_one=DisplayItem.objects.create(
+            name='Test Display Item 1',
+            item_category=cls.global_test_item_category,
+            lab=cls.global_test_lab,
+            item_count=0,
+        )
+
+        cls.global_test_display_item_two=DisplayItem.objects.create(
+            name='Test Display Item 2',
+            item_category=cls.global_test_item_category_two,
+            lab=cls.global_test_lab_two,
+            item_count=0,
+        )
+
+        cls.global_test_display_item_three=DisplayItem.objects.create(
+            name='Test Display Item 3',
+            item_category=cls.global_test_item_category_three,
+            lab=cls.global_test_lab_two,
+            item_count=0,
         )
 
 

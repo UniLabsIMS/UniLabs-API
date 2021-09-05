@@ -45,7 +45,7 @@ class TestViews(TestSetUp):
         res=self.client.post(self.new_item_category_url,data,format='json')
         self.assertEqual(res.status_code,400)
     
-    #GET - labs
+    #GET - item category
 
     def test_authenticated_user_can_get_item_categories(self):
         self.client.force_authenticate(user=self.global_test_admin)
@@ -59,7 +59,7 @@ class TestViews(TestSetUp):
 
     #GET - single item category by id
 
-    def test_authenticated_user_can_get_lab(self):
+    def test_authenticated_user_can_get_item_category(self):
         self.client.force_authenticate(user=self.global_test_admin)
         res=self.client.get(reverse(
             self.single_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
@@ -96,7 +96,7 @@ class TestViews(TestSetUp):
         ),format='json')
         self.assertEqual(res.status_code,401)
     
-    def test_can_not_get_labs_if_lab_id_is_invalid(self):
+    def test_can_not_get_categories_if_lab_id_is_invalid(self):
         self.client.force_authenticate(user=self.global_test_admin)
         res=self.client.get(reverse(
             self.item_categories_of_a_lab_url_name,kwargs={'lab_id':"123"}
