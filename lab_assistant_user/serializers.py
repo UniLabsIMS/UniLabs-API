@@ -23,3 +23,12 @@ class LabAssistantDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabAssistant
         fields=["lab","department"]
+
+# Lab Assistant Details for Admins
+class LabAssistantReadSerializer(serializers.ModelSerializer):
+    lab = LabReadSerializer()
+    department = DepartmentReadSerializer()
+
+    class Meta:
+        model = LabAssistant
+        fields= ["email","first_name","last_name","contact_number","image","role","lab","department",]

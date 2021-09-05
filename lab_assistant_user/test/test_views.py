@@ -45,3 +45,20 @@ class TestViews(TestSetUp):
         data["lab"]="xx"
         res = self.client.post(self.new_lab_assistant_url,data,format="json")
         self.assertEqual(res.status_code, 400)
+
+    # GET - all lab assistants
+
+    def test_authenticated_admin_users_can_get_a_list_of_lab_assistants(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.get(self.all_lab_assistants_url,data_format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+    
+    def test_unauthenticated_users_cannot_get_list_of_lab_assistants(self):
+        res = self.client.get(self.all_lab_assistants_url,data_format="json")
+        self.assertEqual(res.status_code,401)
+
+    def test_authenticated_non_admin_users_cannot_get_list_of_lab_assistants(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res = self.client.get(self.all_lab_assistants_url,data_format="json")
+        self.assertEqual(res.status_code,403)

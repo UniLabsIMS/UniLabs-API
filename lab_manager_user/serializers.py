@@ -23,3 +23,13 @@ class LabManagerDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabManager
         fields=["lab","department"]
+
+
+# Lab Manager Details for Admins
+class LabManagerReadSerializer(serializers.ModelSerializer):
+    lab = LabReadSerializer()
+    department = DepartmentReadSerializer()
+
+    class Meta:
+        model = LabManager
+        fields= ["email","first_name","last_name","contact_number","image","role","lab","department",]

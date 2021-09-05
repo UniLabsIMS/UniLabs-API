@@ -1,8 +1,10 @@
+from rest_framework import permissions
+from admin_user.models import Admin
 from custom_user.permissions import IsAdmin
 from custom_user.models import User
 from rest_framework import generics,status
 from rest_framework.response import Response
-from .serializers import AdminRegisterSerializer
+from .serializers import AdminReadSerializer, AdminRegisterSerializer
 from rest_framework.permissions import IsAuthenticated
 
 # Admin Register View
@@ -31,3 +33,9 @@ class InitialSystemAdminRegiterAPIView(generics.GenericAPIView):
         serializer.save()
         admin_data = serializer.data        
         return Response(admin_data,status=status.HTTP_201_CREATED)
+
+# GET request to get all admins in the system as a list
+class AllAdminsAPIView(generics.ListAPIView):
+    serializer_class=AdminReadSerializer
+    queryset=Admin.objects.all()
+    permission_classes=(permissions.IsAuthenticated,IsAdmin)
