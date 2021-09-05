@@ -3,6 +3,7 @@ from item_category.models import ItemCategory
 from lab_manager_user.models import LabManager
 from lab_assistant_user.models import LabAssistant
 from department.models import Department
+from student_user.models import Student
 from rest_framework.test import APITestCase
 from faker import Faker
 from admin_user.models import Admin
@@ -88,6 +89,13 @@ class GlobalTestSetUp(APITestCase):
             item_category=cls.global_test_item_category_three,
             lab=cls.global_test_lab_two,
             item_count=0,
+        )
+
+         # Student for tests
+        cls.global_test_student = Student.objects.create_student(
+            email = cls.fake.email(),
+            student_id = "123321X",
+            department = cls.global_test_department
         )
 
 

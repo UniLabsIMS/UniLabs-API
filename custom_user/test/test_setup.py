@@ -24,6 +24,10 @@ class TestSetUp(GlobalTestSetUp):
             'email':cls.global_test_lab_assistant.email,
             'password':DefaultPasswords.DEFAULT_DEBUG_LAB_ASSISTANT_PASSWORD, # default password used while regestering new lab assistant user in debug mode
         }
+        cls.student_login_data={
+            'email':cls.global_test_student.email,
+            'password':DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD, # default password used while regestering new student user in debug mode
+        }
         cls.admin_change_password_data={
             'current_password':DefaultPasswords.DEFAULT_DEBUG_ADMIN_PASSWORD,
             'new_password': cls.new_password,
