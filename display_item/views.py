@@ -26,7 +26,7 @@ class DisplayRetrieveAPIView(RetrieveAPIView):
     permission_classes=(permissions.IsAuthenticated,)
     lookup_field='id'
 
-#PUT request to edit labs
+#PUT request to edit display_item
 class DisplayItemUpdateAPIView(UpdateAPIView):
     serializer_class=DisplayItemUpdateSerializer
     queryset=DisplayItem.objects.all()

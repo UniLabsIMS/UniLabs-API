@@ -27,6 +27,7 @@ urlpatterns = [
     path('categories/',include('item_category.urls')),
     path('display-items/',include('display_item.urls')),
     path('students/', include('student_user.urls')),
+    path('items/',include('item.urls')),
 
     # Swagger Documentation
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
