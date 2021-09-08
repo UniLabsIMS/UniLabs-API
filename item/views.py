@@ -18,13 +18,13 @@ class ItemCreateAPIView(CreateAPIView):
 class ItemListAPIView(ListAPIView):
     serializer_class=ItemInDepthReadSerializer
     queryset=Item.objects.all()
-    permissions=(permissions.IsAuthenticated,)
+    permission_classes=(permissions.IsAuthenticated,)
 
 #GET request to one item
 class ItemRetriveAPIView(RetrieveAPIView):
     serializer_class=ItemInDepthReadSerializer
     queryset=Item.objects.all()
-    permissions=(permissions.IsAuthenticated,)
+    permission_classes=(permissions.IsAuthenticated,)
     lookup_field='id'
 
 #PUT request to edit item
@@ -38,7 +38,7 @@ class ItemUpdateAPIView(UpdateAPIView):
 class ItemListByDisplayItemAPIView(ListAPIView):
     serializer_class=ItemInDepthReadSerializer
     queryset=Item.objects.all()
-    permission_classes=(permissions.IsAuthenticated,IsLabManagerOrAssistant)
+    permission_classes=(permissions.IsAuthenticated,)
 
     def get_queryset(self):
         try:
