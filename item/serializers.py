@@ -6,6 +6,7 @@ from item_category.serializers import ItemCategoryReadSerializer
 from display_item.serializers import DisplayItemReadSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.db import transaction
 
 #data visible as response
 class ItemReadSerializer(serializers.ModelSerializer):
@@ -29,6 +30,7 @@ class ItemWriteSerializer(serializers.ModelSerializer):
         fields=('id','display_item')
 
      #setting the lab column and item_category coloum using the display_item
+    @transaction.atomic
     def create(self,validated_data):
         display_item=validated_data.get('display_item')
         item_category=display_item.item_category
