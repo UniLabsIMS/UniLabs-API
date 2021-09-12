@@ -43,6 +43,30 @@ class ItemListByDisplayItemAPIView(ListAPIView):
         except:
             raise ValidationError('Provided item category id not valid')
 
+#GET request to get items of a specific item_category
+class ItemListByItemCategoryAPIView(ListAPIView):
+    serializer_class=ItemInDepthReadSerializer
+    queryset=Item.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            return self.queryset.filter(item_category=self.kwargs.get('item_category_id',None)) # get only items for the passed id in url
+        except:
+            raise ValidationError('Provided item category id not valid')
+
+#GET request to get items of a specific lab
+class ItemListByLabAPIView(ListAPIView):
+    serializer_class=ItemInDepthReadSerializer
+    queryset=Item.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            return self.queryset.filter(lab=self.kwargs.get('lab_id',None)) # get only items for the passed id in url
+        except:
+            raise ValidationError('Provided item category id not valid')
+
 #DELETE request to delete item
 class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
     queryset=Item.objects.all()
