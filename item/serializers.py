@@ -8,7 +8,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.db import transaction
 
-#data visible as response
+# Data visible as response
 class ItemReadSerializer(serializers.ModelSerializer):
     class Meta:
         model=Item
@@ -23,7 +23,7 @@ class ItemInDepthReadSerializer(serializers.ModelSerializer):
         model=Item
         fields='__all__'
 
-#data for creating Item
+# Data for creating Item
 class ItemWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model=Item
@@ -41,10 +41,10 @@ class ItemWriteSerializer(serializers.ModelSerializer):
 
         return Item.objects.create(item_category=item_category,lab=lab,**validated_data)
 
-#Editting item is not in system functionalities
-        
+
+# Update State        
 class ItemUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Item
-        fields=('id','state') # item category must not be editable
+        fields=('id','state') 
 

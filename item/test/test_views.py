@@ -104,3 +104,57 @@ class TestViews(TestSetup):
             self.items_of_a_display_item_url_name,kwargs={'display_item_id':"123"}
         ),format='json')
         self.assertEqual(res.status_code,400)
+
+    # Delete Item
+
+    def test_authenticated_LabManager_can_delete_items(self):
+        # create an item to delete
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        # then delete it
+        res=self.client.delete(reverse(
+            self.delete_item_url_name,kwargs={'id':res_created.data['id']}
+        ),format='json')
+        self.assertEqual(res.status_code,204)
+    
+    def test_authenticated_LabAssistant_can_delete_items(self):
+        # create an item to delete
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        # then delete it
+        res=self.client.delete(reverse(
+            self.delete_item_url_name,kwargs={'id':res_created.data['id']}
+        ),format='json')
+        self.assertEqual(res.status_code,204)
+    
+    def test_authenticated_Other_Users_can_not_delete_items(self):
+        # create an item to delete
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        # then delete it
+        self.client.force_authenticate(user=self.global_test_student)
+        res=self.client.delete(reverse(
+            self.delete_item_url_name,kwargs={'id':res_created.data['id']}
+        ),format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_Users_can_not_delete_items(self):
+        # create an item to delete
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        # then delete it
+        self.client.force_authenticate(user=None)
+        res=self.client.delete(reverse(
+            self.delete_item_url_name,kwargs={'id':res_created.data['id']}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+
+    def test_can_not_delete_non_existing_items(self):
+        # create an item to delete
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        # then delete it
+        res=self.client.delete(reverse(
+            self.delete_item_url_name,kwargs={'id':'65254675'}
+        ),format='json')
+        self.assertEqual(res.status_code,404)
+    

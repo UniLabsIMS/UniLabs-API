@@ -1,5 +1,6 @@
 from django.db import models
 from uuid import uuid4
+from django.utils.http import int_to_base36
 
 from display_item.models import DisplayItem
 from lab.models import Lab
@@ -14,10 +15,15 @@ class State(models.TextChoices):
     TEMP_BORROWED='Temp_Borrowed', _('Temp_Borrowed')
     DAMAGED='Damaged', _('Damaged')
 
-#Item Model
+ID_LENGTH = 9
 
+# Generates random string whose length is `ID_LENGTH`
+def id_gen() -> str:
+    return int_to_base36(uuid4().int)[:ID_LENGTH]
+    
+#Item Model
 class Item(models.Model):
-    id=models.UUIDField(default=uuid4,primary_key=True,editable=False)
+    id = models.CharField(primary_key=True, default=id_gen, editable=False,max_length=ID_LENGTH)
     display_item=models.ForeignKey(DisplayItem,on_delete=CASCADE)
     item_category=models.ForeignKey(ItemCategory,on_delete=CASCADE)
     lab=models.ForeignKey(Lab,on_delete=CASCADE)

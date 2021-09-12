@@ -1,11 +1,8 @@
-from django.shortcuts import render
-from rest_framework import serializers
-from rest_framework.serializers import Serializer
-from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
 from rest_framework import permissions
 from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant
 from rest_framework.exceptions import ValidationError
-from .serializers import ItemInDepthReadSerializer,ItemReadSerializer,ItemWriteSerializer,ItemUpdateSerializer
+from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer
 from  item.models import Item
 
 #POST request to create Item
@@ -45,3 +42,9 @@ class ItemListByDisplayItemAPIView(ListAPIView):
             return self.queryset.filter(display_item=self.kwargs.get('display_item_id',None)) # get only items for the passed id in url
         except:
             raise ValidationError('Provided item category id not valid')
+
+#DELETE request to delete item
+class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
+    queryset=Item.objects.all()
+    permission_classes=(permissions.IsAuthenticated,IsLabManagerOrAssistant)
+    lookup_field='id'
