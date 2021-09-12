@@ -105,6 +105,53 @@ class TestViews(TestSetup):
         ),format='json')
         self.assertEqual(res.status_code,400)
 
+    # GET filtered item of a specific item category
+
+    def test_authenticated_user_can_get_items_of_an_item_category(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.get(reverse(
+            self.items_of_an_item_category_url_name,kwargs={'item_category_id':self.global_test_item_category.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+    
+    def test_unauthenticated_user_cannot_get_items_of_an_item_category(self):
+        res=self.client.get(reverse(
+            self.items_of_an_item_category_url_name,kwargs={'item_category_id':self.global_test_item_category_two.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_cannot_get_items_if_display_item_id_is_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.get(reverse(
+            self.items_of_an_item_category_url_name,kwargs={'item_category_id':"error_id"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
+    
+    # GET filtered item of a specific lab
+
+    def test_authenticated_user_can_get_items_of_a_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.get(reverse(
+            self.items_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab_two.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+    
+    def test_unauthenticated_user_cannot_get_items_of_a_lab(self):
+        res=self.client.get(reverse(
+            self.items_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab_two.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_cannot_get_items_if_lab_id_is_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.get(reverse(
+            self.items_of_a_lab_url_name,kwargs={'lab_id':"error_id"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
+
+
     # Delete Item
 
     def test_authenticated_LabManager_can_delete_items(self):
