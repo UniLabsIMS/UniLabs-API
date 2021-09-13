@@ -44,3 +44,15 @@ class DisplayItemListByItemCategoryAPIView(ListAPIView):
             return self.queryset.filter(item_category=self.kwargs.get('item_category_id',None)) # get only item_category for the passed id in url
         except:
             raise ValidationError('Provided item category id not valid')
+
+#GET request to get display_items of a specific lab
+class DisplayItemListByLabAPIView(ListAPIView):
+    serializer_class=DisplayItemInDepthReadSerializer
+    queryset=DisplayItem.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            return self.queryset.filter(lab=self.kwargs.get('lab_id',None)) # get only item_category for the passed id in url
+        except:
+            raise ValidationError('Provided Lab id not valid')
