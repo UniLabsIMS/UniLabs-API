@@ -41,4 +41,4 @@ class LabListByDepartmentAPIView(ListAPIView):
         try:
             return self.queryset.filter(department=self.kwargs.get('department_id',None)) # get only lab for the passed id in url
         except:
-            raise ValidationError('Provided Lab id not valid')
+            raise ValidationError('Provided department id not valid')

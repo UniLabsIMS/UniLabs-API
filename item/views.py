@@ -41,7 +41,7 @@ class ItemListByDisplayItemAPIView(ListAPIView):
         try:
             return self.queryset.filter(display_item=self.kwargs.get('display_item_id',None)) # get only items for the passed id in url
         except:
-            raise ValidationError('Provided item category id not valid')
+            raise ValidationError('Provided display item id not valid')
 
 #GET request to get items of a specific item_category
 class ItemListByItemCategoryAPIView(ListAPIView):
@@ -65,7 +65,7 @@ class ItemListByLabAPIView(ListAPIView):
         try:
             return self.queryset.filter(lab=self.kwargs.get('lab_id',None)) # get only items for the passed id in url
         except:
-            raise ValidationError('Provided item category id not valid')
+            raise ValidationError('Provided lab id not valid')
 
 #DELETE request to delete item
 class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
