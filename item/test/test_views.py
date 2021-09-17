@@ -159,20 +159,26 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res_created=self.client.post(self.new_item_url,self.item_data,format='json')
         # then delete it
+        item_count_parent_b4= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
         ),format='json')
+        item_count_parent_after= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         self.assertEqual(res.status_code,204)
+        self.assertEqual(item_count_parent_b4,item_count_parent_after+1)
     
     def test_authenticated_LabAssistant_can_delete_items(self):
         # create an item to delete
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res_created=self.client.post(self.new_item_url,self.item_data,format='json')
         # then delete it
+        item_count_parent_b4= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
         ),format='json')
+        item_count_parent_after= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         self.assertEqual(res.status_code,204)
+        self.assertEqual(item_count_parent_b4,item_count_parent_after+1)
     
     def test_authenticated_Other_Users_can_not_delete_items(self):
         # create an item to delete

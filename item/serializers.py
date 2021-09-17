@@ -1,11 +1,8 @@
-import item_category
-from django.db.models import fields
 from item.models import Item
 from lab.serializers import LabReadSerializer
 from item_category.serializers import ItemCategoryReadSerializer
 from display_item.serializers import DisplayItemReadSerializer
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from django.db import transaction
 
 # Data visible as response

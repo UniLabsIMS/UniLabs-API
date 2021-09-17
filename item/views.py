@@ -4,6 +4,10 @@ from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant
 from rest_framework.exceptions import ValidationError
 from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer
 from  item.models import Item
+from rest_framework.response import Response
+from rest_framework import status
+from django.db import transaction
+from display_item.models import DisplayItem
 
 #POST request to create Item
 class ItemCreateAPIView(CreateAPIView):
@@ -72,3 +76,12 @@ class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
     queryset=Item.objects.all()
     permission_classes=(permissions.IsAuthenticated,IsLabManagerOrAssistant)
     lookup_field='id'
+
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        item = self.get_object()
+        display_item = DisplayItem.objects.get(id=item.display_item.id)
+        display_item.item_count -=1
+        display_item.save()
+        item.delete()
+        return Response("Item deleted", status=status.HTTP_204_NO_CONTENT)
