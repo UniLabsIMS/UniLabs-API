@@ -120,6 +120,20 @@ class GlobalTestSetUp(APITestCase):
             department = cls.global_test_department
         )
 
+        cls.global_blocked_student_data = {
+            'email':cls.fake.email(),
+            'student_id': "65745X",
+            'department': cls.global_test_department,
+            "blocked": True
+        }
+        cls.global_blocked_student = Student.objects.create_student(
+            email = cls.global_blocked_student_data["email"],
+            student_id = cls.global_blocked_student_data["student_id"],
+            department = cls.global_blocked_student_data["department"]
+        )
+        cls.global_blocked_student.blocked = cls.global_blocked_student_data["blocked"]
+        cls.global_blocked_student.save()
+        
         # Lecturer for tests
         cls.global_test_lecturer = Lecturer.objects.create_lecturer(
             email = cls.fake.email(),

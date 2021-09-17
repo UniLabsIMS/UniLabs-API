@@ -1,3 +1,4 @@
+from student_user.models import Student
 from custom_user.utils.default_passwords import DefaultPasswords
 from unilabsAPI.test.global_test_setup import GlobalTestSetUp
 from django.urls import reverse
@@ -45,6 +46,10 @@ class TestSetUp(GlobalTestSetUp):
             'first_name': "NewFirstName",
             "last_name": "NewLastName",
             "contact_number": "023456472",
+        }
+        cls.blocked_student_login_data={ # test setup for blocked user
+            'email': cls.global_blocked_student.email,
+            'password': DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD
         }
         return 
 

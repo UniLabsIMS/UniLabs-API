@@ -30,8 +30,8 @@ class LoginSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = User
-        fields = ('token','email','password','role','first_name','last_name','contact_number','image','is_default_password','other_details',)
-        read_only_fields = ('token','role','first_name','last_name','contact_number','image','is_default_password','other_details',)
+        fields = ('token','email','password','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        read_only_fields = ('token','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
        
 
     # Runs when .is_valid() is called and if possible authenticate the user
@@ -42,6 +42,8 @@ class LoginSerializer(serializers.ModelSerializer):
 
         if not user:
             raise AuthenticationFailed('Invalid credentials, try again')
+        if user.blocked:
+            raise AuthenticationFailed('User blocked by admins')
 
         return user
 
@@ -62,13 +64,15 @@ class RefreshAuthSerializer(serializers.ModelSerializer):
         return Util.get_role_specific_details(self.user)
     class Meta:
         model = User
-        fields = ('email','role','first_name','last_name','contact_number','image','is_default_password','other_details',)
-        read_only_fields = ('email', 'role','first_name','last_name','contact_number','image','is_default_password','other_details',)
+        fields = ('email','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        read_only_fields = ('email', 'role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
     
     # Runs when .is_valid() is called and if possible authenticate the user
     def validate(self, attrs):
         if not self.user:
             raise AuthenticationFailed('Token Invalid')
+        if self.user.blocked:
+            raise AuthenticationFailed('User blocked by admins')
         return self.user
 
 # Serializer to change user password

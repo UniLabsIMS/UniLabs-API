@@ -38,6 +38,10 @@ class TestViews(TestSetUp):
         self.assertIsNotNone(res.data['other_details']['permitted_labs'])
         self.assertIsNotNone(res.data['token'])
 
+    def test_blocked_user_cannot_login(self):
+        res = self.client.post(self.login_url,self.blocked_student_login_data,format="json")
+        self.assertEqual(res.status_code, 401)
+
     def test_cannot_login_using_invalid_email(self):
         data = self.admin_login_data.copy()
         data['email'] ="error@gmail.com"
@@ -91,6 +95,11 @@ class TestViews(TestSetUp):
         self.assertIsNotNone(res.data['other_details']['permitted_labs'])
     
     def test_can_not_refresh_auth_with_invalid_or_empty_token(self):
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 401)
+    
+    def test_blocked_user_cannot_refresh_auth(self):
+        self.client.force_authenticate(user=self.global_blocked_student)
         res = self.client.get(self.refresh_auth_url,format="json")
         self.assertEqual(res.status_code, 401)
         

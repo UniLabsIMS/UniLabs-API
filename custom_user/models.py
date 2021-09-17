@@ -36,6 +36,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_default_password = models.BooleanField(default=True) # whether the account has the default password given at registration
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    blocked = models.BooleanField(default=False)
 
     USERNAME_FIELD="email"
 
