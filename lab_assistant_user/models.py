@@ -9,19 +9,19 @@ from department.models import Department
 from django.db import models
 from custom_user.models import User
 from custom_user.models import Role
-
+from django.db import transaction
 # Admin Manager to create lab assistant
 class LabAssistantManager(BaseUserManager):
+    @transaction.atomic
     def create_lab_assistant(self, email, lab, department):
         lab_assistant=self.model(email=self.normalize_email(email),lab=lab, department=department, role= Role.LAB_ASSISTANT)
         password = DefaultPasswords.DEFAULT_DEBUG_LAB_ASSISTANT_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
-        print('Password>>>>>>>>>>>>>>>'+' '+password) #TODO: Remove this when email functionality done
         lab_assistant.set_password(password)
+        lab_assistant.save()
         try:
             Email.send_new_registration_email(email,Role.LAB_ASSISTANT,password)
         except:
             raise Exception('Error sending new registration email')
-        lab_assistant.save()
         return lab_assistant
 
 #Lab Assistant model which extends User model
@@ -35,3 +35,6 @@ class LabAssistant(User):
 
     def __str__(self):
         return str(self.email)
+
+    class Meta:
+        db_table = 'lab_assistant_user'

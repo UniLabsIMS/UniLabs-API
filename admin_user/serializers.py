@@ -23,4 +23,4 @@ class AdminDetailSerializer(serializers.ModelSerializer):
 class AdminReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields= ["id","email","first_name","last_name","contact_number","image","role",]
+        fields= ["id","email","first_name","last_name","contact_number","image","role","blocked",]

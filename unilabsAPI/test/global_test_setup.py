@@ -1,3 +1,4 @@
+from lecturer_user.models import Lecturer
 from display_item.models import DisplayItem
 from item_category.models import ItemCategory
 from lab_manager_user.models import LabManager
@@ -16,9 +17,13 @@ class GlobalTestSetUp(APITestCase):
     def setUpTestData(cls):
         cls.fake = Faker()
 
-        # Admin for tests
+        # Admins for tests
         cls.global_test_admin = Admin.objects.create_admin(
             email='test_admin1@gmail.com'
+        )
+
+        cls.global_test_admin_two = Admin.objects.create_admin(
+            email='test_admin2@gmail.com'
         )
 
 
@@ -117,6 +122,28 @@ class GlobalTestSetUp(APITestCase):
             email = cls.fake.email(),
             student_id = "123321X",
             department = cls.global_test_department
+        )
+
+        cls.global_blocked_student_data = {
+            'email':cls.fake.email(),
+            'student_id': "65745X",
+            'department': cls.global_test_department,
+            "blocked": True
+        }
+        cls.global_blocked_student = Student.objects.create_student(
+            email = cls.global_blocked_student_data["email"],
+            student_id = cls.global_blocked_student_data["student_id"],
+            department = cls.global_blocked_student_data["department"]
+        )
+        cls.global_blocked_student.blocked = cls.global_blocked_student_data["blocked"]
+        cls.global_blocked_student.save()
+        
+        # Lecturer for tests
+        cls.global_test_lecturer = Lecturer.objects.create_lecturer(
+            email = cls.fake.email(),
+            lecturer_id = "1433T1X",
+            department = cls.global_test_department,
+            permitted_labs = [cls.global_test_lab.id,]
         )
 
 

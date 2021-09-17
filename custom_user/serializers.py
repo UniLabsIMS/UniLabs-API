@@ -1,7 +1,7 @@
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from custom_user.utils.utils import Util
-from rest_framework import serializers
-from .models import User
+from rest_framework import fields, serializers
+from .models import Role, User
 from django.contrib import auth
 
 # serializer class to handle login data
@@ -30,8 +30,8 @@ class LoginSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = User
-        fields = ('token','email','password','role','first_name','last_name','contact_number','image','is_default_password','other_details',)
-        read_only_fields = ('token','role','first_name','last_name','contact_number','image','is_default_password','other_details',)
+        fields = ('token','email','password','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        read_only_fields = ('token','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
        
 
     # Runs when .is_valid() is called and if possible authenticate the user
@@ -42,8 +42,38 @@ class LoginSerializer(serializers.ModelSerializer):
 
         if not user:
             raise AuthenticationFailed('Invalid credentials, try again')
+        if user.blocked:
+            raise AuthenticationFailed('User blocked by admins')
 
         return user
+
+# Refresh Auth Serializer 
+class RefreshAuthSerializer(serializers.ModelSerializer):
+    other_details = serializers.SerializerMethodField()
+    user = None
+
+    def __init__(self, *args, **kwargs):
+        super(RefreshAuthSerializer, self).__init__(*args, **kwargs)
+        try:
+            self.user = kwargs['data']['user']
+        except:
+            pass
+
+    # querying other role specific details
+    def get_other_details(self, obj):
+        return Util.get_role_specific_details(self.user)
+    class Meta:
+        model = User
+        fields = ('email','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        read_only_fields = ('email', 'role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+    
+    # Runs when .is_valid() is called and if possible authenticate the user
+    def validate(self, attrs):
+        if not self.user:
+            raise AuthenticationFailed('Token Invalid')
+        if self.user.blocked:
+            raise AuthenticationFailed('User blocked by admins')
+        return self.user
 
 # Serializer to change user password
 class ChangePasswordSerializer(serializers.Serializer):
@@ -61,8 +91,20 @@ class UpdateProfileDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields=("first_name","last_name","contact_number","image")
 
-    def validate(self,data): #to makie sure contact number is only digits
-        contact_number = data.get('contact_number',"")
+    def validate(self,attrs): #to makie sure contact number is only digits
+        contact_number = attrs.get('contact_number',"")
         if contact_number !="" and (contact_number.isdigit()==False):
             raise ValidationError("Mobile Number Not Valid")  
+        return attrs
+
+# Serilizer to block request by admin user
+class UserBlockUnblockSerializer(serializers.ModelSerializer):
+    blocked = serializers.BooleanField(required=True)
+    class Meta:
+        model = User
+        fields =['blocked',]
+    
+    def validate(self,data):
+        if(self.instance.role == Role.ADMIN):
+            raise ValidationError("Admins can not block/unblock other admins")
         return data

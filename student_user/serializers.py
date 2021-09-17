@@ -29,4 +29,4 @@ class StudentReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields= ["id","student_id","email","first_name","last_name","contact_number","image","role","department",]
+        fields= ["id","student_id","email","first_name","last_name","contact_number","image","role","blocked","department",]

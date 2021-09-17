@@ -1,3 +1,4 @@
+from student_user.models import Student
 from custom_user.utils.default_passwords import DefaultPasswords
 from unilabsAPI.test.global_test_setup import GlobalTestSetUp
 from django.urls import reverse
@@ -11,6 +12,8 @@ class TestSetUp(GlobalTestSetUp):
         cls.login_url = reverse('login')
         cls.change_password_url = reverse('change-password')
         cls.update_profile_url = reverse('update-profile')
+        cls.refresh_auth_url = reverse('refresh-auth')
+        cls.user_block_url_name = 'user-block'
         cls.new_password="#newPassword"
         cls.admin_login_data={
             'email':cls.global_test_admin.email,
@@ -28,6 +31,10 @@ class TestSetUp(GlobalTestSetUp):
             'email':cls.global_test_student.email,
             'password':DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD, # default password used while regestering new student user in debug mode
         }
+        cls.lecturer_login_data={
+            'email':cls.global_test_lecturer.email,
+            'password':DefaultPasswords.DEFAULT_DEBUG_LECTURER_PASSWORD, # default password used while regestering new lecturer
+        }
         cls.admin_change_password_data={
             'current_password':DefaultPasswords.DEFAULT_DEBUG_ADMIN_PASSWORD,
             'new_password': cls.new_password,
@@ -40,6 +47,10 @@ class TestSetUp(GlobalTestSetUp):
             'first_name': "NewFirstName",
             "last_name": "NewLastName",
             "contact_number": "023456472",
+        }
+        cls.blocked_student_login_data={ # test setup for blocked user
+            'email': cls.global_blocked_student.email,
+            'password': DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD
         }
         return 
 

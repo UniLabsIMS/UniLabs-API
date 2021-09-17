@@ -1,3 +1,4 @@
+from django.urls.base import reverse
 from .test_setup import TestSetUp
 
 class TestViews(TestSetUp):
@@ -29,6 +30,18 @@ class TestViews(TestSetUp):
         self.assertEqual(res.data['email'],self.student_login_data['email'])
         self.assertIsNotNone(res.data['other_details']['student_id'])
         self.assertIsNotNone(res.data['token'])
+    
+    def test_lecturer_can_login_with_email_and_password(self):
+        res = self.client.post(self.login_url,self.lecturer_login_data,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.lecturer_login_data['email'])
+        self.assertIsNotNone(res.data['other_details']['lecturer_id'])
+        self.assertIsNotNone(res.data['other_details']['permitted_labs'])
+        self.assertIsNotNone(res.data['token'])
+
+    def test_blocked_user_cannot_login(self):
+        res = self.client.post(self.login_url,self.blocked_student_login_data,format="json")
+        self.assertEqual(res.status_code, 401)
 
     def test_cannot_login_using_invalid_email(self):
         data = self.admin_login_data.copy()
@@ -41,6 +54,56 @@ class TestViews(TestSetUp):
         data['password'] ="pass"
         res = self.client.post(self.login_url,data,format="json")
         self.assertEqual(res.status_code, 401)
+    
+    # refresh auth tests
+    def test_admin_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_admin.email)
+        
+
+    def test_lab_manager_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_lab_manager.email)
+        self.assertIsNotNone(res.data['other_details']['lab']['id'])
+        
+
+    def test_lab_assistant_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_lab_assistant.email)
+        self.assertIsNotNone(res.data['other_details']['lab']['id'])
+        
+
+    def test_student_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_student.email)
+        self.assertIsNotNone(res.data['other_details']['student_id'])
+        
+    
+    def test_lecturer_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_lecturer.email)
+        self.assertIsNotNone(res.data['other_details']['lecturer_id'])
+        self.assertIsNotNone(res.data['other_details']['permitted_labs'])
+    
+    def test_can_not_refresh_auth_with_invalid_or_empty_token(self):
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 401)
+    
+    def test_blocked_user_cannot_refresh_auth(self):
+        self.client.force_authenticate(user=self.global_blocked_student)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 401)
+        
 
     # Change password tests 
 
@@ -114,3 +177,33 @@ class TestViews(TestSetUp):
         contact_number = "0753456253425346"
         res = self.client.patch(self.update_profile_url,{"contact_number": contact_number},format="json")
         self.assertEqual(res.status_code, 400)
+
+    # Tests to block, unblock user
+    def test_admin_can_block_unblock_other_users(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data["blocked"],True)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "false"},format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data["blocked"],False)
+
+    def test_unauthenticated_users_can_not_block_users(self):
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,401)
+
+    def test_authenticated_adminns_can_not_block_other_admins(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_admin_two.id}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,400)
+
+    def test_can_not_block_user_with_invalid_id(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':"456543"}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,404)
+    
+    def test_to_block_value_must_be_a_boolen(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "rtye"},format="json")
+        self.assertEqual(res.status_code,400)
+    
