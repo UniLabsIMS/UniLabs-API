@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'item_category',
     'display_item',
     'student_user',
+    'item',
 
     # ThrirdParty
     'rest_framework',

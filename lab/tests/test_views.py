@@ -76,7 +76,29 @@ class TestViews(TestSetUp):
             self.single_lab_url_name,kwargs={'id':'error_id'}
         ),format='json')
         self.assertEqual(res.status_code,404)
-        
+    
+    # GET filtered labs of a specific department
+
+    def test_authenticated_user_can_get_labs_of_a_department(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(
+            self.labs_of_a_department_url_name,kwargs={'department_id':self.global_test_department.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),2)
+    
+    def test_unauthenticated_user_cannot_get_labs_of_a_department(self):
+        res=self.client.get(reverse(
+            self.labs_of_a_department_url_name,kwargs={'department_id':self.global_test_department.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test__cannot_get_labs_of_a_department_id_is_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(
+            self.labs_of_a_department_url_name,kwargs={'department_id':"error_id"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
         
 
 

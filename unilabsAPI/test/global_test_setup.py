@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from admin_user.models import Admin
 from lab.models import Lab
+from item.models import Item
 
 
 class GlobalTestSetUp(APITestCase):
@@ -87,8 +88,28 @@ class GlobalTestSetUp(APITestCase):
         cls.global_test_display_item_three=DisplayItem.objects.create(
             name='Test Display Item 3',
             item_category=cls.global_test_item_category_three,
-            lab=cls.global_test_lab_two,
+            lab=cls.global_test_lab,
             item_count=0,
+        )
+
+        #Items for test
+
+        cls.global_test_item_one=Item.objects.create(
+            display_item=cls.global_test_display_item_one,
+            item_category=cls.global_test_item_category,
+            lab=cls.global_test_lab
+        )
+
+        cls.global_test_item_two=Item.objects.create(
+            display_item=cls.global_test_display_item_two,
+            item_category=cls.global_test_item_category_two,
+            lab=cls.global_test_lab_two
+        )
+
+        cls.global_test_item_three=Item.objects.create(
+            display_item=cls.global_test_display_item_three,
+            item_category=cls.global_test_item_category_three,
+            lab=cls.global_test_lab
         )
 
          # Student for tests

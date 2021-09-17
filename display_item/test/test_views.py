@@ -103,6 +103,29 @@ class TestViews(TestSetUp):
             self.display_items_of_a_item_category_url_name,kwargs={'item_category_id':"123"}
         ),format='json')
         self.assertEqual(res.status_code,400)
+    
+    # GET filtered display item of a specific lab
+
+    def test_authenticated_user_can_get_display_items_of_a_lab(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.display_items_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab_two.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+    
+    def test_unauthenticated_user_cannot_get_display_items_of_a_lab(self):
+        res=self.client.get(reverse(
+            self.display_items_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_cannot_get_display_items_of_a_lab_id_is_invalid(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.display_items_of_a_lab_url_name,kwargs={'lab_id':"error_id"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
 
 
     

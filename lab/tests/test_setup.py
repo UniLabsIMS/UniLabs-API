@@ -10,6 +10,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.new_lab_url = reverse('lab-create')
         cls.all_labs_url = reverse('all-labs')
         cls.single_lab_url_name = 'single-lab' # as we need path parameters
+        cls.labs_of_a_department_url_name = 'labs-of-a-department'
         cls.lab_data = {
             'name': 'TEST LAB NAME',
             'department': cls.global_test_department.id,

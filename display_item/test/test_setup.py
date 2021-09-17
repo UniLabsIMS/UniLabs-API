@@ -9,6 +9,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.all_display_items_url=reverse('all-display-items')
         cls.single_display_item_url_name='single-display-item' # as we need path parameters
         cls.display_items_of_a_item_category_url_name = 'display-items-of-a-item-category'
+        cls.display_items_of_a_lab_url_name='display-items-of-a-lab'
         cls.display_item_data={
             'name':'DISPLAY ITEM NAME',
             'item_category':cls.global_test_item_category.id,
