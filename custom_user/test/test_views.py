@@ -49,6 +49,51 @@ class TestViews(TestSetUp):
         data['password'] ="pass"
         res = self.client.post(self.login_url,data,format="json")
         self.assertEqual(res.status_code, 401)
+    
+    # refresh auth tests
+    def test_admin_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_admin.email)
+        
+
+    def test_lab_manager_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_lab_manager.email)
+        self.assertIsNotNone(res.data['other_details']['lab']['id'])
+        
+
+    def test_lab_assistant_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_lab_assistant.email)
+        self.assertIsNotNone(res.data['other_details']['lab']['id'])
+        
+
+    def test_student_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_student.email)
+        self.assertIsNotNone(res.data['other_details']['student_id'])
+        
+    
+    def test_lecturer_can_refresh_auth_using_valid_token(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.global_test_lecturer.email)
+        self.assertIsNotNone(res.data['other_details']['lecturer_id'])
+        self.assertIsNotNone(res.data['other_details']['permitted_labs'])
+    
+    def test_can_not_refresh_auth_with_invalid_or_empty_token(self):
+        res = self.client.get(self.refresh_auth_url,format="json")
+        self.assertEqual(res.status_code, 401)
+        
 
     # Change password tests 
 

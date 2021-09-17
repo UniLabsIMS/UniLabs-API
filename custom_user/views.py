@@ -1,5 +1,5 @@
 from custom_user.models import User
-from custom_user.serializers import ChangePasswordSerializer, LoginSerializer, UpdateProfileDetailsSerializer
+from custom_user.serializers import ChangePasswordSerializer, LoginSerializer, RefreshAuthSerializer, UpdateProfileDetailsSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
@@ -57,3 +57,14 @@ class UpdateProfileDetialsAPIView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Refresh User Auth with token
+class RefreshUserAuthAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = RefreshAuthSerializer
+
+    def get(self,request):
+        serializer = self.serializer_class(data={'user':request.user})
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+

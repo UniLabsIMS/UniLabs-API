@@ -45,6 +45,32 @@ class LoginSerializer(serializers.ModelSerializer):
 
         return user
 
+# Refresh Auth Serializer 
+class RefreshAuthSerializer(serializers.ModelSerializer):
+    other_details = serializers.SerializerMethodField()
+    user = None
+
+    def __init__(self, *args, **kwargs):
+        super(RefreshAuthSerializer, self).__init__(*args, **kwargs)
+        try:
+            self.user = kwargs['data']['user']
+        except:
+            pass
+
+    # querying other role specific details
+    def get_other_details(self, obj):
+        return Util.get_role_specific_details(self.user)
+    class Meta:
+        model = User
+        fields = ('email','role','first_name','last_name','contact_number','image','is_default_password','other_details',)
+        read_only_fields = ('email', 'role','first_name','last_name','contact_number','image','is_default_password','other_details',)
+    
+    # Runs when .is_valid() is called and if possible authenticate the user
+    def validate(self, attrs):
+        if not self.user:
+            raise AuthenticationFailed('Token Invalid')
+        return self.user
+
 # Serializer to change user password
 class ChangePasswordSerializer(serializers.Serializer):
     
@@ -61,8 +87,8 @@ class UpdateProfileDetailsSerializer(serializers.ModelSerializer):
         model = User
         fields=("first_name","last_name","contact_number","image")
 
-    def validate(self,data): #to makie sure contact number is only digits
-        contact_number = data.get('contact_number',"")
+    def validate(self,attrs): #to makie sure contact number is only digits
+        contact_number = attrs.get('contact_number',"")
         if contact_number !="" and (contact_number.isdigit()==False):
             raise ValidationError("Mobile Number Not Valid")  
-        return data
+        return attrs
