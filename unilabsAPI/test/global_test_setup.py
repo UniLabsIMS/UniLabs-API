@@ -1,3 +1,4 @@
+from lecturer_user.models import Lecturer
 from display_item.models import DisplayItem
 from item_category.models import ItemCategory
 from lab_manager_user.models import LabManager
@@ -117,6 +118,14 @@ class GlobalTestSetUp(APITestCase):
             email = cls.fake.email(),
             student_id = "123321X",
             department = cls.global_test_department
+        )
+
+        # Lecturer for tests
+        cls.global_test_lecturer = Lecturer.objects.create_lecturer(
+            email = cls.fake.email(),
+            lecturer_id = "1433T1X",
+            department = cls.global_test_department,
+            permitted_labs = [cls.global_test_lab.id,]
         )
 
 

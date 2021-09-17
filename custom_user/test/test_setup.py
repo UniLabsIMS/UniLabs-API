@@ -28,6 +28,10 @@ class TestSetUp(GlobalTestSetUp):
             'email':cls.global_test_student.email,
             'password':DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD, # default password used while regestering new student user in debug mode
         }
+        cls.lecturer_login_data={
+            'email':cls.global_test_lecturer.email,
+            'password':DefaultPasswords.DEFAULT_DEBUG_LECTURER_PASSWORD, # default password used while regestering new lecturer
+        }
         cls.admin_change_password_data={
             'current_password':DefaultPasswords.DEFAULT_DEBUG_ADMIN_PASSWORD,
             'new_password': cls.new_password,

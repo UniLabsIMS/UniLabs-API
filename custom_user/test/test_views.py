@@ -29,6 +29,14 @@ class TestViews(TestSetUp):
         self.assertEqual(res.data['email'],self.student_login_data['email'])
         self.assertIsNotNone(res.data['other_details']['student_id'])
         self.assertIsNotNone(res.data['token'])
+    
+    def test_lecturer_can_login_with_email_and_password(self):
+        res = self.client.post(self.login_url,self.lecturer_login_data,format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data['email'],self.lecturer_login_data['email'])
+        self.assertIsNotNone(res.data['other_details']['lecturer_id'])
+        self.assertIsNotNone(res.data['other_details']['permitted_labs'])
+        self.assertIsNotNone(res.data['token'])
 
     def test_cannot_login_using_invalid_email(self):
         data = self.admin_login_data.copy()
