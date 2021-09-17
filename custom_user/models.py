@@ -47,3 +47,6 @@ class User(AbstractBaseUser,PermissionsMixin):
     def token(self):
         token = AuthToken.objects.create(self)[1]
         return str(token)
+    
+    class Meta:
+        db_table = 'custom_user'

@@ -33,3 +33,6 @@ class LabManager(User):
 
     def __str__(self):
         return str(self.email)
+    
+    class Meta:
+        db_table = 'lab_manager_user'

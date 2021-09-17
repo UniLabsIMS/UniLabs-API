@@ -35,3 +35,6 @@ class LabAssistant(User):
 
     def __str__(self):
         return str(self.email)
+
+    class Meta:
+        db_table = 'lab_assistant_user'

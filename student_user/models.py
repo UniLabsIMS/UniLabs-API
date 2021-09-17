@@ -31,3 +31,6 @@ class Student(User):
 
     def __str__(self):
         return str(self.email)
+    
+    class Meta:
+        db_table = 'student_user'

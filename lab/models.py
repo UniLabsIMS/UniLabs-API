@@ -16,3 +16,6 @@ class Lab(models.Model):
     
     def __str__(self):
         return 'name'
+    
+    class Meta:
+        db_table = 'lab'

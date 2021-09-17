@@ -32,4 +32,7 @@ class Item(models.Model):
 
     def __str__(self):
         return 'id'   
+    
+    class Meta:
+        db_table = 'item'
 

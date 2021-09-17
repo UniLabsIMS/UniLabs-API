@@ -10,3 +10,6 @@ class Department(models.Model):
     
     def __str__(self):
         return 'name'
+
+    class Meta:
+        db_table = 'department'
