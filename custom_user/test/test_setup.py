@@ -13,6 +13,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.change_password_url = reverse('change-password')
         cls.update_profile_url = reverse('update-profile')
         cls.refresh_auth_url = reverse('refresh-auth')
+        cls.user_block_url_name = 'user-block'
         cls.new_password="#newPassword"
         cls.admin_login_data={
             'email':cls.global_test_admin.email,

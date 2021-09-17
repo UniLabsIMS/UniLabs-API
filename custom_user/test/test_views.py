@@ -1,3 +1,4 @@
+from django.urls.base import reverse
 from .test_setup import TestSetUp
 
 class TestViews(TestSetUp):
@@ -176,3 +177,33 @@ class TestViews(TestSetUp):
         contact_number = "0753456253425346"
         res = self.client.patch(self.update_profile_url,{"contact_number": contact_number},format="json")
         self.assertEqual(res.status_code, 400)
+
+    # Tests to block, unblock user
+    def test_admin_can_block_unblock_other_users(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data["blocked"],True)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "false"},format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data["blocked"],False)
+
+    def test_unauthenticated_users_can_not_block_users(self):
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,401)
+
+    def test_authenticated_adminns_can_not_block_other_admins(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_admin_two.id}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,400)
+
+    def test_can_not_block_user_with_invalid_id(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':"456543"}),{"blocked": "true"},format="json")
+        self.assertEqual(res.status_code,404)
+    
+    def test_to_block_value_must_be_a_boolen(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.put(reverse(self.user_block_url_name,kwargs={'id':self.global_test_student.id}),{"blocked": "rtye"},format="json")
+        self.assertEqual(res.status_code,400)
+    

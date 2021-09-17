@@ -125,7 +125,7 @@ REST_FRAMEWORK = {
 
 # Rest Knox framework settings
 REST_KNOX = {
-  'TOKEN_TTL': timedelta(days=10),
+  'TOKEN_TTL': timedelta(days=3),
   'AUTO_REFRESH': True, # This defines if the token expiry time is extended by TOKEN_TTL each time the token is used.
 }
 

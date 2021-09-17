@@ -17,9 +17,13 @@ class GlobalTestSetUp(APITestCase):
     def setUpTestData(cls):
         cls.fake = Faker()
 
-        # Admin for tests
+        # Admins for tests
         cls.global_test_admin = Admin.objects.create_admin(
             email='test_admin1@gmail.com'
+        )
+
+        cls.global_test_admin_two = Admin.objects.create_admin(
+            email='test_admin2@gmail.com'
         )
 
 

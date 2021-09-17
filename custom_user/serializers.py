@@ -1,7 +1,7 @@
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from custom_user.utils.utils import Util
-from rest_framework import serializers
-from .models import User
+from rest_framework import fields, serializers
+from .models import Role, User
 from django.contrib import auth
 
 # serializer class to handle login data
@@ -96,3 +96,15 @@ class UpdateProfileDetailsSerializer(serializers.ModelSerializer):
         if contact_number !="" and (contact_number.isdigit()==False):
             raise ValidationError("Mobile Number Not Valid")  
         return attrs
+
+# Serilizer to block request by admin user
+class UserBlockUnblockSerializer(serializers.ModelSerializer):
+    blocked = serializers.BooleanField(required=True)
+    class Meta:
+        model = User
+        fields =['blocked',]
+    
+    def validate(self,data):
+        if(self.instance.role == Role.ADMIN):
+            raise ValidationError("Admins can not block/unblock other admins")
+        return data

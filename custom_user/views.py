@@ -1,9 +1,10 @@
 from custom_user.models import User
-from custom_user.serializers import ChangePasswordSerializer, LoginSerializer, RefreshAuthSerializer, UpdateProfileDetailsSerializer
+from custom_user.serializers import ChangePasswordSerializer, LoginSerializer, RefreshAuthSerializer, UpdateProfileDetailsSerializer, UserBlockUnblockSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAdmin
 
 # API end point for user login
 class UserLoginAPIView(GenericAPIView):
@@ -68,3 +69,18 @@ class RefreshUserAuthAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
+
+# API end point to block a user
+class BlockUnblockAPIView(GenericAPIView):
+    serializer_class = UserBlockUnblockSerializer
+    permission_classes = (IsAuthenticated, IsAdmin)
+    queryset = User.objects.all()
+    lookup_field='id'
+
+    def put(self,request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(data=request.data,instance=user)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

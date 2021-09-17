@@ -52,4 +52,4 @@ class LecturerReadSerializer(serializers.ModelSerializer):
         return labs
     class Meta:
         model = Lecturer
-        fields= ["id","lecturer_id","email","first_name","last_name","contact_number","image","role","department","permitted_labs"]
+        fields= ["id","lecturer_id","email","first_name","last_name","contact_number","image","role","blocked","department","permitted_labs"]

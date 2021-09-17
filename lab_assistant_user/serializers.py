@@ -31,4 +31,4 @@ class LabAssistantReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LabAssistant
-        fields= ["id","email","first_name","last_name","contact_number","image","role","lab","department",]
+        fields= ["id","email","first_name","last_name","contact_number","image","role","blocked","lab","department",]
