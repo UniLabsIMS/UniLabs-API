@@ -1,3 +1,5 @@
+from lab.serializers import LabReadSerializer
+from department.serializers import DepartmentReadSerializer
 from rest_framework import serializers
 from .models import LabLecturer, Lecturer
 from lab.models import Lab
@@ -21,3 +23,33 @@ class LecturerRegisterSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         lecturer = Lecturer.objects.create_lecturer(**validated_data)
         return lecturer
+
+# Lecturer specific data that should be returned as login reponse
+class LecturerDetailSerializer(serializers.ModelSerializer):
+    department = DepartmentReadSerializer()
+    permitted_labs = serializers.SerializerMethodField()
+
+    def get_permitted_labs(self,obj):
+        lab_lecs = LabLecturer.objects.filter(lecturer=obj)
+        labs = []
+        for lab_lec_obj in lab_lecs:
+            labs.append(LabReadSerializer(lab_lec_obj.lab).data)
+        return labs
+    class Meta:
+        model = Lecturer
+        fields=["lecturer_id","department","permitted_labs"]
+
+# Lecturer Details for Admins
+class LecturerReadSerializer(serializers.ModelSerializer):
+    department = DepartmentReadSerializer()
+    permitted_labs = serializers.SerializerMethodField()
+
+    def get_permitted_labs(self,obj):
+        lab_lecs = LabLecturer.objects.filter(lecturer=obj)
+        labs = []
+        for lab_lec_obj in lab_lecs:
+            labs.append(LabReadSerializer(lab_lec_obj.lab).data)
+        return labs
+    class Meta:
+        model = Lecturer
+        fields= ["id","lecturer_id","email","first_name","last_name","contact_number","image","role","department","permitted_labs"]
