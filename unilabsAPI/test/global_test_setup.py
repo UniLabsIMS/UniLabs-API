@@ -10,6 +10,7 @@ from faker import Faker
 from admin_user.models import Admin
 from lab.models import Lab
 from item.models import Item
+from request.models import Request,RequestItem
 
 
 class GlobalTestSetUp(APITestCase):
@@ -144,6 +145,31 @@ class GlobalTestSetUp(APITestCase):
             lecturer_id = "1433T1X",
             department = cls.global_test_department,
             permitted_labs = [cls.global_test_lab.id,]
+        )
+
+        # requests for test
+        cls.global_test_request_one=Request.objects.create(
+            lab=cls.global_test_lab,
+            student=cls.global_test_student,
+            lecturer=cls.global_test_lecturer,
+            reason="Sample reason"
+        )
+
+        # request items for tests
+        cls.global_test_request_item_one=RequestItem.objects.create(
+            request=cls.global_test_request_one,
+            display_item=cls.global_test_display_item_one,
+            student=cls.global_test_student,
+            lab=cls.global_test_lab,
+            quentity=2
+        )
+
+        cls.global_test_request_item_two=RequestItem.objects.create(
+            request=cls.global_test_request_one,
+            display_item=cls.global_test_display_item_three,
+            student=cls.global_test_student,
+            lab=cls.global_test_lab,
+            quentity=1
         )
 
 
