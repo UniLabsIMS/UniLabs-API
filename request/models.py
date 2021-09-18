@@ -1,11 +1,13 @@
+from django.db.models.manager import BaseManager
 from display_item.models import DisplayItem
-from lecturer_user.models import Lecturer
+from lecturer_user.models import LabLecturer, Lecturer
 from student_user.models import Student
 from django.db.models.deletion import CASCADE
 from lab.models import Lab
 from django.db import models
 from uuid import uuid4
 from django.utils.http import int_to_base36
+from django.utils.translation import gettext_lazy as _
 
 #state field options for request
 class RequestState (models.TextChoices):
