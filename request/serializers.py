@@ -14,18 +14,26 @@ class RequestWriteSerializer(serializers.ModelSerializer):
     display_items_dict=serializers.DictField(child=serializers.IntegerField(),write_only=True)
     class Meta:
         model=Request
-        fields=['id','student','lecturer','reason','display_items_dict']
+        fields=('id','student','lecturer','reason','display_items_dict')
     
     def validate(self,data):
         display_items_dict=data.get('display_items_dict')
-        lab=DisplayItem.objects.get(id=list(display_items_dict.keys())[0]).lab
+        lab=DisplayItem.objects.get(id=str(list(display_items_dict.keys())[0])).lab_id
+        lab_lecturers=LabLecturer.objects.filter(lecturer_id=data.get('lecturer'))
+        for lab_lecturer in lab_lecturers:
+            count=0
+            if (lab_lecturer.lab_id==lab):
+                count+=1
+        if (count==0):
+            raise ValidationError("Lecturer should be permmited to the lab")
         for display_item_id in display_items_dict.keys():
-            if(not(DisplayItem.objects.filter(id=display_item_id).exists())):
+            if(not(DisplayItem.objects.filter(id=str(display_item_id)).exists())):
                 raise ValidationError("Invalid Display Item id")
-            elif (DisplayItem.objects.filter(id=display_item_id).exists()):
-                if (DisplayItem.objects.get(id=display_item_id).item_count<display_items_dict[display_item_id]):
+            elif (DisplayItem.objects.filter(id=str(display_item_id)).exists()):
+                if (DisplayItem.objects.get(id=str(display_item_id)).item_count<display_items_dict[str(display_item_id)]):
+                    # import pdb; pdb.set_trace()
                     raise ValidationError("Enough items are not available")
-                if (lab!=DisplayItem.objects.get(id=display_item_id).lab):
+                if (lab!=DisplayItem.objects.get(id=str(display_item_id)).lab_id):
                     raise ValidationError("Per request one lab items can be get")
 
         return data
@@ -34,15 +42,15 @@ class RequestWriteSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self,validated_data):
         display_items_dict=validated_data.pop('display_items_dict')
-        lab=DisplayItem.objects.get(id=list(display_items_dict.keys())[0]).lab
+        lab=DisplayItem.objects.get(id=str(list(display_items_dict.keys())[0])).lab
         request=Request.objects.create(lab=lab,**validated_data)
         student=validated_data.get('student')
         
 
         for display_item_id in display_items_dict.keys():
-            display_item=DisplayItem.objects.get(id=display_item_id)
-            item_count=display_items_dict[display_item_id]
-            RequestItem.objects.create(request=request,student=student,lab=lab,display_item=display_item,quentity=item_count)
+            display_item=DisplayItem.objects.get(id=str(display_item_id))
+            item_count=display_items_dict[str(display_item_id)]
+            RequestItem.objects.create(request=request,display_item=display_item,student=student,lab=lab,quentity=item_count)
 
         return request
 

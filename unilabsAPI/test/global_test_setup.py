@@ -81,7 +81,7 @@ class GlobalTestSetUp(APITestCase):
             name='Test Display Item 1',
             item_category=cls.global_test_item_category,
             lab=cls.global_test_lab,
-            item_count=0,
+            item_count=10, #When request created default value of item count should be >0 so manually setup
         )
 
         cls.global_test_display_item_two=DisplayItem.objects.create(
@@ -161,7 +161,7 @@ class GlobalTestSetUp(APITestCase):
             display_item=cls.global_test_display_item_one,
             student=cls.global_test_student,
             lab=cls.global_test_lab,
-            quentity=2
+            quentity=1
         )
 
         cls.global_test_request_item_two=RequestItem.objects.create(
