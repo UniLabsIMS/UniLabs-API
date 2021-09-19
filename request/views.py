@@ -15,4 +15,8 @@ class RequestCreateAPIView(CreateAPIView):
 class RequestListApiView(ListAPIView):
     serializer_class=RequestInDepthSerializer
     queryset=Request.objects.all()
-    permission_classes=(permissions.IsAuthenticated,IsLecturer)
+    permission_classes=(permissions.IsAuthenticated,)
+
+# add seperate end points to get requests filter by student, lecturer, lab
+
+# add a single endpoin to change request state to approve, decline for lecturers

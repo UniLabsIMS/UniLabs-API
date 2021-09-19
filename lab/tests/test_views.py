@@ -85,7 +85,7 @@ class TestViews(TestSetUp):
             self.labs_of_a_department_url_name,kwargs={'department_id':self.global_test_department.id}
         ),format='json')
         self.assertEqual(res.status_code,200)
-        self.assertGreaterEqual(len(res.data),2)
+        self.assertGreaterEqual(len(res.data),1)
     
     def test_unauthenticated_user_cannot_get_labs_of_a_department(self):
         res=self.client.get(reverse(

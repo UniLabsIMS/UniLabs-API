@@ -34,6 +34,11 @@ class GlobalTestSetUp(APITestCase):
             code='TestDepCode1',
         )
 
+        cls.global_test_department_two = Department.objects.create(
+            name='Test Department 2',
+            code='TestDepCode2',
+        )
+
         # Labs for tests
         cls.global_test_lab = Lab.objects.create(
             name='Test Lab 1',
@@ -42,7 +47,7 @@ class GlobalTestSetUp(APITestCase):
 
         cls.global_test_lab_two = Lab.objects.create(
             name='Test Lab 2',
-            department=cls.global_test_department
+            department=cls.global_test_department_two
         )
 
         # Lab Managers for tests
@@ -52,6 +57,12 @@ class GlobalTestSetUp(APITestCase):
             department = cls.global_test_department
         )
 
+        cls.global_test_lab_manager_two = LabManager.objects.create_lab_manager(
+            email = cls.fake.email(),
+            lab = cls.global_test_lab_two,
+            department = cls.global_test_department_two
+        )
+
         # Lab Assistant for tests
         cls.global_test_lab_assistant = LabAssistant.objects.create_lab_assistant(
             email = cls.fake.email(),
@@ -59,8 +70,15 @@ class GlobalTestSetUp(APITestCase):
             department = cls.global_test_department
         )
 
+        cls.global_test_lab_assistant_two = LabAssistant.objects.create_lab_assistant(
+            email = cls.fake.email(),
+            lab = cls.global_test_lab_two,
+            department = cls.global_test_department_two
+        )
+
 
         # Item Categories for tests
+        #---------------------------- Item Categories of lab one --------------------------------------
         cls.global_test_item_category=ItemCategory.objects.create(
             name='Test Item Category 1',
             lab=cls.global_test_lab
@@ -68,7 +86,7 @@ class GlobalTestSetUp(APITestCase):
 
         cls.global_test_item_category_two=ItemCategory.objects.create(
             name='Test Item Category 2',
-            lab=cls.global_test_lab_two
+            lab=cls.global_test_lab
         )
 
         cls.global_test_item_category_three=ItemCategory.objects.create(
@@ -76,30 +94,58 @@ class GlobalTestSetUp(APITestCase):
             lab=cls.global_test_lab
         )
 
+        #---------------------------- Item Categories of lab two --------------------------------------
+        cls.global_test_item_category_four=ItemCategory.objects.create(
+            name='Test Item Category 4',
+            lab=cls.global_test_lab_two
+        )
+
         # Display Items for tests
+        # --------------------- display items of lab one --------------------------------------
         cls.global_test_display_item_one=DisplayItem.objects.create(
             name='Test Display Item 1',
             item_category=cls.global_test_item_category,
             lab=cls.global_test_lab,
-            item_count=10, #When request created default value of item count should be >0 so manually setup
+            item_count=1, # When request created default value of item count should be >0 so manually setup
         )
 
         cls.global_test_display_item_two=DisplayItem.objects.create(
             name='Test Display Item 2',
-            item_category=cls.global_test_item_category_two,
-            lab=cls.global_test_lab_two,
-            item_count=0,
+            item_category=cls.global_test_item_category,
+            lab=cls.global_test_lab,
+            item_count=1,
         )
 
         cls.global_test_display_item_three=DisplayItem.objects.create(
             name='Test Display Item 3',
             item_category=cls.global_test_item_category_three,
             lab=cls.global_test_lab,
-            item_count=0,
+            item_count=1,
+        )
+        #--------------------display items of lab 2 ---------------------------
+        cls.global_test_display_item_four=DisplayItem.objects.create(
+            name='Test Display Item 4',
+            item_category=cls.global_test_item_category_four,
+            lab=cls.global_test_lab_two,
+            item_count=1, 
+        )
+
+        cls.global_test_display_item_five=DisplayItem.objects.create(
+            name='Test Display Item 5',
+            item_category=cls.global_test_item_category_four,
+            lab=cls.global_test_lab_two,
+            item_count=1,
+        )
+
+        cls.global_test_display_item_six=DisplayItem.objects.create(
+            name='Test Display Item 6',
+            item_category=cls.global_test_item_category_four,
+            lab=cls.global_test_lab_two,
+            item_count=1,
         )
 
         #Items for test
-
+        # ----------------------------items in lab 1 ----------------------------------------
         cls.global_test_item_one=Item.objects.create(
             display_item=cls.global_test_display_item_one,
             item_category=cls.global_test_item_category,
@@ -116,6 +162,25 @@ class GlobalTestSetUp(APITestCase):
             display_item=cls.global_test_display_item_three,
             item_category=cls.global_test_item_category_three,
             lab=cls.global_test_lab
+        )
+
+        #------------------------------------------- items in lab 2 -------------------------------------------------
+        cls.global_test_item_one=Item.objects.create(
+            display_item=cls.global_test_display_item_four,
+            item_category=cls.global_test_item_category_four,
+            lab=cls.global_test_lab_two
+        )
+
+        cls.global_test_item_two=Item.objects.create(
+            display_item=cls.global_test_display_item_five,
+            item_category=cls.global_test_item_category_four,
+            lab=cls.global_test_lab_two
+        )
+
+        cls.global_test_item_three=Item.objects.create(
+            display_item=cls.global_test_display_item_six,
+            item_category=cls.global_test_item_category_four,
+            lab=cls.global_test_lab_two
         )
 
          # Student for tests
@@ -144,7 +209,14 @@ class GlobalTestSetUp(APITestCase):
             email = cls.fake.email(),
             lecturer_id = "1433T1X",
             department = cls.global_test_department,
-            permitted_labs = [cls.global_test_lab.id,]
+            permitted_labs = [cls.global_test_lab.id,cls.global_test_lab_two.id]
+        )
+
+        cls.global_test_lecturer_two = Lecturer.objects.create_lecturer(
+            email = cls.fake.email(),
+            lecturer_id = "14TST1X",
+            department = cls.global_test_department,
+            permitted_labs = [cls.global_test_lab.id]
         )
 
         # requests for test
@@ -161,7 +233,7 @@ class GlobalTestSetUp(APITestCase):
             display_item=cls.global_test_display_item_one,
             student=cls.global_test_student,
             lab=cls.global_test_lab,
-            quentity=1
+            quantity=1
         )
 
         cls.global_test_request_item_two=RequestItem.objects.create(
@@ -169,7 +241,7 @@ class GlobalTestSetUp(APITestCase):
             display_item=cls.global_test_display_item_three,
             student=cls.global_test_student,
             lab=cls.global_test_lab,
-            quentity=1
+            quantity=1
         )
 
 

@@ -9,10 +9,13 @@ class TestSetup(GlobalTestSetUp):
         cls.new_request_url=reverse('new-request')
         cls.all_requests_url=reverse('all-requests')
         cls.request_api_view_data = {
-            "student": cls.global_test_request_one.student.id,
-            "lecturer": cls.global_test_request_one.lecturer.id,
+            "student": cls.global_test_student.id,
+            "lecturer": cls.global_test_lecturer.id,
+            "lab": cls.global_test_lab_two.id,
             "reason": "Sample reason 234",
-            "display_items_dict": {str(cls.global_test_request_item_one.display_item.id): int(cls.global_test_request_item_one.quentity)}
+            "display_items_dict": {str(cls.global_test_display_item_four.id): int(cls.global_test_display_item_four.item_count),
+            str(cls.global_test_display_item_five.id): int(cls.global_test_display_item_five.item_count)
+            }
         }
         return
 

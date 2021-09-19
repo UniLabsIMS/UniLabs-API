@@ -30,8 +30,8 @@ class LoginSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = User
-        fields = ('token','email','password','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
-        read_only_fields = ('token','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        fields = ('id','token','email','password','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        read_only_fields = ('id','token','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
        
 
     # Runs when .is_valid() is called and if possible authenticate the user
@@ -64,8 +64,8 @@ class RefreshAuthSerializer(serializers.ModelSerializer):
         return Util.get_role_specific_details(self.user)
     class Meta:
         model = User
-        fields = ('email','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
-        read_only_fields = ('email', 'role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        fields = ('id','email','role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
+        read_only_fields = ('id','email', 'role','first_name','last_name','contact_number','image','is_default_password','blocked','other_details',)
     
     # Runs when .is_valid() is called and if possible authenticate the user
     def validate(self, attrs):

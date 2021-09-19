@@ -1,12 +1,10 @@
-from django.db.models.manager import BaseManager
 from display_item.models import DisplayItem
-from lecturer_user.models import LabLecturer, Lecturer
+from lecturer_user.models import Lecturer
 from student_user.models import Student
 from django.db.models.deletion import CASCADE
 from lab.models import Lab
 from django.db import models
 from uuid import uuid4
-from django.utils.http import int_to_base36
 from django.utils.translation import gettext_lazy as _
 
 #state field options for request
@@ -45,7 +43,7 @@ class RequestItem(models.Model):
     display_item=models.ForeignKey(DisplayItem,on_delete=CASCADE)
     student=models.ForeignKey(Student,on_delete=CASCADE)
     lab=models.ForeignKey(Lab,on_delete=CASCADE)
-    quentity=models.IntegerField()
+    quantity=models.IntegerField()
     state=models.CharField(max_length=31,choices=RequestItemState.choices,default='PENDING')
 
     def __str__(self):
@@ -53,5 +51,6 @@ class RequestItem(models.Model):
     
     class Meta:
         db_table='request_item'
+        unique_together = (('request', 'display_item'),)
 
 

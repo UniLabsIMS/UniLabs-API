@@ -1,20 +1,14 @@
-from display_item.models import DisplayItem
-from django.db import models
 from .test_setup import TestSetup
-from display_item.models import DisplayItem
-from request.models import RequestItem,Request
-from django.urls.base import reverse
 
 class TestViews(TestSetup):
     #POST- New request
 
     def test_authenticated_student_can_create_new_request(self):
         self.client.force_authenticate(user=self.global_test_student)
-        # import pdb; pdb.set_trace()
         res=self.client.post(self.new_request_url,self.request_api_view_data,format="json")
         self.assertEqual(res.status_code,201)
     
-    def test_authenticated_other_user_cannot_create_new_request(self):
+    def test_authenticated_other_users_cannot_create_new_request(self):
         self.client.force_authenticate(user=self.global_test_admin)
         res=self.client.post(self.new_request_url,self.request_api_view_data,format="json")
         self.assertEqual(res.status_code,403)
@@ -22,6 +16,12 @@ class TestViews(TestSetup):
     def test_unauthenticated_user_cannot_create_new_request(self):
         res=self.client.post(self.new_request_url,self.request_api_view_data,format="json")
         self.assertEqual(res.status_code,401)
+
+    def test_authenticated_student_can_not_have_more_than_one_new_request_for_same_lab(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        self.client.post(self.new_request_url,self.request_api_view_data,format="json")
+        res = self.client.post(self.new_request_url,self.request_api_view_data,format="json")
+        self.assertEqual(res.status_code,400)
 
     def test_cannot_add_request_with_empty_student_id(self):
         self.client.force_authenticate(user=self.global_test_student)
@@ -51,6 +51,13 @@ class TestViews(TestSetup):
         res=self.client.post(self.new_request_url,data,format="json")
         self.assertEqual(res.status_code,400)
     
+    def test_cannot_add_request_with_non_permitted_lecture_id(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        data=self.request_api_view_data.copy()
+        data["lecturer"] = self.global_test_lecturer_two.id
+        res=self.client.post(self.new_request_url,data,format="json")
+        self.assertEqual(res.status_code,400)
+    
     def test_cannot_add_request_with_empty_reason(self):
         self.client.force_authenticate(user=self.global_test_student)
         data=self.request_api_view_data.copy()
@@ -65,10 +72,31 @@ class TestViews(TestSetup):
         res=self.client.post(self.new_request_url,data,format="json")
         self.assertEqual(res.status_code,400)
     
+    def test_cannot_add_request_with_display_item_ids_of_other_labs(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        data=self.request_api_view_data.copy()
+        data["display_items_dict"]={str(self.global_test_display_item_one):1,str(self.global_test_display_item_two):1}
+        res=self.client.post(self.new_request_url,data,format="json")
+        self.assertEqual(res.status_code,400)
+    
+    def test_cannot_add_request_with_zero_or_negative_items(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        data=self.request_api_view_data.copy()
+        data["display_items_dict"][str(self.global_test_display_item_five.id)] = 0
+        res=self.client.post(self.new_request_url,data,format="json")
+        self.assertEqual(res.status_code,400)
+    
     def test_cannot_add_request_with_excess_items(self):
         self.client.force_authenticate(user=self.global_test_student)
         data=self.request_api_view_data.copy()
-        data["display_items_dict"]={str(self.global_test_request_item_one.display_item.id):self.global_test_request_item_one.display_item.item_count+1}
+        data["display_items_dict"][str(self.global_test_display_item_five.id)]+=10
+        res=self.client.post(self.new_request_url,data,format="json")
+        self.assertEqual(res.status_code,400)
+    
+    def test_cannot_add_request_with_non_int_value_for_item_count(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        data=self.request_api_view_data.copy()
+        data["display_items_dict"][str(self.global_test_display_item_five.id)] = "rf"
         res=self.client.post(self.new_request_url,data,format="json")
         self.assertEqual(res.status_code,400)
     
@@ -78,14 +106,9 @@ class TestViews(TestSetup):
         res = self.client.get(self.all_requests_url,data_format="json")
         self.assertEqual(res.status_code,200)
         self.assertGreaterEqual(len(res.data),1)
+        self.assertGreaterEqual(len(res.data[0]["requested_display_items"]),1)
     
-    def test_authenticated_other_user_cannot_get_a_list_of_requests(self):
-        self.client.force_authenticate(user=self.global_test_student)
-        res = self.client.get(self.all_requests_url,data_format="json")
-        self.assertEqual(res.status_code,403)
-        self.assertGreaterEqual(len(res.data),1)
-    
-    def test_authenticated_other_user_cannot_get_a_list_of_requests(self):
+    def test_unauthenticated_users_cannot_get_a_list_of_requests(self):
         res = self.client.get(self.all_requests_url,data_format="json")
         self.assertEqual(res.status_code,401)
     
