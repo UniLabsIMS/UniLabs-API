@@ -17,6 +17,13 @@ class RequestListApiView(ListAPIView):
     queryset=Request.objects.all()
     permission_classes=(permissions.IsAuthenticated,)
 
-# add seperate end points to get requests filter by student, lecturer, lab
+    # def get_queryset(self,request):
+    #     try:
+    #         s = Student.objects.get(id=request.user.id)
+    #         return self.queryset.filter(student = s) 
+    #     except:
+    #         raise ValidationError("Invalid ID")
 
-# add a single endpoin to change request state to approve, decline for lecturers
+# add seperate end points to get requests filter by  lecturer,student, lab
+
+# add a single endpoints to change request state to approve, decline for lecturers

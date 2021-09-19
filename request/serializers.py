@@ -35,7 +35,7 @@ class RequestWriteSerializer(serializers.ModelSerializer):
                     raise ValidationError("Enough items are not available")
 
                 if(display_items_dict[str(display_item_id)]<=0): # check whether request count is 0 or less
-                    raise ValidationError("Requested qunatity for each display item must be greater than zero")
+                    raise ValidationError("Requested quantity for each display item must be greater than zero")
 
         return data
 
