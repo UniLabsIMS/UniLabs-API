@@ -57,7 +57,7 @@ class RequestsListByLabAPIView(ListAPIView):
             raise ValidationError('Provided lab id not valid')
 
 
-# add a single endpoints to change request state to approve, decline for lecturers
+#single endpoints to change request state to approve, decline for lecturers
 
 class RequestUpdateSerializer(GenericAPIView):
     serializer_class = UpdateRequestStateSerializer
@@ -67,25 +67,9 @@ class RequestUpdateSerializer(GenericAPIView):
 
     def put(self,request, *args, **kwargs):
         req = self.get_object()
-        # import pdb;pdb.set_trace()
         serializer = self.get_serializer(data=request.data,instance=req)
         if serializer.is_valid():
             serializer.save(request.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-    # valdiate method what you have check
-    # 1. the data.get('state')==RequestState.APPROVED || data.get('state')==RequestState.DICLINED
-    # 2. check whther the request instane passed has state new
-
-    # def save(self,request):
-    #     request = self.instance
-    #     request.state=data.get('state')
-    #     request.save()
-    #     request_items = ReItn.objectrs.filter(request=request)
-    #     for req_item in request items:
-    #         req_item.state = data.get('state') 
-    #         req.save()
-    #     return

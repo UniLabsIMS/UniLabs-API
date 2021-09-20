@@ -81,6 +81,7 @@ class RequestInDepthSerializer(serializers.ModelSerializer):
         model=Request
         fields='__all__'
 
+#approve or decline request functionalities serializer
 class UpdateRequestStateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Request
