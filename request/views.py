@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView,GenericAPIView
 from rest_framework import permissions, serializers,generics,status
-from .serializers import RequestInDepthSerializer, RequestItemReadSerializer, RequestWriteSerializer
+from .serializers import RequestInDepthSerializer, RequestItemReadSerializer, RequestWriteSerializer,UpdateRequestStateSerializer
 from .models import Request,RequestItem, RequestState
 from custom_user.permissions import IsStudent,IsLecturer
 from student_user.models import Student
@@ -59,14 +59,21 @@ class RequestsListByLabAPIView(ListAPIView):
 
 # add a single endpoints to change request state to approve, decline for lecturers
 
+class RequestUpdateSerializer(GenericAPIView):
+    serializer_class = UpdateRequestStateSerializer
+    permission_classes = (permissions.IsAuthenticated, IsLecturer)
+    queryset = Request.objects.all()
+    lookup_field='id'
 
-#  def put(self,request, *args, **kwargs):
-#         req = self.get_object()
-#         serializer = self.get_serializer(data=request.data,instance=req)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self,request, *args, **kwargs):
+        req = self.get_object()
+        # import pdb;pdb.set_trace()
+        serializer = self.get_serializer(data=request.data,instance=req)
+        if serializer.is_valid():
+            serializer.save(request.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     # valdiate method what you have check

@@ -44,7 +44,7 @@ class RequestItem(models.Model):
     student=models.ForeignKey(Student,on_delete=CASCADE)
     lab=models.ForeignKey(Lab,on_delete=CASCADE)
     quantity=models.IntegerField()
-    state=models.CharField(max_length=31,choices=RequestItemState.choices,default='PENDING')
+    state=models.CharField(max_length=31,choices=RequestItemState.choices,default='Pending')
 
     def __str__(self):
         return 'id'

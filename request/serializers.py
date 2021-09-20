@@ -1,3 +1,4 @@
+import pdb
 from display_item.serializers import DisplayItemReadSerializer
 from lab.serializers import LabReadSerializer
 from lecturer_user.serializers import LecturerReadSerializer
@@ -9,6 +10,7 @@ from rest_framework import serializers
 from lecturer_user.models import LabLecturer,Lecturer
 from django.db import transaction
 from student_user.serializers import StudentReadSerializer
+from django.db import transaction
 
 class RequestWriteSerializer(serializers.ModelSerializer):
     display_items_dict=serializers.DictField(child=serializers.IntegerField(),write_only=True)
@@ -78,6 +80,30 @@ class RequestInDepthSerializer(serializers.ModelSerializer):
     class Meta:
         model=Request
         fields='__all__'
+
+class UpdateRequestStateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields=("state",)
+
+    def validate(self,data): #to makie sure contact number is only digits
+        if not(((data.get('state'))==RequestState.APPROVED) or ((data.get('state'))==RequestState.DECLINED)):
+            raise ValidationError("Only Approved and Declined State changes can be done")
+        
+        if self.instance.state!=RequestState.NEW:
+            raise ValidationError("Initial Request state should ne New")
+        return data
+    
+    @transaction.atomic
+    def save(self,data):
+        request = self.instance
+        request.state=data.get('state')
+        request.save()
+        request_items = RequestItem.objects.filter(request=request)
+        for req_item in request_items:
+            req_item.state = data.get('state') 
+            req_item.save()
+        return
 
 
 
