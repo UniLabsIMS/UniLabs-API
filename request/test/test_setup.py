@@ -7,7 +7,9 @@ class TestSetup(GlobalTestSetUp):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.new_request_url=reverse('new-request')
-        cls.all_requests_url=reverse('all-requests')
+        cls.student_requests_url=reverse('student-requests')
+        cls.lecturer_requests_url=reverse('lecturer-requests')
+        cls.requests_of_a_lab_url_name='requests-of-a-lab'
         cls.request_api_view_data = {
             "student": cls.global_test_student.id,
             "lecturer": cls.global_test_lecturer.id,

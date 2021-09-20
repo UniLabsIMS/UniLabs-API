@@ -100,16 +100,22 @@ class TestViews(TestSetup):
         res=self.client.post(self.new_request_url,data,format="json")
         self.assertEqual(res.status_code,400)
     
-    #GET - all requests
-    def test_authenticated_user_can_get_a_list_of_requests(self):
-        self.client.force_authenticate(user=self.global_test_lecturer)
-        res = self.client.get(self.all_requests_url,data_format="json")
+    #GET - all requests by student
+
+    def test_authenticated_student_can_view_their_requests(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res=self.client.get(self.student_requests_url,format='json')
         self.assertEqual(res.status_code,200)
         self.assertGreaterEqual(len(res.data),1)
-        self.assertGreaterEqual(len(res.data[0]["requested_display_items"]),1)
     
-    def test_unauthenticated_users_cannot_get_a_list_of_requests(self):
-        res = self.client.get(self.all_requests_url,data_format="json")
+    def test_unauthenticated_user_cannot_view_student_requests(self):
+        res=self.client.get(self.student_requests_url,format='json')
         self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_other_user_cannot_view_student_requests(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res=self.client.get(self.student_requests_url,format='json')
+        self.assertEqual(res.status_code,403)
+        self.assertGreaterEqual(len(res.data),1)
     
 
