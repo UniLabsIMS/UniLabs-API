@@ -1,7 +1,7 @@
 from lab.models import Lab
 from lecturer_user.models import LabLecturer, Lecturer
 from custom_user.models import User
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView,GenericAPIView
 from rest_framework import permissions, serializers,generics,status
@@ -17,21 +17,6 @@ class RequestCreateAPIView(CreateAPIView):
     serializer_class=RequestWriteSerializer
     queryset=Request.objects.all()
     permission_classes=(permissions.IsAuthenticated,IsStudent)
-
-#view all request date
-# class RequestListApiView(ListAPIView):
-#     serializer_class=RequestInDepthSerializer
-#     queryset=Request.objects.all()
-#     permission_classes=(permissions.IsAuthenticated,)
-
-    # def get_queryset(self,request):
-    #     try:
-    #         s = Student.objects.get(id=request.user.id)
-    #         return self.queryset.filter(student = s) 
-    #     except:
-    #         raise ValidationError("Invalid ID")
-
-# add seperate end points to get requests filter by  lecturer,student, lab
 
 #Filter requests by student
 class RequestListByStudentView(ListAPIView):

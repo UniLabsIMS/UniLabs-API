@@ -1,4 +1,6 @@
 from .test_setup import TestSetup
+from django.urls.base import reverse
+from request.models import Request
 
 class TestViews(TestSetup):
     #POST- New request
@@ -116,6 +118,59 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lecturer)
         res=self.client.get(self.student_requests_url,format='json')
         self.assertEqual(res.status_code,403)
+    
+    #GET - all requests by lecturer
+
+    def test_authenticated_lecturer_can_view_their_requests(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res=self.client.get(self.lecturer_requests_url,format='json')
+        self.assertEqual(res.status_code,200)
         self.assertGreaterEqual(len(res.data),1)
+    
+    def test_unauthenticated_user_cannot_view_lecturer_requests(self):
+        res=self.client.get(self.lecturer_requests_url,format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_other_user_cannot_view_lecturer_requests(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res=self.client.get(self.lecturer_requests_url,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    #GET - all requests by lab
+
+    def test_authenticated_user_can_get_requests_filter_by_lab(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res=self.client.get(reverse(
+            self.requests_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+    
+    def test_authenticated_other_user_cannot_get_requests_filter_by_lab(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.requests_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_get_requests_filter_by_lab(self):
+        res=self.client.get(reverse(
+            self.requests_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_cannot_get_requests_filter_by_invalid_lab_id(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res=self.client.get(reverse(
+            self.requests_of_a_lab_url_name,kwargs={'lab_id':"Invalid id"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
+    
+
+
+
+    
+    
+
     
 
