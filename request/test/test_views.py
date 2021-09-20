@@ -104,7 +104,7 @@ class TestViews(TestSetup):
     
     #GET - all requests by student
 
-    def test_authenticated_student_can_view_their_requests(self):
+    def test_authenticated_student_can_view_their_new_requests(self):
         self.client.force_authenticate(user=self.global_test_student)
         res=self.client.get(self.student_requests_url,format='json')
         self.assertEqual(res.status_code,200)
@@ -121,7 +121,7 @@ class TestViews(TestSetup):
     
     #GET - all requests by lecturer
 
-    def test_authenticated_lecturer_can_view_their_requests(self):
+    def test_authenticated_lecturer_can_view_their_new_requests(self):
         self.client.force_authenticate(user=self.global_test_lecturer)
         res=self.client.get(self.lecturer_requests_url,format='json')
         self.assertEqual(res.status_code,200)
@@ -145,13 +145,6 @@ class TestViews(TestSetup):
         ),format='json')
         self.assertEqual(res.status_code,200)
         self.assertGreaterEqual(len(res.data),1)
-    
-    def test_authenticated_other_user_cannot_get_requests_filter_by_lab(self):
-        self.client.force_authenticate(user=self.global_test_admin)
-        res=self.client.get(reverse(
-            self.requests_of_a_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
-        ),format='json')
-        self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_get_requests_filter_by_lab(self):
         res=self.client.get(reverse(

@@ -6,7 +6,7 @@ from django.shortcuts import render
 from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView,GenericAPIView
 from rest_framework import permissions, serializers,generics,status
 from .serializers import RequestInDepthSerializer, RequestItemReadSerializer, RequestWriteSerializer
-from .models import Request,RequestItem
+from .models import Request,RequestItem, RequestState
 from custom_user.permissions import IsStudent,IsLecturer
 from student_user.models import Student
 from rest_framework.response import Response
@@ -27,7 +27,7 @@ class RequestListByStudentView(ListAPIView):
     def get_queryset(self):
         try:
             student=Student.objects.get(id=self.request.user.id)
-            return self.queryset.filter(student=student)
+            return self.queryset.filter(student=student,state=RequestState.NEW)
         except:
             raise ValidationError("Invalid ID")
 
@@ -40,7 +40,7 @@ class RequestListByLecturerView(ListAPIView):
     def get_queryset(self):
         try:
             lecturer=Lecturer.objects.get(id=self.request.user.id)
-            return self.queryset.filter(lecturer=lecturer)
+            return self.queryset.filter(lecturer=lecturer,state=RequestState.NEW)
         except:
             raise ValidationError("Invalid ID")
 
@@ -48,7 +48,7 @@ class RequestListByLecturerView(ListAPIView):
 class RequestsListByLabAPIView(ListAPIView):
     serializer_class=RequestInDepthSerializer
     queryset=Request.objects.all()
-    permission_classes=(permissions.IsAuthenticated,IsLecturer)
+    permission_classes=(permissions.IsAuthenticated,)
 
     def get_queryset(self):
         try:
