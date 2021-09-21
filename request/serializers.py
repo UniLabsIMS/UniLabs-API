@@ -92,7 +92,7 @@ class UpdateRequestStateSerializer(serializers.ModelSerializer):
             raise ValidationError("Only Approved and Declined State changes can be done")
         
         if self.instance.state!=RequestState.NEW:
-            raise ValidationError("Initial Request state should ne New")
+            raise ValidationError("Initial Request state should be New")
         return data
     
     @transaction.atomic

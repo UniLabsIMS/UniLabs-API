@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'knox',
     'cloudinary_storage',
     'cloudinary',
+    "corsheaders",
 ]
 
 SWAGGER_SETTINGS = {
@@ -75,6 +76,7 @@ SWAGGER_SETTINGS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -187,6 +189,8 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = config("SENDGRID_API_KEY")
 SENDGRID_SANDBOX_MODE_IN_DEBUG=config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')==True # set to true in debug mode to use sandbox
 SENDGRID_ECHO_TO_STDOUT=True # Echo the mail output to console
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Heroku deployment setup
 django_heroku.settings(locals(), test_runner=False)

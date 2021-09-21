@@ -67,6 +67,8 @@ class RequestUpdateSerializer(GenericAPIView):
 
     def put(self,request, *args, **kwargs):
         req = self.get_object()
+        if(req.lecturer.id!=request.user.id):
+            return Response({'message':'Unauthorized to approve/decline this request'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = self.get_serializer(data=request.data,instance=req)
         if serializer.is_valid():
             serializer.save(request.data)

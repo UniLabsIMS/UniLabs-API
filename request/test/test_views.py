@@ -173,8 +173,13 @@ class TestViews(TestSetup):
         res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Declined"},format="json")
         self.assertEqual(res.status_code,200)
         self.assertEqual(res.data['state'],"Declined")
+
+    def test_authenticated_lecturer_not_assigned_to_request_can_not_change_state(self):
+        self.client.force_authenticate(user=self.global_test_lecturer_two)
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        self.assertEqual(res.status_code,401)
     
-    def test_initial_state_should_be_new(self):
+    def test_initial_state_of_request_should_be_new(self):
         self.client.force_authenticate(user=self.global_test_lecturer)
         request=copy.copy(self.global_test_request_one)
         request.state="Approved"

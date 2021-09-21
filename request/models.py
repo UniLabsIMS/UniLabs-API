@@ -27,7 +27,7 @@ class Request(models.Model):
     student=models.ForeignKey(Student,on_delete=CASCADE)
     lecturer=models.ForeignKey(Lecturer,on_delete=CASCADE)
     reason=models.CharField(max_length=1023,blank=False)
-    state=models.CharField(max_length=31,choices=RequestState.choices,default='New')
+    state=models.CharField(max_length=31,choices=RequestState.choices,default=RequestState.NEW)
     created_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -44,7 +44,7 @@ class RequestItem(models.Model):
     student=models.ForeignKey(Student,on_delete=CASCADE)
     lab=models.ForeignKey(Lab,on_delete=CASCADE)
     quantity=models.IntegerField()
-    state=models.CharField(max_length=31,choices=RequestItemState.choices,default='Pending')
+    state=models.CharField(max_length=31,choices=RequestItemState.choices,default=RequestItemState.PENDING)
 
     def __str__(self):
         return 'id'
