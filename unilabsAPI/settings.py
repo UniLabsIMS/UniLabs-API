@@ -190,7 +190,7 @@ SENDGRID_API_KEY = config("SENDGRID_API_KEY")
 SENDGRID_SANDBOX_MODE_IN_DEBUG=config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')==True # set to true in debug mode to use sandbox
 SENDGRID_ECHO_TO_STDOUT=True # Echo the mail output to console
 
-CORS_ORIGIN_WHITELIST= ('http://localhost:3000',)
+CORS_ORIGIN_WHITELIST= ('http://localhost:3000', 'https://sharp-varahamihira-ae4057.netlify.app/')
 
 # Heroku deployment setup
 django_heroku.settings(locals(), test_runner=False)
