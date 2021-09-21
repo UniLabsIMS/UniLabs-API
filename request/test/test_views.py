@@ -1,6 +1,7 @@
 from .test_setup import TestSetup
 from django.urls.base import reverse
 from request.models import Request
+import copy
 
 class TestViews(TestSetup):
     #POST- New request
@@ -158,6 +159,40 @@ class TestViews(TestSetup):
             self.requests_of_a_lab_url_name,kwargs={'lab_id':"Invalid id"}
         ),format='json')
         self.assertEqual(res.status_code,400)
+
+
+    #PUT Approve or Decline Request
+    def test_authenticated_lecturer_can_approve_new_request(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data['state'],"Approved")
+    
+    def test_authenticated_lecturer_can_decline_new_request(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Declined"},format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data['state'],"Declined")
+    
+    def test_initial_state_should_be_new(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        request=copy.copy(self.global_test_request_one)
+        request.state="Approved"
+        request.save()
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':request.id}),{"state": "Declined"},format="json")
+        self.assertEqual(res.status_code,400)
+    
+    def test_authenticated_other_cannot_approve_or_decline_new_request(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_approve_or_decline_new_request(self):
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        self.assertEqual(res.status_code,401)
+
+
+    
     
 
 
