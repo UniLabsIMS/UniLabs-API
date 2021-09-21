@@ -29,6 +29,7 @@ urlpatterns = [
     path('students/', include('student_user.urls')),
     path('items/',include('item.urls')),
     path('lecturers/',include('lecturer_user.urls')),
+    path('requests/',include('request.urls')),
 
     # Swagger Documentation
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
