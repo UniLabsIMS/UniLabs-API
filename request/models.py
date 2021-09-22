@@ -35,6 +35,7 @@ class Request(models.Model):
     
     class Meta:
         db_table='request'
+        ordering = ('-created_at',)
 
 #Request Item Model
 class RequestItem(models.Model):
@@ -52,5 +53,6 @@ class RequestItem(models.Model):
     class Meta:
         db_table='request_item'
         unique_together = (('request', 'display_item'),)
+        
 
 

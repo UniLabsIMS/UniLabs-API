@@ -35,4 +35,5 @@ class Item(models.Model):
     
     class Meta:
         db_table = 'item'
+        ordering = ('-added_on',)
 

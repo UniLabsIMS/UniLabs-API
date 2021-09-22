@@ -51,3 +51,4 @@ class User(AbstractBaseUser,PermissionsMixin):
     
     class Meta:
         db_table = 'custom_user'
+        ordering = ('-created_at',)
