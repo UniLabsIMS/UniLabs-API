@@ -22,3 +22,5 @@ class DisplayItem(models.Model):
     
     class Meta:
         db_table = 'display_item'
+        unique_together = (('name', 'item_category'),)
+        ordering = ('-added_on',)

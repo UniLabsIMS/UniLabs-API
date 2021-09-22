@@ -18,4 +18,7 @@ class ItemCategory(models.Model):
     
     class Meta:
         db_table = 'item_category'
+        unique_together = (('name', 'lab'),)
+        ordering = ('-created_at',)
+    
 
