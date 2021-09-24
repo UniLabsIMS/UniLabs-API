@@ -100,3 +100,19 @@ def post(self,request, *args, **kwargs):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 '''
+
+
+
+''' post method 
+def post(self,request, *args, **kwargs):
+        item = self.get_object()
+        lab_ass = Labass.objects.get(request.user.id)
+        if(req.item.lab!=request.lab_ass.lab):
+            return Response({'message':'Unauthorized to handover'}, status=status.HTTP_401_UNAUTHORIZED)
+        serializer = self.get_serializer(data=res.data,instance=item)
+        if serializer.is_valid():
+            serializer.save(request.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+'''

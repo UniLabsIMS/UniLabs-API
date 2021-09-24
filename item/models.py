@@ -1,8 +1,10 @@
 from django.db import models
 from uuid import uuid4
+from django.db.models.fields import DateField, DateTimeField
 from django.utils.http import int_to_base36
 
 from display_item.models import DisplayItem
+from student_user.models import Student
 from lab.models import Lab
 from item_category.models import ItemCategory
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +16,13 @@ class State(models.TextChoices):
     BORROWED='Borrowed', _('Borrowed')
     TEMP_BORROWED='Temp_Borrowed', _('Temp_Borrowed')
     DAMAGED='Damaged', _('Damaged')
+
+#State field options for borrow-log
+class LogState(models.TextChoices):
+    BORROWED='Borrowed', _('Borrowed')
+    TEMP_BORROWED='Temp_Borrowed', _('Temp_Borrowed')
+    RETURNED='Returned', _('Returned')
+    
 
 ID_LENGTH = 9
 
@@ -37,4 +46,13 @@ class Item(models.Model):
         db_table = 'item'
         ordering = ('-added_on',)
 
-# create borrow log model
+#borrow log model
+class BorrowLog(models.Model):
+    id=models.UUIDField(default=uuid4,primary_key=True,editable=False)
+    item=models.ForeignKey(Item,on_delete=CASCADE)
+    student=models.ForeignKey(Student,on_delete=CASCADE)
+    lab=models.ForeignKey(Lab,on_delete=CASCADE)
+    state=models.CharField(max_length=31,choices=LogState.choices)
+    due_date=DateField(blank=True)
+    returned_date=DateField(blank=True)
+
