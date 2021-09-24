@@ -37,3 +37,4 @@ class Item(models.Model):
         db_table = 'item'
         ordering = ('-added_on',)
 
+# create borrow log model
