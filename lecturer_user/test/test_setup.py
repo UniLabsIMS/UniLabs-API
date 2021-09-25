@@ -13,7 +13,7 @@ class TestSetUp(GlobalTestSetUp):
             'email': cls.fake.email(),
             'department': cls.global_test_department.id,
             'lecturer_id': '123456787X',
-            'permitted_labs':[cls.global_test_lab.id, cls.global_test_lab_two.id]
+            'permitted_labs':[cls.global_test_lab.id, cls.global_test_lab_three.id]
         }
         return 
 
