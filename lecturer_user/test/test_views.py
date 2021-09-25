@@ -77,6 +77,13 @@ class TestViews(TestSetUp):
         res = self.client.post(self.new_lecturer_url,data,format="json")
         self.assertEqual(res.status_code, 400)
     
+    def test_cannot_add_lecturer_with_lab_ids_not_under_department(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.lecturer_data.copy()
+        data["permitted_labs"].append(self.global_test_lab_two.id)
+        res = self.client.post(self.new_lecturer_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
+    
     # GET - all students
 
     def test_authenticated_admin_users_can_get_a_list_of_lecturers(self):

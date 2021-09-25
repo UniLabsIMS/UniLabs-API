@@ -15,9 +15,13 @@ class LecturerRegisterSerializer(serializers.ModelSerializer):
 
     def validate(self,data):
         labs = data.get('permitted_labs')
+        department = data.get('department')
         for lab_id in labs:
-            if(not Lab.objects.filter(id=lab_id).exists()):
+            lab = Lab.objects.filter(id=lab_id)
+            if(lab.count()==0):
                 raise ValidationError("Invalid lab id")
+            if(lab[0].department!=department):
+                raise ValidationError("all the labs must be under the declared deparment")
         return data
 
     def create(self,validated_data):

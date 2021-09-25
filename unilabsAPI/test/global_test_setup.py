@@ -50,6 +50,11 @@ class GlobalTestSetUp(APITestCase):
             department=cls.global_test_department_two
         )
 
+        cls.global_test_lab_three = Lab.objects.create(
+            name='Test Lab 3',
+            department=cls.global_test_department
+        )
+
         # Lab Managers for tests
         cls.global_test_lab_manager = LabManager.objects.create_lab_manager(
             email = cls.fake.email(),
