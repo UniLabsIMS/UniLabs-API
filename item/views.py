@@ -1,8 +1,10 @@
-from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
-from rest_framework import permissions
+from lab_assistant_user.models import LabAssistant
+from rest_framework import generics
+from rest_framework.generics import CreateAPIView, GenericAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
+from rest_framework import permissions,generics
 from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant
 from rest_framework.exceptions import ValidationError
-from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer
+from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer
 from  item.models import Item
 from rest_framework.response import Response
 from rest_framework import status
@@ -87,19 +89,26 @@ class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
         return Response("Item deleted", status=status.HTTP_204_NO_CONTENT)
 
 # view to temp handover item 
-''' post method 
-def post(self,request, *args, **kwargs):
+class TemporaryHandOverItemAPIView(GenericAPIView):
+    serializer_class=TemporaryHandoverSerializer
+    queryset=Item.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+    lookup_field='id'
+
+    @transaction.atomic
+    def post(self,request, *args, **kwargs):
         item = self.get_object()
-        lab_ass = Labass.objects.get(request.user.id)
-        if(req.item.lab!=request.lab_ass.lab):
+        # import pdb;pdb.set_trace()
+        lab_assistant = LabAssistant.objects.get(user_ptr_id=request.user.id)
+        if(item.lab!=lab_assistant.lab):
             return Response({'message':'Unauthorized to handover'}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = self.get_serializer(data=res.data,instance=item)
+        serializer = self.get_serializer(data=request.data,instance=item)
         if serializer.is_valid():
             serializer.save(request.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-'''
+
 
 
 

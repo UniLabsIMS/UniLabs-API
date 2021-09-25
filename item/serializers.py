@@ -1,9 +1,11 @@
-from item.models import Item
+from item.models import BorrowLog, Item, LogState, State
 from lab.serializers import LabReadSerializer
 from item_category.serializers import ItemCategoryReadSerializer
 from display_item.serializers import DisplayItemReadSerializer
 from rest_framework import serializers
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
+from student_user.models import Student
 
 # Data visible as response
 class ItemReadSerializer(serializers.ModelSerializer):
@@ -58,4 +60,26 @@ class TempHandoverSerializer(serializers.ModelSerializer):
     class Meta:
         model=Item
         fields=('student_id') 
+
 '''
+class TemporaryHandoverSerializer(serializers.ModelSerializer):
+    student_id=serializers.CharField(write_only=True)
+    class Meta:
+        model=Item
+        fields=('student_id',)
+    
+    def validate(self,data):
+        item=self.instance
+        if (item.state)!=State.AVAILABLE:
+            raise ValidationError("Item is not available")
+        student=Student.objects.filter(user_ptr_id=data['student_id'])
+        return student
+    
+    @transaction.atomic
+    def save(self,data):
+        # import pdb;pdb.set_trace()
+        item = self.instance
+        student=Student.objects.get(user_ptr_id=data['student_id'])
+        item.state=State.TEMP_BORROWED
+        item.save()
+        return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.TEMP_BORROWED,student=student)

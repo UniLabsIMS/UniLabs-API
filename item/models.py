@@ -53,6 +53,12 @@ class BorrowLog(models.Model):
     student=models.ForeignKey(Student,on_delete=CASCADE)
     lab=models.ForeignKey(Lab,on_delete=CASCADE)
     state=models.CharField(max_length=31,choices=LogState.choices)
-    due_date=DateField(blank=True)
-    returned_date=DateField(blank=True)
+    due_date=DateField(null=True,blank=True)
+    returned_date=DateField(null=True,blank=True)
+
+    def __str__(self):
+        return 'id'
+    
+    class Meta:
+        db_table='borrow-log'
 
