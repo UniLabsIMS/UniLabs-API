@@ -6,6 +6,7 @@ from rest_framework import serializers
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 from student_user.models import Student
+from datetime import date
 
 # Data visible as response
 class ItemReadSerializer(serializers.ModelSerializer):
@@ -63,23 +64,23 @@ class TempHandoverSerializer(serializers.ModelSerializer):
 
 '''
 class TemporaryHandoverSerializer(serializers.ModelSerializer):
-    student_id=serializers.CharField(write_only=True)
+    student_uuid=serializers.CharField(write_only=True)
     class Meta:
         model=Item
-        fields=('student_id',)
+        fields=('student_uuid',)
     
     def validate(self,data):
         item=self.instance
         if (item.state)!=State.AVAILABLE:
             raise ValidationError("Item is not available")
-        student=Student.objects.filter(user_ptr_id=data['student_id'])
-        return student
+        if(not Student.objects.filter(id=data['student_uuid']).exists()):
+            raise ValidationError("Invalid student id")
+        return data
     
     @transaction.atomic
-    def save(self,data):
-        # import pdb;pdb.set_trace()
+    def save(self,validated_data):
         item = self.instance
-        student=Student.objects.get(user_ptr_id=data['student_id'])
+        student=Student.objects.get(user_ptr_id=validated_data['student_uuid'])
         item.state=State.TEMP_BORROWED
         item.save()
-        return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.TEMP_BORROWED,student=student)
+        return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.TEMP_BORROWED,student=student,due_date=date.today())

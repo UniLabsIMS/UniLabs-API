@@ -92,14 +92,13 @@ class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
 class TemporaryHandOverItemAPIView(GenericAPIView):
     serializer_class=TemporaryHandoverSerializer
     queryset=Item.objects.all()
-    permission_classes=(permissions.IsAuthenticated,)
+    permission_classes=(permissions.IsAuthenticated,IsLabAssistant)
     lookup_field='id'
 
     @transaction.atomic
     def post(self,request, *args, **kwargs):
         item = self.get_object()
-        # import pdb;pdb.set_trace()
-        lab_assistant = LabAssistant.objects.get(user_ptr_id=request.user.id)
+        lab_assistant = LabAssistant.objects.get(id=request.user.id)
         if(item.lab!=lab_assistant.lab):
             return Response({'message':'Unauthorized to handover'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = self.get_serializer(data=request.data,instance=item)
