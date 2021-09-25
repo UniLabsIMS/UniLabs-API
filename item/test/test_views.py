@@ -2,6 +2,8 @@ from display_item.models import DisplayItem
 from django.urls.base import reverse
 from .test_setup import TestSetup
 from django.db import transaction
+from item.models import State
+import copy
 
 class TestViews(TestSetup):
     #POST - new item creation
@@ -210,4 +212,58 @@ class TestViews(TestSetup):
             self.delete_item_url_name,kwargs={'id':'65254675'}
         ),format='json')
         self.assertEqual(res.status_code,404)
+    
+    #POST temporary borrow
+    def test_authenticated_LabAssistant_can_handover_items(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant_two)
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,200)
+    
+    def test_authenticated_other_user_cannot_handover_items(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_handover_items(self):
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_LabAssistant_cannot_handover_items_in_other_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_item_id_cannot_be_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':"Invalid_id"}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,404)
+    
+    def test_student_id_cannot_be_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        student_data=copy.copy(self.student_data)
+        student_data['student_uuid']='invalid'
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_handover_item_cannot_be_other_state_than_available(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        item=copy.copy(self.global_test_item_one)
+        item.state=State.TEMP_BORROWED
+        res=self.client.post(reverse(
+            self.temporary_handover_url_name,kwargs={'id':item.id}
+        ),self.student_data,format='json')
+        self.assertEqual(res.status_code,401)
+
     

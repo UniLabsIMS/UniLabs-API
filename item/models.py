@@ -2,7 +2,6 @@ from django.db import models
 from uuid import uuid4
 from django.db.models.fields import DateField, DateTimeField
 from django.utils.http import int_to_base36
-
 from display_item.models import DisplayItem
 from student_user.models import Student
 from lab.models import Lab

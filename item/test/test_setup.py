@@ -12,11 +12,15 @@ class TestSetup(GlobalTestSetUp):
         cls.delete_item_url_name = 'delete-item'
         cls.items_of_an_item_category_url_name='items-of-an-item-category'
         cls.items_of_a_lab_url_name='items-of-a-lab'
+        cls.temporary_handover_url_name='temporary-handover'
         cls.item_data={
             'display_item':cls.global_test_display_item_one.id,
         }
         cls.item={
             'display_item':cls.global_test_display_item_one,
+        }
+        cls.student_data={
+            'student_uuid':cls.global_test_student.id,
         }
 
         return

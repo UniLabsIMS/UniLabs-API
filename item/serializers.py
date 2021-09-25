@@ -48,21 +48,7 @@ class ItemUpdateSerializer(serializers.ModelSerializer):
         model=Item
         fields=('id','state') 
 
-# create temporary handover serilaizer
-''' 
-model -> Item
-fields -> student
-validate -> check wther the current item state is available
-save -> change item state to temp borrow state, add a new borrow log object in atomic manner 
-
-
-class TempHandoverSerializer(serializers.ModelSerializer):
-    student_id = serializers.StringField(write_only=True)
-    class Meta:
-        model=Item
-        fields=('student_id') 
-
-'''
+#temporary handover serilaizer
 class TemporaryHandoverSerializer(serializers.ModelSerializer):
     student_uuid=serializers.CharField(write_only=True)
     class Meta:
