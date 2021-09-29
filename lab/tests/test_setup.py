@@ -11,12 +11,17 @@ class TestSetUp(GlobalTestSetUp):
         cls.all_labs_url = reverse('all-labs')
         cls.single_lab_url_name = 'single-lab' # as we need path parameters
         cls.labs_of_a_department_url_name = 'labs-of-a-department'
+        cls.assign_lec_to_lab_url = reverse('assign-lecturers')
         cls.lab_data = {
             'name': 'TEST LAB NAME',
             'department': cls.global_test_department.id,
             'location': cls.fake.text(),
             'contact_no': '0777568456',
             'contact_email': cls.fake.email(),
+        }
+        cls.assign_lecs_to_lab_data={
+            'lab': cls.global_test_lab.id,
+            'lecturers': [cls.global_test_lecturer_three.id]
         }
         return 
 

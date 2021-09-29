@@ -225,6 +225,13 @@ class GlobalTestSetUp(APITestCase):
             permitted_labs = [cls.global_test_lab.id]
         )
 
+        cls.global_test_lecturer_three = Lecturer.objects.create_lecturer(
+            email = cls.fake.email(),
+            lecturer_id = "14TSTFGF",
+            department = cls.global_test_department,
+            permitted_labs = []
+        )
+
         # requests for test
         cls.global_test_request_one=Request.objects.create(
             lab=cls.global_test_lab,
@@ -259,8 +266,6 @@ class GlobalTestSetUp(APITestCase):
             due_date=date.today()
 
         )
-
-
         return
 
     def tearDown(self):
