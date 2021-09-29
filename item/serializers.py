@@ -92,7 +92,7 @@ class ItemReturnSerializer(serializers.ModelSerializer):
             raise ValidationError("Given item is not borrowed")
         if (borrow_log.count()!=1):
             raise ValidationError("one item can be borrowed by one person only")
-        return borrow_log
+        return data
     
     @transaction.atomic
     def save(self,data):
