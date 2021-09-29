@@ -1,8 +1,13 @@
+from custom_user.utils.email import Email
+from django.contrib.auth.base_user import BaseUserManager
+from django.db import transaction
+from custom_user.utils.default_passwords import DefaultPasswords
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from custom_user.utils.utils import Util
-from rest_framework import fields, serializers
+from rest_framework import serializers
 from .models import Role, User
 from django.contrib import auth
+from decouple import config
 
 # serializer class to handle login data
 class LoginSerializer(serializers.ModelSerializer):
@@ -108,3 +113,27 @@ class UserBlockUnblockSerializer(serializers.ModelSerializer):
         if(self.instance.role == Role.ADMIN):
             raise ValidationError("Admins can not block/unblock other admins")
         return data
+
+# Serilizer to handle forgot password
+class ResetPasswordSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(write_only=True)
+    class Meta:
+        model = User
+        fields =['email',]
+    
+    def validate(self,data):
+        if(not User.objects.filter(email=data.get('email')).exists()):
+            raise ValidationError("Invalid email")
+        return data
+
+    @transaction.atomic
+    def save(self,data):
+        user = User.objects.get(email=data.get('email'))
+        password = DefaultPasswords.DEFAULT_DEBUG_RESET_PASSWORD if (config('DEBUG','True')=='True') else BaseUserManager().make_random_password()
+        user.set_password(password)
+        if(not user.is_default_password):user.is_default_password=True
+        user.save()
+        try:
+            Email.send_reset_password_email(data.get('email'),password)
+        except Exception as e:
+            raise Exception('Error sending reset password email')

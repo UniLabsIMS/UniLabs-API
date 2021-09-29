@@ -24,3 +24,10 @@ class AllStudentsAPIView(generics.ListAPIView):
     serializer_class=StudentReadSerializer
     queryset=Student.objects.all()
     permission_classes=(permissions.IsAuthenticated,IsAdmin)
+
+# GET request to get student details
+class SingleStudentAPIView(generics.RetrieveAPIView):
+    serializer_class=StudentReadSerializer
+    queryset=Student.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+    lookup_field='id'
