@@ -2,7 +2,7 @@ from display_item.models import DisplayItem
 from django.urls.base import reverse
 from .test_setup import TestSetup
 from django.db import transaction
-from item.models import State
+from item.models import Item, LogState, State
 import copy
 
 class TestViews(TestSetup):
@@ -279,6 +279,81 @@ class TestViews(TestSetup):
         self.assertEqual(res.status_code,400)
         item.state = State.AVAILABLE
         item.save()
+
+#GET - all-borrow-logs
+
+    def test_authenticated_user_can_get_borrow_logs(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(self.all_borrow_logs_url,format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+    
+    def test_unauthenticated_user_cannot_get_borrow_logs(self):
+        res=self.client.get(self.all_borrow_logs_url,format='json')
+        self.assertEqual(res.status_code,401)
+
+#PUT returning item
+
+    def test_authenticated_lab_assistant_can_receive_return_item_belongs_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),{},format='json')
+        self.assertEqual(res.status_code,200)
+    
+    def test_authenticated_lab_assistant_cannot_receive_return_item_does_not_belongs_to_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant_two)
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),{},format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_authenticated_other_user_cannot_receive_return_item(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),{},format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_receive_return_item(self):
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),{},format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_return_item_id_cannot_be_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':"invalid_id"}
+        ),{},format='json')
+        self.assertEqual(res.status_code,404)
+    
+    def test_return_item_should_not_be_other_state_rather_than_BORROWED_or_TEMP_BORROWED(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        borrow_log=self.global_test_borrow_log_one
+        borrow_log.state=LogState.RETURNED
+        borrow_log.save()
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),{},format='json')
+        self.assertEqual(res.status_code,400)
+        borrow_log.state=LogState.TEMP_BORROWED
+        borrow_log.save()
+    
+    def test_return_item_should_not_be_invalid_state(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        borrow_log=self.global_test_borrow_log_one
+        borrow_log.state="Invalid State"
+        borrow_log.save()
+        res=self.client.put(reverse(
+            self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),{},format='json')
+        self.assertEqual(res.status_code,400)
+        borrow_log.state=LogState.TEMP_BORROWED
+        borrow_log.save()
+    
+
+
 
 # Edit item 
 
