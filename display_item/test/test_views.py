@@ -1,3 +1,4 @@
+from display_item.models import DisplayItem
 from django.urls.base import reverse
 from .test_setup import TestSetUp
 
@@ -127,6 +128,53 @@ class TestViews(TestSetUp):
         ),format='json')
         self.assertEqual(res.status_code,400)
 
+# Edit category tests KEEP THESE TESTS AT LAST
+
+    def test_authenticated_lab_manager_can_edit_display_item_belong_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.put(reverse(
+            self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
+        ),self.display_item_edit_data,format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data['name'],DisplayItem.objects.get(id=self.global_test_display_item_one.id).name)
+    
+    def test_authenticated_lab_manager_cannot_edit_display_item_doesnt_belong_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager_two)
+        res=self.client.put(reverse(
+            self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
+        ),self.display_item_edit_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_authenticated_other_user_cannot_edit_display_item(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.put(reverse(
+            self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
+        ),self.display_item_edit_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_edit_display_item(self):
+        res=self.client.put(reverse(
+            self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
+        ),self.display_item_edit_data,format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_description_cannot_be_empty(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        data=self.display_item_edit_data.copy()
+        data['description']=""
+        res=self.client.put(reverse(
+            self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
+        ),data,format='json')
+        self.assertEqual(res.status_code,400)
+    
+    def test_name_cannot_be_empty(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        data=self.display_item_edit_data.copy()
+        data['name']=""
+        res=self.client.put(reverse(
+            self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
+        ),data,format='json')
+        self.assertEqual(res.status_code,400)
 
     
     
