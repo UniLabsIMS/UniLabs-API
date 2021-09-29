@@ -280,7 +280,7 @@ class TestViews(TestSetup):
         item.state = State.AVAILABLE
         item.save()
 
-#Edit item 
+# Edit item 
 
     def test_authenticated_lab_assistant_can_edit_item_doesnt_belong_to_his_her_lab(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)

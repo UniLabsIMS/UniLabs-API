@@ -128,7 +128,7 @@ class TestViews(TestSetUp):
         ),format='json')
         self.assertEqual(res.status_code,400)
 
-# Edit category tests KEEP THESE TESTS AT LAST
+# Edit display item tests KEEP THESE TESTS AT LAST
 
     def test_authenticated_lab_manager_can_edit_display_item_belong_to_his_her_lab(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
