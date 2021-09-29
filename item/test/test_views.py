@@ -280,4 +280,53 @@ class TestViews(TestSetup):
         item.state = State.AVAILABLE
         item.save()
 
+#Edit item 
+
+    def test_authenticated_lab_assistant_can_edit_item_doesnt_belong_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.put(reverse(
+            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.edit_item_data,format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data['state'],State.BORROWED)
+    
+    def test_authenticated_lab_assistant_cannot_edit_item_doesnt_belong_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant_two)
+        res=self.client.put(reverse(
+            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.edit_item_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_authenticated_other_user_cannot_edit_item(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.put(reverse(
+            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.edit_item_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_other_user_cannot_edit_item(self):
+        res=self.client.put(reverse(
+            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),self.edit_item_data,format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_item_state_should_not_empty(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        data=self.edit_item_data.copy()
+        data['state']=""
+        res=self.client.put(reverse(
+            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),data,format='json')
+        self.assertEqual(res.status_code,400)
+    
+    def test_item_state_cannot_be_invalid_state(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        data=self.edit_item_data.copy()
+        data['state']="invalid_state"
+        res=self.client.put(reverse(
+            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
+        ),data,format='json')
+        self.assertEqual(res.status_code,400)
+        
+
     
