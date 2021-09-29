@@ -1,10 +1,11 @@
+from rest_framework.serializers import Serializer
 from lab_assistant_user.models import LabAssistant
 from rest_framework import generics
 from rest_framework.generics import CreateAPIView, GenericAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
 from rest_framework import permissions,generics
 from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant, IsLabOwner
 from rest_framework.exceptions import ValidationError
-from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer
+from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer,ItemReturnSerializer
 from  item.models import Item
 from rest_framework.response import Response
 from rest_framework import status
@@ -104,3 +105,20 @@ class TemporaryHandOverItemAPIView(GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# return item
+class ReturnItemAPIView(GenericAPIView):
+    serializer_class=ItemReturnSerializer
+    permission_classes=(permissions.IsAuthenticated,IsLabAssistant,IsLabOwner)
+    queryset=Item.objects.all()
+    lookup_field='id'
+
+    def put(self,request, *args, **kwargs):
+        item=self.get_object()
+        serializer=self.get_serializer(data=request.data,instance=item)
+        if serializer.is_valid():
+            serializer.save(request.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
