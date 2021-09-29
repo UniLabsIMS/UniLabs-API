@@ -6,3 +6,4 @@ class DefaultPasswords:
     DEFAULT_DEBUG_LAB_ASSISTANT_PASSWORD = '#uniLabAssistant'
     DEFAULT_DEBUG_STUDENT_PASSWORD = '#uniLabStudent'
     DEFAULT_DEBUG_LECTURER_PASSWORD = '#uniLabLecturer'
+    DEFAULT_DEBUG_RESET_PASSWORD = '#uniLabReset'

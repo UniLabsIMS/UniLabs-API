@@ -57,3 +57,10 @@ class LecturerReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecturer
         fields= ["id","lecturer_id","email","first_name","last_name","contact_number","image","role","blocked","department","permitted_labs"]
+
+# Summarized read serializer for lecturer
+class LecturerSummarizedReadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lecturer
+        fields= ["id","lecturer_id","email","first_name","last_name","contact_number","image","role","blocked","department"]

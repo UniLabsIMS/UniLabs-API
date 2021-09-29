@@ -1,3 +1,4 @@
+from custom_user.utils.email import Email
 import pdb
 from display_item.serializers import DisplayItemReadSerializer
 from lab.serializers import LabReadSerializer
@@ -7,11 +8,12 @@ from display_item.models import DisplayItem
 from django.db.models import fields
 from request.models import Request,RequestItem, RequestState
 from rest_framework import serializers
-from lecturer_user.models import LabLecturer,Lecturer
+from lecturer_user.models import LabLecturer
 from django.db import transaction
 from student_user.serializers import StudentReadSerializer
 from django.db import transaction
-
+from student_user.models import Student
+from lab.models import Lab
 class RequestWriteSerializer(serializers.ModelSerializer):
     display_items_dict=serializers.DictField(child=serializers.IntegerField(),write_only=True)
     class Meta:
@@ -53,6 +55,11 @@ class RequestWriteSerializer(serializers.ModelSerializer):
             display_item=DisplayItem.objects.get(id=str(display_item_id))
             item_count=display_items_dict[str(display_item_id)]
             RequestItem.objects.create(request=request,display_item=display_item,student=student,lab=lab,quantity=item_count)
+        
+        try:
+            Email.send_new_request_email(validated_data.get('lecturer').email)
+        except Exception as e:
+            raise Exception('Error sending new request email')
 
         return request
 
@@ -104,6 +111,10 @@ class UpdateRequestStateSerializer(serializers.ModelSerializer):
         for req_item in request_items:
             req_item.state = data.get('state') 
             req_item.save()
+        try:
+            Email.send_request_approve_decline(request.student.email,data.get('state'),request.lab.name)
+        except Exception as e:
+            raise Exception('Error sending request approve decline')
         return
 
 

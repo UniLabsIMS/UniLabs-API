@@ -25,3 +25,69 @@ class Email:
             response = sg.send(message)
             code, body, headers = response.status_code, response.body, response.headers
             print("Registration >>>>>> Mail Sent")
+    
+    @staticmethod
+    def send_reset_password_email(to_email,password):
+        if(config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')=='False'): 
+            # create Mail object and populate
+            message = Mail(
+                from_email=config('EMAIL_HOST_USER'),
+                to_emails=[ to_email, 'unilabsims2@gmail.com' ],
+                )
+
+            # pass custom values for HTML placeholders
+            message.dynamic_template_data = {
+                'password': password,
+                'frontend_url': config('FRONTEND_URL')
+            }
+            message.template_id = config('SENDGRID_USER_RESET_PASSWORD_MAIL_TEMPLATE')
+
+            # create our sendgrid client object, pass it our key, then send and return our response objects
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            code, body, headers = response.status_code, response.body, response.headers
+            print("Reset Password >>>>>> Mail Sent")
+    
+    @staticmethod
+    def send_new_request_email(to_email):
+        if(config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')=='False'): 
+        # create Mail object and populate
+            message = Mail(
+                from_email=config('EMAIL_HOST_USER'),
+                to_emails=[ to_email, 'unilabsims2@gmail.com' ],
+                )
+
+            # pass custom values for HTML placeholders
+            message.dynamic_template_data = {
+                'frontend_url': config('FRONTEND_URL')
+            }
+            message.template_id = config('SENDGRID_USER_NEW_REQUEST_MAIL_TEMPLATE')
+
+            # create our sendgrid client object, pass it our key, then send and return our response objects
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            code, body, headers = response.status_code, response.body, response.headers
+            print("New Request >>>>>> Mail Sent")
+    
+
+    @staticmethod
+    def send_request_approve_decline(to_email,state,lab_name):
+        if(config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')=='False'): 
+        # create Mail object and populate
+            message = Mail(
+                from_email=config('EMAIL_HOST_USER'),
+                to_emails=[ to_email, 'unilabsims2@gmail.com' ],
+                )
+
+            # pass custom values for HTML placeholders
+            message.dynamic_template_data = {
+                'lab': lab_name,
+                'state': state,
+            }
+            message.template_id = config('SENDGRID_USER_REQUEST_APPROVE_DECLINE_MAIL_TEMPLATE')
+
+            # create our sendgrid client object, pass it our key, then send and return our response objects
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            code, body, headers = response.status_code, response.body, response.headers
+            print("Request Approve Decline >>>>>> Mail Sent")

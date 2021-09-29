@@ -99,7 +99,35 @@ class TestViews(TestSetUp):
             self.labs_of_a_department_url_name,kwargs={'department_id':"error_id"}
         ),format='json')
         self.assertEqual(res.status_code,400)
-        
+    
+    # Assign lecturer to lab KEEP AT END
+
+    def test_admin_can_assign_new_lecturers_to_labs(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="json")
+        self.assertEqual(res.status_code, 200)
+    
+    def test_admin_can_not_assign_invalid_lecturers_to_labs(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.assign_lecs_to_lab_data.copy()
+        data['lecturers'] = ["Invalid id"]
+        res = self.client.post(self.assign_lec_to_lab_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
+    
+    def test_admin_can_not_assign_already_assigned_lecturers_to_labs(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.assign_lecs_to_lab_data.copy()
+        data['lecturers'].append(self.global_test_lecturer.id)
+        res = self.client.post(self.assign_lec_to_lab_url,data,format="json")
+        self.assertEqual(res.status_code, 400)
+    
+    def test_unauthenticated_users_can_not_assigned_lecturers_to_labs(self):
+        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="json")
+        self.assertEqual(res.status_code, 401)
+    
+    def test_authenticated_other_users_can_not_assigned_lecturers_to_labs(self):
+        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="json")
+        self.assertEqual(res.status_code, 401)
 
 
 
