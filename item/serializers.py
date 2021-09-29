@@ -72,10 +72,33 @@ class TemporaryHandoverSerializer(serializers.ModelSerializer):
         return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.TEMP_BORROWED,student=student,due_date=date.today())
 
 
-# get an borrow_log entry where id = given item id and state= Borrowed or temp borrowed
-'''
-borrow_log=BorrowLog.obj.filter(id=self.instance.id,state__in=[State.BORROWED,State.TEMP_BORROWED])
-if(borrow_log.count()=0):
-    Error
-change state to returned state then in item table also change item state to available
-'''
+#return item. borrow log and item state changes
+class ItemReturnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields=[]
+
+    def validate(self,data):
+        borrow_log=BorrowLog.objects.filter(item=self.instance.id,state__in=[State.BORROWED,State.TEMP_BORROWED])
+        if (borrow_log.count()==0):
+            raise ValidationError("Given item is not borrowed")
+        if (borrow_log.count()!=1):
+            raise ValidationError("one item can be borrowed by one person only")
+        return data
+    
+    @transaction.atomic
+    def save(self,data):
+        item = self.instance
+        borrow_log=BorrowLog.objects.get(item=item.id,state__in=[State.BORROWED,State.TEMP_BORROWED])
+        item.state=State.AVAILABLE
+        item.save()
+        borrow_log.state=LogState.RETURNED
+        borrow_log.returned_date=date.today()
+        borrow_log.save()
+        return
+
+#Borrow log Read serializer
+class BorrowLogReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=BorrowLog
+        fields="__all__"
