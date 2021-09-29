@@ -70,3 +70,12 @@ class TemporaryHandoverSerializer(serializers.ModelSerializer):
         item.state=State.TEMP_BORROWED
         item.save()
         return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.TEMP_BORROWED,student=student,due_date=date.today())
+
+
+# get an borrow_log entry where id = given item id and state= Borrowed or temp borrowed
+'''
+borrow_log=BorrowLog.obj.filter(id=self.instance.id,state__in=[State.BORROWED,State.TEMP_BORROWED])
+if(borrow_log.count()=0):
+    Error
+change state to returned state then in item table also change item state to available
+'''

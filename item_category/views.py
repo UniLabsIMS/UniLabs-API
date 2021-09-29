@@ -2,7 +2,7 @@ from .serializers import ItemCategoryInDepthReadSerializer, ItemCategoryUpdateSe
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from item_category.models import ItemCategory
 from rest_framework import permissions
-from custom_user.permissions import IsLabManager
+from custom_user.permissions import IsLabManager, IsLabOwner
 from rest_framework.exceptions import ValidationError
 
 #POST request to create ItemCategory
@@ -28,7 +28,7 @@ class ItemCategoryRetrieveAPIView(RetrieveAPIView):
 class ItemCategoryUpdateAPIView(UpdateAPIView):
     serializer_class=ItemCategoryUpdateSerializer
     queryset=ItemCategory.objects.all()
-    permissions_classes=(permissions.IsAuthenticated,IsLabManager)
+    permission_classes=(permissions.IsAuthenticated,IsLabManager, IsLabOwner)
     lookup_field='id'
 
 

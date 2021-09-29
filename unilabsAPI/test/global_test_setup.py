@@ -166,19 +166,19 @@ class GlobalTestSetUp(APITestCase):
         )
 
         #------------------------------------------- items in lab 2 -------------------------------------------------
-        cls.global_test_item_one=Item.objects.create(
+        cls.global_test_item_four=Item.objects.create(
             display_item=cls.global_test_display_item_four,
             item_category=cls.global_test_item_category_four,
             lab=cls.global_test_lab_two
         )
 
-        cls.global_test_item_two=Item.objects.create(
+        cls.global_test_item_five=Item.objects.create(
             display_item=cls.global_test_display_item_five,
             item_category=cls.global_test_item_category_four,
             lab=cls.global_test_lab_two
         )
 
-        cls.global_test_item_three=Item.objects.create(
+        cls.global_test_item_six=Item.objects.create(
             display_item=cls.global_test_display_item_six,
             item_category=cls.global_test_item_category_four,
             lab=cls.global_test_lab_two

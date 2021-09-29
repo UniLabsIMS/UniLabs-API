@@ -1,3 +1,4 @@
+from item_category.models import ItemCategory
 from django.urls.base import reverse
 from .test_setup import TestSetUp
 
@@ -102,3 +103,34 @@ class TestViews(TestSetUp):
             self.item_categories_of_a_lab_url_name,kwargs={'lab_id':"123"}
         ),format='json')
         self.assertEqual(res.status_code,400)
+    
+    # Edit category tests KEEP THESE TESTS AT LAST
+
+    def test_authenticated_lab_manager_can_edit_category_belong_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.put(reverse(
+            self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
+        ),self.item_category_edit_data,format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data['name'],ItemCategory.objects.get(id=self.global_test_item_category.id).name)
+    
+    def test_authenticated_lab_manager_can_not_edit_category_doesnt_belong_to_his_her_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager_two)
+        res=self.client.put(reverse(
+            self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
+        ),self.item_category_edit_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_authenticated_other_users_can_not_edit_category(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.put(reverse(
+            self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
+        ),self.item_category_edit_data,format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_users_can_not_edit_category(self):
+        res=self.client.put(reverse(
+            self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
+        ),self.item_category_edit_data,format='json')
+        self.assertEqual(res.status_code,401)
+
