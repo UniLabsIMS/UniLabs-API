@@ -4,7 +4,7 @@ from .serializers import DisplayItemInDepthReadSerializer, DisplayItemUpdateSeri
 from display_item.models import DisplayItem
 from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView
 from rest_framework import permissions
-from custom_user.permissions import IsLabManager
+from custom_user.permissions import IsLabManager, IsLabOwner
 from rest_framework.exceptions import ValidationError
 
 #POST request to create DisplayItem
@@ -30,7 +30,7 @@ class DisplayRetrieveAPIView(RetrieveAPIView):
 class DisplayItemUpdateAPIView(UpdateAPIView):
     serializer_class=DisplayItemUpdateSerializer
     queryset=DisplayItem.objects.all()
-    permissions_classes=(permissions.IsAuthenticated,IsLabManager)
+    permission_classes=(permissions.IsAuthenticated,IsLabManager, IsLabOwner)
     lookup_field='id'
 
 #GET request to get display_items of a specific item_category

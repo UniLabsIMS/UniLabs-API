@@ -9,8 +9,9 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from admin_user.models import Admin
 from lab.models import Lab
-from item.models import Item
+from item.models import BorrowLog, Item
 from request.models import Request,RequestItem
+from datetime import date
 
 
 class GlobalTestSetUp(APITestCase):
@@ -170,19 +171,19 @@ class GlobalTestSetUp(APITestCase):
         )
 
         #------------------------------------------- items in lab 2 -------------------------------------------------
-        cls.global_test_item_one=Item.objects.create(
+        cls.global_test_item_four=Item.objects.create(
             display_item=cls.global_test_display_item_four,
             item_category=cls.global_test_item_category_four,
             lab=cls.global_test_lab_two
         )
 
-        cls.global_test_item_two=Item.objects.create(
+        cls.global_test_item_five=Item.objects.create(
             display_item=cls.global_test_display_item_five,
             item_category=cls.global_test_item_category_four,
             lab=cls.global_test_lab_two
         )
 
-        cls.global_test_item_three=Item.objects.create(
+        cls.global_test_item_six=Item.objects.create(
             display_item=cls.global_test_display_item_six,
             item_category=cls.global_test_item_category_four,
             lab=cls.global_test_lab_two
@@ -247,6 +248,16 @@ class GlobalTestSetUp(APITestCase):
             student=cls.global_test_student,
             lab=cls.global_test_lab,
             quantity=1
+        )
+
+        #borrow log for tests
+        cls.global_test_borrow_log_one=BorrowLog.objects.create(
+            item=cls.global_test_item_one,
+            student=cls.global_test_student,
+            lab=cls.global_test_lab,
+            state='Temp_Borrowed',
+            due_date=date.today()
+
         )
 
 

@@ -1,8 +1,10 @@
-from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
-from rest_framework import permissions
-from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant
+from lab_assistant_user.models import LabAssistant
+from rest_framework import generics
+from rest_framework.generics import CreateAPIView, GenericAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
+from rest_framework import permissions,generics
+from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant, IsLabOwner
 from rest_framework.exceptions import ValidationError
-from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer
+from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer
 from  item.models import Item
 from rest_framework.response import Response
 from rest_framework import status
@@ -32,7 +34,7 @@ class ItemRetriveAPIView(RetrieveAPIView):
 class ItemUpdateAPIView(UpdateAPIView):
     serializer_class=ItemUpdateSerializer
     queryset=Item.objects.all()
-    permissions_classes=(permissions.IsAuthenticated,IsLabAssistant)  #Lab assistant only can toggle states
+    permission_classes=(permissions.IsAuthenticated,IsLabAssistant, IsLabOwner)  #Lab assistant only can toggle states
     lookup_field='id'
 
 #GET request to get items of a specific display_item
@@ -74,7 +76,7 @@ class ItemListByLabAPIView(ListAPIView):
 #DELETE request to delete item
 class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
     queryset=Item.objects.all()
-    permission_classes=(permissions.IsAuthenticated,IsLabManagerOrAssistant)
+    permission_classes=(permissions.IsAuthenticated,IsLabManagerOrAssistant, IsLabOwner)
     lookup_field='id'
 
     @transaction.atomic
@@ -85,3 +87,20 @@ class ItemDeleteAPIView(DestroyAPIView): # no need to serialize
         display_item.save()
         item.delete()
         return Response("Item deleted", status=status.HTTP_204_NO_CONTENT)
+
+# view to temp handover item 
+class TemporaryHandOverItemAPIView(GenericAPIView):
+    serializer_class=TemporaryHandoverSerializer
+    queryset=Item.objects.all()
+    permission_classes=(permissions.IsAuthenticated,IsLabAssistant, IsLabOwner)
+    lookup_field='id'
+
+    @transaction.atomic
+    def post(self,request, *args, **kwargs):
+        item = self.get_object()
+        serializer = self.get_serializer(data=request.data,instance=item)
+        if serializer.is_valid():
+            serializer.save(request.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

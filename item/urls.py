@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView
+from .views import ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView
 
 urlpatterns=[
     path('',ItemListAPIView.as_view(), name='all-items'),
@@ -10,4 +10,5 @@ urlpatterns=[
     path('of-display-item/<str:display_item_id>', ItemListByDisplayItemAPIView.as_view(), name='items-of-a-display-item'),
     path('of-item-category/<str:item_category_id>', ItemListByItemCategoryAPIView.as_view(), name='items-of-an-item-category'),
     path('of-lab/<str:lab_id>', ItemListByLabAPIView.as_view(), name='items-of-a-lab'),
+    path('temporary-handover/<str:id>',TemporaryHandOverItemAPIView.as_view(), name='temporary-handover'),
 ]
