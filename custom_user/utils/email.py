@@ -47,3 +47,24 @@ class Email:
             response = sg.send(message)
             code, body, headers = response.status_code, response.body, response.headers
             print("Reset Password >>>>>> Mail Sent")
+    
+    @staticmethod
+    def send_new_request_email(to_email):
+        if(config('SENDGRID_SANDBOX_MODE_IN_DEBUG','True')=='False'): 
+        # create Mail object and populate
+            message = Mail(
+                from_email=config('EMAIL_HOST_USER'),
+                to_emails=[ to_email, 'unilabsims2@gmail.com' ],
+                )
+
+            # pass custom values for HTML placeholders
+            message.dynamic_template_data = {
+                'frontend_url': config('FRONTEND_URL')
+            }
+            message.template_id = config('SENDGRID_USER_NEW_REQUEST_MAIL_TEMPLATE')
+
+            # create our sendgrid client object, pass it our key, then send and return our response objects
+            sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            code, body, headers = response.status_code, response.body, response.headers
+            print("New Request >>>>>> Mail Sent")

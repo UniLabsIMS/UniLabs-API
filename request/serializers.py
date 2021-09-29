@@ -1,3 +1,4 @@
+from custom_user.utils.email import Email
 import pdb
 from display_item.serializers import DisplayItemReadSerializer
 from lab.serializers import LabReadSerializer
@@ -53,6 +54,11 @@ class RequestWriteSerializer(serializers.ModelSerializer):
             display_item=DisplayItem.objects.get(id=str(display_item_id))
             item_count=display_items_dict[str(display_item_id)]
             RequestItem.objects.create(request=request,display_item=display_item,student=student,lab=lab,quantity=item_count)
+        
+        try:
+            Email.send_new_request_email(validated_data.get('lecturer').email)
+        except Exception as e:
+            raise Exception('Error sending new request email')
 
         return request
 
