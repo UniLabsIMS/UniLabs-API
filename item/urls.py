@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView,ReturnItemAPIView
+from .views import ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView,ReturnItemAPIView,BorrowLogListAPIView
 
 urlpatterns=[
     path('',ItemListAPIView.as_view(), name='all-items'),
@@ -12,4 +12,5 @@ urlpatterns=[
     path('of-lab/<str:lab_id>', ItemListByLabAPIView.as_view(), name='items-of-a-lab'),
     path('temporary-handover/<str:id>',TemporaryHandOverItemAPIView.as_view(), name='temporary-handover'),
     path('return-item/<str:id>',ReturnItemAPIView.as_view(),name='return-item'),
+    path('all-borrow-logs/',BorrowLogListAPIView.as_view(),name='all-borrow-logs'),
 ]

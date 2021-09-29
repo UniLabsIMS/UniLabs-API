@@ -5,8 +5,8 @@ from rest_framework.generics import CreateAPIView, GenericAPIView,ListAPIView,Up
 from rest_framework import permissions,generics
 from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant, IsLabOwner
 from rest_framework.exceptions import ValidationError
-from .serializers import ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer,ItemReturnSerializer
-from  item.models import Item
+from .serializers import BorrowLogReadSerializer, ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer,ItemReturnSerializer
+from  item.models import BorrowLog, Item
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
@@ -121,4 +121,10 @@ class ReturnItemAPIView(GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
              return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#GET request to get all borrow logs
+class BorrowLogListAPIView(ListAPIView):
+    serializer_class=BorrowLogReadSerializer
+    queryset=BorrowLog.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
 
