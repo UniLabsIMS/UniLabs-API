@@ -13,9 +13,18 @@ class LabReadSerializer(serializers.ModelSerializer):
         
 class LabInDepthReadSerializer(serializers.ModelSerializer):
     department=DepartmentReadSerializer()
+    assigened_lecturers = serializers.SerializerMethodField()
+
+    def get_assigened_lecturers(self,obj):
+        lab_lecs = LabLecturer.objects.filter(lab=obj)
+        lecturers = []
+        for lab_lec_obj in lab_lecs:
+            from lecturer_user.serializers import LecturerSummarizedReadSerializer
+            lecturers.append(LecturerSummarizedReadSerializer(lab_lec_obj.lecturer).data)
+        return lecturers
     class Meta:
         model = Lab
-        fields="__all__"
+        fields=["id","name","location","department","location","contact_no","contact_email","image","created_at","assigened_lecturers"]
     
 
 #data for creating lab
