@@ -286,12 +286,75 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.get(self.all_borrow_logs_url,format='json')
         self.assertEqual(res.status_code,200)
-        self.assertGreaterEqual(len(res.data),1)
+        self.assertGreaterEqual(len(res.data),4)
     
     def test_unauthenticated_user_cannot_get_borrow_logs(self):
         res=self.client.get(self.all_borrow_logs_url,format='json')
         self.assertEqual(res.status_code,401)
 
+#GET - all-borrow-logs-of-lab
+    def test_authenticated_user_can_get_borrow_logs_of_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.all_borrow_logs_of_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),3)
+    
+    def test_unauthenticated_user_cannot_get_borrow_logs_of_lab(self):
+        res=self.client.get(reverse(self.all_borrow_logs_of_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_borrow_log_lab_filter_should_fail_for_invalid_lab_id(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.all_borrow_logs_of_lab_url_name,kwargs={'lab_id':"Blah"}),format='json')
+        self.assertEqual(res.status_code,400)
+
+#GET - all-borrow-logs-of-student
+    def test_authenticated_user_can_get_borrow_logs_of_student(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.all_borrow_logs_of_student_url_name,kwargs={'student_id':self.global_test_student.id}),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),3)
+    
+    def test_unauthenticated_user_cannot_get_borrow_logs_of_student(self):
+        res=self.client.get(reverse(self.all_borrow_logs_of_student_url_name,kwargs={'student_id':self.global_test_student.id}),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_borrow_log_student_filter_should_fail_for_invalid_student_id(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.all_borrow_logs_of_student_url_name,kwargs={'student_id':"Blah"}),format='json')
+        self.assertEqual(res.status_code,400)
+
+#GET - curently-borrowed-logs-of-lab
+    def test_authenticated_user_can_get_currently_borrowed_list_of_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.currently_borrowed_from_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(len(res.data),2)
+    
+    def test_unauthenticated_user_cannot_get_currently_borrowed_list_of_lab(self):
+        res=self.client.get(reverse(self.currently_borrowed_from_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_user_can_not_get_currently_borrowed_list_of_lab_is_id_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.currently_borrowed_from_lab_url_name,kwargs={'lab_id':"Blah"}),format='json')
+        self.assertEqual(res.status_code,400)
+
+#GET - curently-borrowed-logs-of-lab
+    def test_authenticated_user_can_get_currently_borrowed_list_by_student(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.currently_borrowed_by_student_url_name,kwargs={'student_id':self.global_test_student.id}),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(len(res.data),2)
+    
+    def test_unauthenticated_user_cannot_get_currently_borrowed_list_by_student(self):
+        res=self.client.get(reverse(self.currently_borrowed_by_student_url_name,kwargs={'student_id':self.global_test_student.id}),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_user_can_not_get_currently_borrowed_list_by_student_is_id_invalid(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(self.currently_borrowed_by_student_url_name,kwargs={'student_id':"Blah"}),format='json')
+        self.assertEqual(res.status_code,400)
 #PUT returning item
 
     def test_authenticated_lab_assistant_can_receive_return_item_belongs_to_his_her_lab(self):

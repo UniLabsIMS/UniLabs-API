@@ -30,3 +30,10 @@ class StudentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields= ["id","student_id","email","first_name","last_name","contact_number","image","role","blocked","department",]
+
+# Student summarized read serializer
+class StudentSummarizedReadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields= ["id","student_id","email","first_name","last_name","contact_number","image","role","blocked","department",]

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView,ReturnItemAPIView,BorrowLogListAPIView
+from .views import BorrowLogListofLabAPIView, BorrowLogListofStudentAPIView, CurrentBorrowedItemListofLabAPIView, CurrentBorrowedItemListofStudentAPIView, ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView,ReturnItemAPIView,BorrowLogListAPIView
 
 urlpatterns=[
     path('',ItemListAPIView.as_view(), name='all-items'),
@@ -13,4 +13,8 @@ urlpatterns=[
     path('temporary-handover/<str:id>',TemporaryHandOverItemAPIView.as_view(), name='temporary-handover'),
     path('return-item/<str:id>',ReturnItemAPIView.as_view(),name='return-item'),
     path('all-borrow-logs/',BorrowLogListAPIView.as_view(),name='all-borrow-logs'),
+    path('all-borrow-logs/of-lab/<str:lab_id>',BorrowLogListofLabAPIView.as_view(),name='all-borrow-logs-of-lab'),
+    path('all-borrow-logs/of-student/<str:student_id>',BorrowLogListofStudentAPIView.as_view(),name='all-borrow-logs-of-student'),
+    path('borrowed/from-lab/<str:lab_id>',CurrentBorrowedItemListofLabAPIView.as_view(),name='currently-borrowed-from-lab'),
+    path('borrowed/by-student/<str:student_id>',CurrentBorrowedItemListofStudentAPIView.as_view(),name='currently-borrowed-by-student'),
 ]

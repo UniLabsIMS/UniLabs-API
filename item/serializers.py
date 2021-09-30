@@ -1,3 +1,4 @@
+from student_user.serializers import StudentSummarizedReadSerializer
 from item.models import BorrowLog, Item, LogState, State
 from lab.serializers import LabReadSerializer
 from item_category.serializers import ItemCategoryReadSerializer
@@ -18,6 +19,14 @@ class ItemInDepthReadSerializer(serializers.ModelSerializer):
     display_item=DisplayItemReadSerializer()
     item_category=ItemCategoryReadSerializer()
     lab=LabReadSerializer()
+
+    class Meta:
+        model=Item
+        fields='__all__'
+
+# only expand display item data
+class ItemSingleDepthReadSerializer(serializers.ModelSerializer):
+    display_item=DisplayItemReadSerializer()
 
     class Meta:
         model=Item
@@ -79,7 +88,7 @@ class ItemReturnSerializer(serializers.ModelSerializer):
         fields=[]
 
     def validate(self,data):
-        borrow_log=BorrowLog.objects.filter(item=self.instance.id,state__in=[State.BORROWED,State.TEMP_BORROWED])
+        borrow_log=BorrowLog.objects.filter(item=self.instance.id,state__in=[LogState.BORROWED,LogState.TEMP_BORROWED])
         if (borrow_log.count()==0):
             raise ValidationError("Given item is not borrowed")
         if (borrow_log.count()!=1):
@@ -89,7 +98,7 @@ class ItemReturnSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def save(self,data):
         item = self.instance
-        borrow_log=BorrowLog.objects.get(item=item.id,state__in=[State.BORROWED,State.TEMP_BORROWED])
+        borrow_log=BorrowLog.objects.get(item=item.id,state__in=[LogState.BORROWED,LogState.TEMP_BORROWED])
         item.state=State.AVAILABLE
         item.save()
         borrow_log.state=LogState.RETURNED
@@ -99,6 +108,9 @@ class ItemReturnSerializer(serializers.ModelSerializer):
 
 #Borrow log Read serializer
 class BorrowLogReadSerializer(serializers.ModelSerializer):
+    item = ItemSingleDepthReadSerializer()
+    student = StudentSummarizedReadSerializer()
+    lab = LabReadSerializer()
     class Meta:
         model=BorrowLog
-        fields="__all__"
+        fields=['id','state','due_date','returned_date','item','student','lab']

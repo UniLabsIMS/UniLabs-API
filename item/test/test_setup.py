@@ -17,6 +17,10 @@ class TestSetup(GlobalTestSetUp):
         cls.temporary_handover_url_name='temporary-handover'
         cls.edit_item_url_name='update-item'
         cls.return_item_url_name='return-item'
+        cls.all_borrow_logs_of_lab_url_name='all-borrow-logs-of-lab'
+        cls.all_borrow_logs_of_student_url_name='all-borrow-logs-of-student'
+        cls.currently_borrowed_from_lab_url_name='currently-borrowed-from-lab'
+        cls.currently_borrowed_by_student_url_name='currently-borrowed-by-student'
         cls.item_data={
             'display_item':cls.global_test_display_item_one.id,
         }
