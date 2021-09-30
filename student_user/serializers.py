@@ -33,7 +33,7 @@ class StudentReadSerializer(serializers.ModelSerializer):
 
 # Student summarized read serializer
 class StudentSummarizedReadSerializer(serializers.ModelSerializer):
-
+    department = DepartmentReadSerializer()
     class Meta:
         model = Student
         fields= ["id","student_id","email","first_name","last_name","contact_number","image","role","blocked","department",]
