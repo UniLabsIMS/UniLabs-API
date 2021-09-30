@@ -6,7 +6,7 @@ from rest_framework import permissions,generics
 from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant, IsLabOwner
 from rest_framework.exceptions import ValidationError
 from .serializers import BorrowLogReadSerializer, ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer,ItemReturnSerializer
-from  item.models import BorrowLog, Item
+from  item.models import BorrowLog, Item, LogState
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
@@ -128,3 +128,47 @@ class BorrowLogListAPIView(ListAPIView):
     queryset=BorrowLog.objects.all()
     permission_classes=(permissions.IsAuthenticated,)
 
+#GET request to get all borrow logs
+class BorrowLogListofLabAPIView(ListAPIView):
+    serializer_class=BorrowLogReadSerializer
+    queryset=BorrowLog.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+            try:
+                return self.queryset.filter(lab_id=self.kwargs.get('lab_id',None)) 
+            except:
+                raise ValidationError('Provided item lab id not valid')
+
+class CurrentBorrowedItemListofLabAPIView(ListAPIView):
+    serializer_class=BorrowLogReadSerializer
+    queryset=BorrowLog.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+            try:
+                return self.queryset.filter(lab_id=self.kwargs.get('lab_id',None),state__in=[LogState.BORROWED,LogState.TEMP_BORROWED]) 
+            except:
+                raise ValidationError('Provided item lab id not valid')
+
+class BorrowLogListofStudentAPIView(ListAPIView):
+    serializer_class=BorrowLogReadSerializer
+    queryset=BorrowLog.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+            try:
+                return self.queryset.filter(student_id=self.kwargs.get('student_id',None)) 
+            except:
+                raise ValidationError('Provided item student id not valid')
+
+class CurrentBorrowedItemListofStudentAPIView(ListAPIView):
+    serializer_class=BorrowLogReadSerializer
+    queryset=BorrowLog.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+            try:
+                return self.queryset.filter(student_id=self.kwargs.get('student_id',None),state__in=[LogState.BORROWED,LogState.TEMP_BORROWED]) 
+            except:
+                raise ValidationError('Provided item student id not valid')

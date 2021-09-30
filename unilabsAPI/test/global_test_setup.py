@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from admin_user.models import Admin
 from lab.models import Lab
-from item.models import BorrowLog, Item
+from item.models import BorrowLog, Item, LogState
 from request.models import Request,RequestItem
 from datetime import date
 
@@ -196,6 +196,12 @@ class GlobalTestSetUp(APITestCase):
             department = cls.global_test_department
         )
 
+        cls.global_test_student_two = Student.objects.create_student(
+            email = cls.fake.email(),
+            student_id = "1278Fd21X",
+            department = cls.global_test_department
+        )
+
         cls.global_blocked_student_data = {
             'email':cls.fake.email(),
             'student_id': "65745X",
@@ -262,10 +268,37 @@ class GlobalTestSetUp(APITestCase):
             item=cls.global_test_item_one,
             student=cls.global_test_student,
             lab=cls.global_test_lab,
-            state='Temp_Borrowed',
+            state=LogState.TEMP_BORROWED,
             due_date=date.today()
 
         )
+
+        cls.global_test_borrow_log_two=BorrowLog.objects.create(
+            item=cls.global_test_item_two,
+            student=cls.global_test_student,
+            lab=cls.global_test_lab,
+            state=LogState.BORROWED,
+            due_date=date.today()
+        )
+
+        cls.global_test_borrow_log_three=BorrowLog.objects.create(
+            item=cls.global_test_item_two,
+            student=cls.global_test_student,
+            lab=cls.global_test_lab,
+            state=LogState.RETURNED,
+            due_date=date.today(),
+            returned_date=date.today()
+        )
+
+        cls.global_test_borrow_log_four=BorrowLog.objects.create(
+            item=cls.global_test_item_four,
+            student=cls.global_test_student_two,
+            lab=cls.global_test_lab_two,
+            state=LogState.BORROWED,
+            due_date=date.today()
+        )
+
+        
         return
 
     def tearDown(self):
