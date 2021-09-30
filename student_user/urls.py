@@ -4,5 +4,5 @@ from .views import AllStudentsAPIView, SingleStudentAPIView, StudentRegisterAPIV
 urlpatterns = [
     path('register/',StudentRegisterAPIView.as_view(),name='student-register'),
     path('',AllStudentsAPIView.as_view(),name='all-students'),
-    path('<str:id>',SingleStudentAPIView.as_view(),name='get-student'),
+    path('<str:student_id>',SingleStudentAPIView.as_view(),name='get-student'),
 ]

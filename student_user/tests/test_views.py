@@ -72,25 +72,25 @@ class TestViews(TestSetUp):
         res = self.client.get(self.all_students_url,data_format="json")
         self.assertEqual(res.status_code,403)
     
-    # GET - all student
+    # GET - a student
 
-    def test_authenticated_users_can_get_a_student(self):
+    def test_authenticated_users_can_get_a_student_using_student_index(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res = self.client.get(reverse(
-            self.get_student_url_name,kwargs={'id':self.global_test_student.id}
+            self.get_student_url_name,kwargs={'student_id':self.global_test_student.student_id}
         ),data_format="json")
         self.assertEqual(res.status_code,200)
-        self.assertGreaterEqual(res.data['id'],str(self.global_test_student.id))
+        self.assertGreaterEqual(res.data['student_id'],str(self.global_test_student.student_id))
     
     def test_unauthenticated_users_cannot_get_list_of_students(self):
         res = self.client.get(reverse(
-            self.get_student_url_name,kwargs={'id':self.global_test_student.id}
+            self.get_student_url_name,kwargs={'student_id':self.global_test_student.student_id}
         ),data_format="json")
         self.assertEqual(res.status_code,401)
 
     def test_when_getting_student_invalid_student_id_should_return_404(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res = self.client.get(reverse(
-            self.get_student_url_name,kwargs={'id':"invalid id"}
+            self.get_student_url_name,kwargs={'student_id':"invalid id"}
         ),data_format="json")
         self.assertEqual(res.status_code,404)
