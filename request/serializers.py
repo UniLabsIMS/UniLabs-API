@@ -6,7 +6,7 @@ from lecturer_user.serializers import LecturerReadSerializer
 from django.core.exceptions import ValidationError
 from display_item.models import DisplayItem
 from django.db.models import fields
-from request.models import Request,RequestItem, RequestState
+from request.models import Request,RequestItem, RequestItemState, RequestState
 from rest_framework import serializers
 from lecturer_user.models import LabLecturer
 from django.db import transaction
@@ -117,7 +117,20 @@ class UpdateRequestStateSerializer(serializers.ModelSerializer):
             raise Exception('Error sending request approve decline')
         return
 
-
+class ClearApprovedRequestItemsFromLabForStudentSerailizer(serializers.ModelSerializer):
+    student = serializers.CharField(write_only=True)
+    lab = serializers.CharField(write_only=True)
+    class Meta:
+        model = RequestItem
+        fields = ['student','lab']
+    
+    @transaction.atomic
+    def save(self,data):
+        approved_request_items= RequestItem.objects.filter(student=data.get('student'),lab=data.get('lab'),state=RequestItemState.APPROVED)
+        for request_item in approved_request_items:
+            request_item.state=RequestItemState.DECLINED_BY_LAB
+            request_item.save()
+        return
 
 
 
