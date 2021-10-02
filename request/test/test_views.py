@@ -226,6 +226,23 @@ class TestViews(TestSetup):
         ),format='json')
         self.assertEqual(res.status_code,400)
     
+    #PUT - Clear approved display items
+
+    def test_authenticated_user_can_clear_approved_display_items_from_lab_for_student(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        self.assertEqual(res.status_code,200)
+        import pdb;pdb.set_trace()
+    
+    def test_authenticated_other_user_cannot_clear_approved_display_items_from_lab_for_student(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_clear_approved_display_items_from_lab_for_student(self):
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        self.assertEqual(res.status_code,401)
+    
 
 
     
