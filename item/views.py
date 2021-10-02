@@ -5,7 +5,7 @@ from rest_framework.generics import CreateAPIView, GenericAPIView,ListAPIView,Up
 from rest_framework import permissions,generics
 from custom_user.permissions import IsLabAssistant, IsLabManagerOrAssistant, IsLabOwner
 from rest_framework.exceptions import ValidationError
-from .serializers import BorrowLogReadSerializer, ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer,ItemReturnSerializer
+from .serializers import BorrowLogReadSerializer, HandoverSerializer, ItemInDepthReadSerializer,ItemWriteSerializer,ItemUpdateSerializer,TemporaryHandoverSerializer,ItemReturnSerializer
 from  item.models import BorrowLog, Item, LogState
 from rest_framework.response import Response
 from rest_framework import status
@@ -172,3 +172,20 @@ class CurrentBorrowedItemListofStudentAPIView(ListAPIView):
                 return self.queryset.filter(student_id=self.kwargs.get('student_id',None),state__in=[LogState.BORROWED,LogState.TEMP_BORROWED]) 
             except:
                 raise ValidationError('Provided item student id not valid')
+
+# view to handover item 
+class HandOverItemAPIView(GenericAPIView):
+    serializer_class=HandoverSerializer
+    queryset=Item.objects.all()
+    permission_classes=(permissions.IsAuthenticated,IsLabAssistant, IsLabOwner)
+    lookup_field='id'
+
+    @transaction.atomic
+    def post(self,request, *args, **kwargs):
+        item = self.get_object()
+        serializer = self.get_serializer(data=request.data,instance=item)
+        if serializer.is_valid():
+            serializer.save(request.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -69,7 +69,7 @@ class RequestItemReadSerializer(serializers.ModelSerializer):
     display_item = DisplayItemReadSerializer()
     class Meta:
         model=RequestItem
-        fields=("display_item","quantity","state")
+        fields=("id","display_item","quantity","state")
 
 class RequestInDepthSerializer(serializers.ModelSerializer):
     lab=LabReadSerializer()
