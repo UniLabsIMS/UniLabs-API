@@ -11,6 +11,7 @@ class TestSetup(GlobalTestSetUp):
         cls.lecturer_requests_url=reverse('lecturer-requests')
         cls.requests_of_a_lab_url_name='requests-of-a-lab'
         cls.approve_or_decline_url_name='approve-or-decline'
+        cls.approved_request_items_url_name='approved-display-items-in-lab-for-student'
         cls.request_api_view_data = {
             "student": cls.global_test_student.id,
             "lecturer": cls.global_test_lecturer.id,

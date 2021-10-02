@@ -80,7 +80,7 @@ class RequestUpdateSerializer(GenericAPIView):
 class ApprovedRequestItemsListFromLabForStudentAPIView(ListAPIView):
     serializer_class=RequestItemReadSerializer
     queryset=RequestItem.objects.all()
-    permission_classes=(permissions.IsAuthenticated,)
+    permission_classes=(permissions.IsAuthenticated,IsLabAssistant,IsLabOwner)
 
     def get_queryset(self):
         try:
