@@ -133,7 +133,6 @@ class HandoverSerializer(serializers.ModelSerializer):
         try:
             request_item = RequestItem.objects.get(id=request_item_id)
         except Exception as e:
-            print(e)
             raise ValidationError("Invalid request item id")
         if(request_item.display_item!=self.instance.display_item):
             raise ValidationError("Parent display item does not match with the item id")
@@ -154,5 +153,6 @@ class HandoverSerializer(serializers.ModelSerializer):
         request_item.quantity -= 1
         if(request_item.quantity==0):
             request_item.state=RequestItemState.COMPLETED
-        request_item.save() 
+        request_item.save()
+        self.data['request_item']=request_item
         return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.BORROWED,student=request_item.student,due_date=validated_data['due_date'])
