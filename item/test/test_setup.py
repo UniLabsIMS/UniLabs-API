@@ -21,6 +21,7 @@ class TestSetup(GlobalTestSetUp):
         cls.all_borrow_logs_of_student_url_name='all-borrow-logs-of-student'
         cls.currently_borrowed_from_lab_url_name='currently-borrowed-from-lab'
         cls.currently_borrowed_by_student_url_name='currently-borrowed-by-student'
+        cls.item_handover_url_name='item-handover'
         cls.item_data={
             'display_item':cls.global_test_display_item_one.id,
         }
@@ -32,6 +33,10 @@ class TestSetup(GlobalTestSetUp):
         }
         cls.edit_item_data={
             'state':State.BORROWED,
+        }
+        cls.item_handover_data={
+            'due_date':'2022-01-31',
+            'request_item_id': cls.global_test_request_item_one.id
         }
 
         return

@@ -10,7 +10,7 @@ from faker import Faker
 from admin_user.models import Admin
 from lab.models import Lab
 from item.models import BorrowLog, Item, LogState
-from request.models import Request,RequestItem
+from request.models import Request,RequestItem, RequestItemState
 from datetime import date
 
 
@@ -247,12 +247,13 @@ class GlobalTestSetUp(APITestCase):
         )
 
         # request items for tests
-        cls.global_test_request_item_one=RequestItem.objects.create(
+        cls.global_test_request_item_one=RequestItem.objects.create( # for item handover the state should be approved
             request=cls.global_test_request_one,
             display_item=cls.global_test_display_item_one,
             student=cls.global_test_student,
             lab=cls.global_test_lab,
-            quantity=1
+            quantity=1,
+            state=RequestItemState.APPROVED
         )
 
         cls.global_test_request_item_two=RequestItem.objects.create(

@@ -195,6 +195,53 @@ class TestViews(TestSetup):
     def test_unauthenticated_user_cannot_approve_or_decline_new_request(self):
         res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
         self.assertEqual(res.status_code,401)
+    
+    #GET - filter request item by student and lab
+
+    def test_authenticated_user_can_filter_request_item_by_student_and_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.get(reverse(
+            self.approved_request_items_url_name,kwargs={'lab_id':self.global_test_lab.id,'student_id':self.global_test_student.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),1)
+
+    def test_authenticated_other_user_cannot_filter_request_item_by_student_and_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(
+            self.approved_request_items_url_name,kwargs={'lab_id':self.global_test_lab.id,'student_id':self.global_test_student.id}
+        ),format='json')
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_filter_request_item_by_student_and_lab(self):
+        res=self.client.get(reverse(
+            self.approved_request_items_url_name,kwargs={'lab_id':self.global_test_lab.id,'student_id':self.global_test_student.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_lab_id_and_student_id_cannot_be_invalid_when_filter_item_by_student_and_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res=self.client.get(reverse(
+            self.approved_request_items_url_name,kwargs={'lab_id':'invalid_id','student_id':'invalid_id'}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
+    
+    #PUT - Clear approved display items
+
+    def test_authenticated_user_can_clear_approved_display_items_from_lab_for_student(self):
+        self.client.force_authenticate(user=self.global_test_lab_assistant)
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        self.assertEqual(res.status_code,200)
+    
+    def test_authenticated_other_user_cannot_clear_approved_display_items_from_lab_for_student(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        self.assertEqual(res.status_code,403)
+    
+    def test_unauthenticated_user_cannot_clear_approved_display_items_from_lab_for_student(self):
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        self.assertEqual(res.status_code,401)
+    
 
 
     

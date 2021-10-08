@@ -19,6 +19,7 @@ class RequestItemState (models.TextChoices):
     APPROVED='Approved',_('Approved')
     DECLINED='Declined',_('Declined')
     COMPLETED='Completed',_('Completed')
+    DECLINED_BY_LAB='Declined by Lab',_('Declined by Lab')
 
 #Request Model
 class Request(models.Model):

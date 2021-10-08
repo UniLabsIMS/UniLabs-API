@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BorrowLogListofLabAPIView, BorrowLogListofStudentAPIView, CurrentBorrowedItemListofLabAPIView, CurrentBorrowedItemListofStudentAPIView, ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView,ReturnItemAPIView,BorrowLogListAPIView
+from .views import BorrowLogListofLabAPIView, BorrowLogListofStudentAPIView, CurrentBorrowedItemListofLabAPIView, CurrentBorrowedItemListofStudentAPIView, HandOverItemAPIView, ItemCreateAPIView, ItemDeleteAPIView,ItemListByLabAPIView, ItemListByItemCategoryAPIView,ItemUpdateAPIView,ItemListAPIView,ItemListByDisplayItemAPIView,ItemRetriveAPIView,TemporaryHandOverItemAPIView,ReturnItemAPIView,BorrowLogListAPIView
 
 urlpatterns=[
     path('',ItemListAPIView.as_view(), name='all-items'),
@@ -17,4 +17,5 @@ urlpatterns=[
     path('all-borrow-logs/of-student/<str:student_id>',BorrowLogListofStudentAPIView.as_view(),name='all-borrow-logs-of-student'),
     path('borrowed/from-lab/<str:lab_id>',CurrentBorrowedItemListofLabAPIView.as_view(),name='currently-borrowed-from-lab'),
     path('borrowed/by-student/<str:student_id>',CurrentBorrowedItemListofStudentAPIView.as_view(),name='currently-borrowed-by-student'),
+    path('handover/<str:id>',HandOverItemAPIView.as_view(), name='item-handover'),# tests needed
 ]

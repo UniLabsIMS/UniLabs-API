@@ -1,3 +1,4 @@
+from request.models import RequestItem, RequestItemState
 from student_user.serializers import StudentSummarizedReadSerializer
 from item.models import BorrowLog, Item, LogState, State
 from lab.serializers import LabReadSerializer
@@ -114,3 +115,44 @@ class BorrowLogReadSerializer(serializers.ModelSerializer):
     class Meta:
         model=BorrowLog
         fields=['id','state','due_date','returned_date','item','student','lab']
+
+# Handover Approved Items Serializer
+class HandoverSerializer(serializers.ModelSerializer):
+    request_item_id=serializers.CharField(write_only=True)
+    due_date=serializers.DateField(write_only=True)
+    class Meta:
+        model=Item
+        fields=('request_item_id','due_date',)
+    
+    def validate(self,data):
+        request_item_id = data.get('request_item_id')
+        due_date = data.get('due_date')
+        item=self.instance
+        if (item.state)!=State.AVAILABLE:
+            raise ValidationError("Item is not available")
+        try:
+            request_item = RequestItem.objects.get(id=request_item_id)
+        except Exception as e:
+            raise ValidationError("Invalid request item id")
+        if(request_item.display_item!=self.instance.display_item):
+            raise ValidationError("Parent display item does not match with the item id")
+        if(request_item.state!=RequestItemState.APPROVED):
+            raise ValidationError("Not allowed to handover non approved items")
+        if(request_item.quantity<=0):
+            raise ValidationError("Requested Qunatity Already HandedOver")
+        if(due_date < date.today()):
+            raise ValidationError("Due date should be a date after today")
+        return data
+    
+    @transaction.atomic
+    def save(self,validated_data):
+        item = self.instance
+        request_item=RequestItem.objects.get(id=validated_data['request_item_id'])
+        item.state=State.BORROWED
+        item.save()
+        request_item.quantity -= 1
+        if(request_item.quantity==0):
+            request_item.state=RequestItemState.COMPLETED
+        request_item.save()
+        self.data['request_item']=request_item
+        return BorrowLog.objects.create(item=item,lab=item.lab,state=LogState.BORROWED,student=request_item.student,due_date=validated_data['due_date'])
