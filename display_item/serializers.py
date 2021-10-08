@@ -25,7 +25,7 @@ class DisplayItemInDepthReadSerializer(serializers.ModelSerializer):
 class DisplayItemWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model=DisplayItem
-        fields=('id','item_category','name','description') # id wont show up as required, as editable is set to false
+        fields=('id','item_category','name','description','image') # id wont show up as required, as editable is set to false
 
     # setting the lab column using the item_category field
     def create(self,validated_data): 
