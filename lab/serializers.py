@@ -68,3 +68,27 @@ class LabAssignLecturerSerializer(serializers.ModelSerializer):
         for lecturer_id in lecturers:
             LabLecturer.objects.create(lab_id=lab_id,lecturer_id=lecturer_id)
         return
+
+
+
+'''
+In the serializer
+Not the model serializer we use, we use serialozers.Serializer 
+
+You need to have several method fields which are read only (ex: total_item_count, bo_itm_count,.....)
+
+
+'''
+class LabReportReadSerializer(serializers.Serializer):
+    lab_id = serializers.CharField(write_only=True)
+    total_item_count = serializers.SerializerMethodField(read_only=True)
+
+    def validate(self, data):
+        # lab id ok
+        return data
+    
+    def get_total_item_count(self):
+        # count = Item.objects.filter(lab_id=self.lab_id).count()
+        count=5
+        return count
+
