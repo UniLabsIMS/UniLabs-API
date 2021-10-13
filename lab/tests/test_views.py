@@ -100,6 +100,27 @@ class TestViews(TestSetUp):
         ),format='json')
         self.assertEqual(res.status_code,400)
     
+    # GET lab report
+    def test_authenticated_user_can_get_lab_report(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.lab_report_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+    
+    def test_unauthenticated_user_cannot_get_lab_report(self):
+        res=self.client.get(reverse(
+            self.lab_report_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_user_cannot_get_lab_report_with_invalid_lab_id(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(reverse(
+            self.lab_report_url_name,kwargs={'lab_id':'invalid id'}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
+    
     # Assign lecturer to lab KEEP AT END
 
     def test_admin_can_assign_new_lecturers_to_labs(self):
