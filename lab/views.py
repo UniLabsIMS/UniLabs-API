@@ -5,7 +5,7 @@ from rest_framework.generics import CreateAPIView, GenericAPIView,ListAPIView,Re
 from lab.models import Lab
 from rest_framework import permissions, status
 from custom_user.permissions import IsAdmin
-from .serializers import LabAssignLecturerSerializer, LabInDepthReadSerializer, LabUpdateSerializer,LabWriteSerializer
+from .serializers import LabAssignLecturerSerializer, LabInDepthReadSerializer, LabReportReadSerializer, LabUpdateSerializer,LabWriteSerializer
 from rest_framework.exceptions import ValidationError
 
 #POST request to create lab
@@ -57,3 +57,15 @@ class LabAssignLecturerAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(serializer.validated_data)
         return Response(serializer.data,status=status.HTTP_200_OK)
+
+#GET lab report
+class LabReportAPIView(GenericAPIView):
+    serializer_class =LabReportReadSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field='lab_id'
+
+    def get(self,request,*args,**kwargs):
+        serializer = self.serializer_class(data={'lab_id':self.kwargs.get('lab_id',None)})
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+        

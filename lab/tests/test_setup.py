@@ -12,6 +12,7 @@ class TestSetUp(GlobalTestSetUp):
         cls.single_lab_url_name = 'single-lab' # as we need path parameters
         cls.labs_of_a_department_url_name = 'labs-of-a-department'
         cls.assign_lec_to_lab_url = reverse('assign-lecturers')
+        cls.lab_report_url_name='lab-report'
         cls.lab_data = {
             'name': 'TEST LAB NAME',
             'department': cls.global_test_department.id,

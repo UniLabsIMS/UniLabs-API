@@ -8,4 +8,5 @@ urlpatterns = [
      path('update/<str:id>',views.LabUpdateAPIView.as_view(),name="lab-update"),
      path('of-department/<str:department_id>', views.LabListByDepartmentAPIView.as_view(), name='labs-of-a-department'),
      path('assign-lecturers/', views.LabAssignLecturerAPIView.as_view(), name='assign-lecturers'),
+     path('lab-report/<str:lab_id>',views.LabReportAPIView.as_view(), name='lab-report'),
 ]
