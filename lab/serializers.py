@@ -64,7 +64,7 @@ class LabAssignLecturerSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def save(self,validated_data):
         lecturers = validated_data.get('lecturers')
-        lab_id = validated_data.get('lab')
+        lab = validated_data.get('lab')
         for lecturer_id in lecturers:
-            LabLecturer.objects.create(lab_id=lab_id,lecturer_id=lecturer_id)
+            LabLecturer.objects.create(lab=lab,lecturer_id=lecturer_id)
         return

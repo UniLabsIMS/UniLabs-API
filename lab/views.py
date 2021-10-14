@@ -55,5 +55,5 @@ class LabAssignLecturerAPIView(GenericAPIView):
     def post(self,request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(request.data)
+        serializer.save(serializer.validated_data)
         return Response(serializer.data,status=status.HTTP_200_OK)

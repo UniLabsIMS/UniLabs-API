@@ -6,53 +6,53 @@ class TestViews(TestSetUp):
 
     def test_authenticated_admin_can_register_new_students(self):
         self.client.force_authenticate(user=self.global_test_admin)
-        res = self.client.post(self.new_student_url,self.student_data,format="json")
+        res = self.client.post(self.new_student_url,self.student_data,format="multipart")
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.data['student_id'],self.student_data['student_id'])
         self.assertEqual(res.data['email'],self.student_data['email'])
 
     def test_unauthenticated_user_cannot_add_students(self):
-        res = self.client.post(self.new_student_url,self.student_data,format="json")
+        res = self.client.post(self.new_student_url,self.student_data,format="multipart")
         self.assertEqual(res.status_code, 401)
 
     def test_authenticated_other_users_cannot_register_new_students(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res = self.client.post(self.new_student_url,self.student_data,format="json")
+        res = self.client.post(self.new_student_url,self.student_data,format="multipart")
         self.assertEqual(res.status_code, 403)
 
     def test_cannot_add_student_with_no_email(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.student_data.copy()
         data["email"]=""
-        res = self.client.post(self.new_student_url,data,format="json")
+        res = self.client.post(self.new_student_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_add_student_with_invalid_email(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.student_data.copy()
         data["email"]="test"
-        res = self.client.post(self.new_student_url,data,format="json")
+        res = self.client.post(self.new_student_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_add_student_with_in_use_email(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.student_data.copy()
         data["email"]=self.global_test_student.email
-        res = self.client.post(self.new_student_url,data,format="json")
+        res = self.client.post(self.new_student_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_add_student_with_no_student_id(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.student_data.copy()
         data["student_id"]=""
-        res = self.client.post(self.new_student_url,data,format="json")
+        res = self.client.post(self.new_student_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
     
     def test_cannot_add_student_with_duplicate_student_id(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.student_data.copy()
         data["student_id"]=self.global_test_student.student_id
-        res = self.client.post(self.new_student_url,data,format="json")
+        res = self.client.post(self.new_student_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
     
     # GET - all students

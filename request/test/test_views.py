@@ -164,19 +164,19 @@ class TestViews(TestSetup):
     #PUT Approve or Decline Request
     def test_authenticated_lecturer_can_approve_new_request(self):
         self.client.force_authenticate(user=self.global_test_lecturer)
-        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="multipart")
         self.assertEqual(res.status_code,200)
         self.assertEqual(res.data['state'],"Approved")
     
     def test_authenticated_lecturer_can_decline_new_request(self):
         self.client.force_authenticate(user=self.global_test_lecturer)
-        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Declined"},format="json")
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Declined"},format="multipart")
         self.assertEqual(res.status_code,200)
         self.assertEqual(res.data['state'],"Declined")
 
     def test_authenticated_lecturer_not_assigned_to_request_can_not_change_state(self):
         self.client.force_authenticate(user=self.global_test_lecturer_two)
-        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="multipart")
         self.assertEqual(res.status_code,401)
     
     def test_initial_state_of_request_should_be_new(self):
@@ -184,16 +184,16 @@ class TestViews(TestSetup):
         request=copy.copy(self.global_test_request_one)
         request.state="Approved"
         request.save()
-        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':request.id}),{"state": "Declined"},format="json")
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':request.id}),{"state": "Declined"},format="multipart")
         self.assertEqual(res.status_code,400)
     
     def test_authenticated_other_cannot_approve_or_decline_new_request(self):
         self.client.force_authenticate(user=self.global_test_student)
-        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="multipart")
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_approve_or_decline_new_request(self):
-        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="json")
+        res = self.client.put(reverse(self.approve_or_decline_url_name,kwargs={'id':self.global_test_request_one.id}),{"state": "Approved"},format="multipart")
         self.assertEqual(res.status_code,401)
     
     #GET - filter request item by student and lab
@@ -230,16 +230,16 @@ class TestViews(TestSetup):
 
     def test_authenticated_user_can_clear_approved_display_items_from_lab_for_student(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
-        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="multipart")
         self.assertEqual(res.status_code,200)
     
     def test_authenticated_other_user_cannot_clear_approved_display_items_from_lab_for_student(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="multipart")
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_clear_approved_display_items_from_lab_for_student(self):
-        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="json")
+        res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="multipart")
         self.assertEqual(res.status_code,401)
     
 

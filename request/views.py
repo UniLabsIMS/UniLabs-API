@@ -95,7 +95,7 @@ class ClearApprovedRequestItemsFromLabForStudentAPIView(GenericAPIView):
     def put(self,request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(request.data)
+            serializer.save(serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
