@@ -15,19 +15,19 @@ class TestViews(TestSetup):
 
     def test_authenticated_LabManager_can_create_items(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res=self.client.post(self.new_item_url,self.item_data,format='json')
+        res=self.client.post(self.new_item_url,self.item_data,format='multipart')
         self.assertEqual(res.status_code,201)
         self.assertIsNotNone('id')
 
     def test_authenticated_LabAssistant_can_create_items(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
-        res=self.client.post(self.new_item_url,self.item_data,format='json')
+        res=self.client.post(self.new_item_url,self.item_data,format='multipart')
         self.assertEqual(res.status_code,201)
         self.assertIsNotNone('id')
 
     def test_authenticated_other_user_cannot_create_items(self):
         self.client.force_authenticate(user=self.global_test_admin)
-        res=self.client.post(self.new_item_url,self.item_data,format='json')
+        res=self.client.post(self.new_item_url,self.item_data,format='multipart')
         self.assertEqual(res.status_code,403)
         self.assertIsNotNone('id')
     
@@ -35,20 +35,20 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         data=self.item_data.copy()
         data['display_item']='123'  #Invalid display item Id
-        res=self.client.post(self.new_item_url,data,format='json')
+        res=self.client.post(self.new_item_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_cannot_create_item_without_display_item(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.item_data.copy()
         data['display_item']=""  #Invalid display item Id
-        res=self.client.post(self.new_item_url,data,format='json')
+        res=self.client.post(self.new_item_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_display_item_count_increase_by_creation_of_item(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         data_1=self.item["display_item"].item_count
-        res=self.client.post(self.new_item_url,self.item_data,format='json')
+        res=self.client.post(self.new_item_url,self.item_data,format='multipart')
         data_2=DisplayItem.objects.get(id=res.data['display_item']).item_count
         self.assertEqual(data_1+1,data_2)
     
@@ -162,12 +162,12 @@ class TestViews(TestSetup):
     def test_authenticated_LabManager_can_delete_items(self):
         # create an item to delete
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        res_created=self.client.post(self.new_item_url,self.item_data,format='multipart')
         # then delete it
         item_count_parent_b4= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
-        ),format='json')
+        ),format='multipart')
         item_count_parent_after= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         self.assertEqual(res.status_code,204)
         self.assertEqual(item_count_parent_b4,item_count_parent_after+1)
@@ -175,12 +175,12 @@ class TestViews(TestSetup):
     def test_authenticated_LabAssistant_can_delete_items(self):
         # create an item to delete
         self.client.force_authenticate(user=self.global_test_lab_assistant)
-        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        res_created=self.client.post(self.new_item_url,self.item_data,format='multipart')
         # then delete it
         item_count_parent_b4= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
-        ),format='json')
+        ),format='multipart')
         item_count_parent_after= DisplayItem.objects.get(id = self.item_data["display_item"]).item_count
         self.assertEqual(res.status_code,204)
         self.assertEqual(item_count_parent_b4,item_count_parent_after+1)
@@ -188,34 +188,34 @@ class TestViews(TestSetup):
     def test_authenticated_LabAssistant_can_not_delete_items_of_other_lab(self):
         # create an item to delete
         self.client.force_authenticate(user=self.global_test_lab_assistant_two)
-        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        res_created=self.client.post(self.new_item_url,self.item_data,format='multipart')
         # then delete it
         self.client.force_authenticate(user=self.global_test_student)
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
-        ),format='json')
+        ),format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_authenticated_Other_Users_can_not_delete_items(self):
         # create an item to delete
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        res_created=self.client.post(self.new_item_url,self.item_data,format='multipart')
         # then delete it
         self.client.force_authenticate(user=self.global_test_student)
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
-        ),format='json')
+        ),format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_Users_can_not_delete_items(self):
         # create an item to delete
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res_created=self.client.post(self.new_item_url,self.item_data,format='json')
+        res_created=self.client.post(self.new_item_url,self.item_data,format='multipart')
         # then delete it
         self.client.force_authenticate(user=None)
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':res_created.data['id']}
-        ),format='json')
+        ),format='multipart')
         self.assertEqual(res.status_code,401)
 
     def test_can_not_delete_non_existing_items(self):
@@ -224,7 +224,7 @@ class TestViews(TestSetup):
         # then delete it
         res=self.client.delete(reverse(
             self.delete_item_url_name,kwargs={'id':'65254675'}
-        ),format='json')
+        ),format='multipart')
         self.assertEqual(res.status_code,404)
     
     #POST temporary borrow
@@ -232,34 +232,34 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.student_data,format='json')
+        ),self.student_data,format='multipart')
         self.assertEqual(res.status_code,200)
     
     def test_authenticated_other_user_cannot_handover_items_temporally(self):
         self.client.force_authenticate(user=self.global_test_admin)
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.student_data,format='json')
+        ),self.student_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_handover_items_temporally(self):
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.student_data,format='json')
+        ),self.student_data,format='multipart')
         self.assertEqual(res.status_code,401)
     
     def test_authenticated_Lab_Assistant_cannot_handover_items_temporally_in_other_lab(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant_two)
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.student_data,format='json')
+        ),self.student_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_item_id_cannot_be_invalid_in_temp_handover(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':"Invalid_id"}
-        ),self.student_data,format='json')
+        ),self.student_data,format='multipart')
         self.assertEqual(res.status_code,404)
     
     def test_student_id_cannot_be_invalid_in_temp_handover(self):
@@ -268,7 +268,7 @@ class TestViews(TestSetup):
         data['student_uuid']='invalid'
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),data,format='json')
+        ),data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_temp_handover_item_cannot_be_other_state_than_available(self):
@@ -278,7 +278,7 @@ class TestViews(TestSetup):
         item.save()
         res=self.client.post(reverse(
             self.temporary_handover_url_name,kwargs={'id':item.id}
-        ),self.student_data,format='json')
+        ),self.student_data,format='multipart')
         self.assertEqual(res.status_code,400)
         item.state = State.AVAILABLE
         item.save()
@@ -364,34 +364,34 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,200)
     
     def test_authenticated_lab_assistant_cannot_receive_return_item_does_not_belongs_to_her_lab(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant_two)
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_authenticated_other_user_cannot_receive_return_item(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_receive_return_item(self):
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,401)
     
     def test_return_item_id_cannot_be_invalid(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':"invalid_id"}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,404)
     
     def test_return_item_should_not_be_other_state_rather_than_BORROWED_or_TEMP_BORROWED(self):
@@ -401,7 +401,7 @@ class TestViews(TestSetup):
         borrow_log.save()
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,400)
         borrow_log.state=LogState.TEMP_BORROWED
         borrow_log.save()
@@ -413,7 +413,7 @@ class TestViews(TestSetup):
         borrow_log.save()
         res=self.client.put(reverse(
             self.return_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),{},format='json')
+        ),{},format='multipart')
         self.assertEqual(res.status_code,400)
         borrow_log.state=LogState.TEMP_BORROWED
         borrow_log.save()
@@ -427,7 +427,7 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.put(reverse(
             self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.edit_item_data,format='json')
+        ),self.edit_item_data,format='multipart')
         self.assertEqual(res.status_code,200)
         self.assertEqual(res.data['state'],State.BORROWED)
     
@@ -435,30 +435,21 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_assistant_two)
         res=self.client.put(reverse(
             self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.edit_item_data,format='json')
+        ),self.edit_item_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_authenticated_other_user_cannot_edit_item(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.put(reverse(
             self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.edit_item_data,format='json')
+        ),self.edit_item_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_other_user_cannot_edit_item(self):
         res=self.client.put(reverse(
             self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.edit_item_data,format='json')
+        ),self.edit_item_data,format='multipart')
         self.assertEqual(res.status_code,401)
-    
-    def test_item_state_should_not_empty(self):
-        self.client.force_authenticate(user=self.global_test_lab_assistant)
-        data=self.edit_item_data.copy()
-        data['state']=""
-        res=self.client.put(reverse(
-            self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),data,format='json')
-        self.assertEqual(res.status_code,400)
     
     def test_item_state_cannot_be_invalid_state(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
@@ -466,7 +457,7 @@ class TestViews(TestSetup):
         data['state']="invalid_state"
         res=self.client.put(reverse(
             self.edit_item_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),data,format='json')
+        ),data,format='multipart')
         self.assertEqual(res.status_code,400)
     
 
@@ -475,27 +466,27 @@ class TestViews(TestSetup):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,200)
     
     def test_authenticated_other_user_cannot_hand_over_items(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_hand_over_items(self):
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,401)
     
     def test_item_id_should_not_be_invalid_while_hand_over_item(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':"invalid id"}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,404)
     
     def test_item_state_cannot_be_other_state_than_AVAILABLE_state_when_hand_over_item(self):
@@ -505,7 +496,7 @@ class TestViews(TestSetup):
         item.save()
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':item.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
         item.state=State.AVAILABLE
         item.save()
@@ -517,7 +508,7 @@ class TestViews(TestSetup):
         item.save()
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':item.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
         item.state=State.AVAILABLE
         item.save()
@@ -528,7 +519,7 @@ class TestViews(TestSetup):
         handover_data['request_item_id']=self.global_test_request_item_two.id
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),handover_data,format='json')
+        ),handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_request_item_state_cannot_be_other_state_than_APPROVED_state_when_hand_over_item(self):
@@ -538,7 +529,7 @@ class TestViews(TestSetup):
         request_item.save()
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
         request_item.state=RequestState.APPROVED
         request_item.save()
@@ -550,7 +541,7 @@ class TestViews(TestSetup):
         request_item.save()
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),self.item_handover_data,format='json')
+        ),self.item_handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
         request_item.quantity=1
         request_item.save()
@@ -561,7 +552,7 @@ class TestViews(TestSetup):
         handover_data['due_date']='2020-01-31'
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),handover_data,format='json')
+        ),handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_request_item_id_cannot_be_invalid_when_hand_over_item(self):
@@ -570,7 +561,7 @@ class TestViews(TestSetup):
         handover_data['request_item_id']='Invalid id'
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),handover_data,format='json')
+        ),handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_due_date_cannot_be_invalid_when_hand_over_item(self):
@@ -579,7 +570,7 @@ class TestViews(TestSetup):
         handover_data['due_date']='Invalid date'
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),handover_data,format='json')
+        ),handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_request_item_id_cannot_be_empty_when_hand_over_item(self):
@@ -588,7 +579,7 @@ class TestViews(TestSetup):
         handover_data['request_item_id']=''
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),handover_data,format='json')
+        ),handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_due_date_cannot_be_empty_when_hand_over_item(self):
@@ -597,7 +588,7 @@ class TestViews(TestSetup):
         handover_data['due_date']=''
         res=self.client.post(reverse(
             self.item_handover_url_name,kwargs={'id':self.global_test_item_one.id}
-        ),handover_data,format='json')
+        ),handover_data,format='multipart')
         self.assertEqual(res.status_code,400)
     
 

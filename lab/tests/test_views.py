@@ -5,41 +5,41 @@ class TestViews(TestSetUp):
     #POST - new lab
     def test_authenticated_admin_can_create_labs(self):
         self.client.force_authenticate(user=self.global_test_admin)
-        res = self.client.post(self.new_lab_url,self.lab_data,format="json")
+        res = self.client.post(self.new_lab_url,self.lab_data,format="multipart")
         self.assertEqual(res.status_code, 201)
         self.assertIsNotNone('id')
     
     def test_authenticated_other_users_cannot_create_department(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res=self.client.post(self.new_lab_url,self.lab_data,format="json")
+        res=self.client.post(self.new_lab_url,self.lab_data,format="multipart")
         self.assertEqual(res.status_code,403)
     
     def test_cannot_create_lab_without_name(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data=self.lab_data.copy()
         data['name']=""
-        res=self.client.post(self.new_lab_url,data,format='json')
+        res=self.client.post(self.new_lab_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
 
     def test_cannot_create_lab_with_duplicate_name(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data=self.lab_data.copy()
         data['name']=self.global_test_lab.name
-        res=self.client.post(self.new_lab_url,data,format='json')
+        res=self.client.post(self.new_lab_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
 
     def test_lab_creation_must_fail_if_department_id_is_invalid(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.lab_data.copy()
         data['department'] = '123' # Invalid department id
-        res = self.client.post(self.new_lab_url,data,format="json")
+        res = self.client.post(self.new_lab_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
 
     def test_cannot_create_lab_without_department(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data=self.lab_data.copy()
         data['department']=""
-        res=self.client.post(self.new_lab_url,data,format="json")
+        res=self.client.post(self.new_lab_url,data,format="multipart")
         self.assertEqual(res.status_code,400)
         
     #GET - labs
@@ -125,29 +125,29 @@ class TestViews(TestSetUp):
 
     def test_admin_can_assign_new_lecturers_to_labs(self):
         self.client.force_authenticate(user=self.global_test_admin)
-        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="json")
+        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="multipart")
         self.assertEqual(res.status_code, 200)
     
     def test_admin_can_not_assign_invalid_lecturers_to_labs(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.assign_lecs_to_lab_data.copy()
         data['lecturers'] = ["Invalid id"]
-        res = self.client.post(self.assign_lec_to_lab_url,data,format="json")
+        res = self.client.post(self.assign_lec_to_lab_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
     
     def test_admin_can_not_assign_already_assigned_lecturers_to_labs(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.assign_lecs_to_lab_data.copy()
         data['lecturers'].append(self.global_test_lecturer.id)
-        res = self.client.post(self.assign_lec_to_lab_url,data,format="json")
+        res = self.client.post(self.assign_lec_to_lab_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
     
     def test_unauthenticated_users_can_not_assigned_lecturers_to_labs(self):
-        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="json")
+        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="multipart")
         self.assertEqual(res.status_code, 401)
     
     def test_authenticated_other_users_can_not_assigned_lecturers_to_labs(self):
-        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="json")
+        res = self.client.post(self.assign_lec_to_lab_url,self.assign_lecs_to_lab_data,format="multipart")
         self.assertEqual(res.status_code, 401)
 
 

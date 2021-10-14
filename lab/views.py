@@ -55,19 +55,8 @@ class LabAssignLecturerAPIView(GenericAPIView):
     def post(self,request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(request.data)
+        serializer.save(serializer.validated_data)
         return Response(serializer.data,status=status.HTTP_200_OK)
-
-'''
-labReportAPIView-Generic API Views
-serializer
-permissions - Authenticated
-
-get method
-    serializer = self.serializer_class(data={'lab_id':self.kwargs.get('lab_id',None)})
-    serializer.is_valid(raise_exception=True)
-    return Response(serializer.data,status=status.HTTP_200_OK)
-'''
 
 class LabReportAPIView(GenericAPIView):
     serializer_class =LabReportReadSerializer
@@ -78,3 +67,4 @@ class LabReportAPIView(GenericAPIView):
         serializer = self.serializer_class(data={'lab_id':self.kwargs.get('lab_id',None)})
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+        

@@ -9,42 +9,42 @@ class TestViews(TestSetUp):
 
     def test_authenticated_user_can_create_display_items(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res=self.client.post(self.new_display_item_url,self.display_item_data,format='json')
+        res=self.client.post(self.new_display_item_url,self.display_item_data,format='multipart')
         self.assertEqual(res.status_code,201)
         self.assertIsNotNone('id')
         self.assertEqual(res.data["name"],self.display_item_data["name"])
     
     def test_authenticated_other_users_cannot_create_display_items(self):
         self.client.force_authenticate(user=self.global_test_admin)
-        res=self.client.post(self.new_display_item_url,self.display_item_data,format='json')
+        res=self.client.post(self.new_display_item_url,self.display_item_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_cannot_create_display_item_without_name(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.display_item_data.copy()
         data['name']=""
-        res=self.client.post(self.new_display_item_url,data,format='json')
+        res=self.client.post(self.new_display_item_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_cannot_create_display_item_without_description(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.display_item_data.copy()
         data['description']=""
-        res=self.client.post(self.new_display_item_url,data,format='json')
+        res=self.client.post(self.new_display_item_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_display_item_creation_must_fail_if_item_category_id_is_invalid(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.display_item_data.copy()
         data['item_category']='123'  #Invalid item category Id
-        res=self.client.post(self.new_display_item_url,data,format='json')
+        res=self.client.post(self.new_display_item_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_cannot_create_display_item_without_item_category(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.display_item_data.copy()
         data['item_category']=""  #Invalid item category Id
-        res=self.client.post(self.new_display_item_url,data,format='json')
+        res=self.client.post(self.new_display_item_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
 
     #GET - display items
@@ -134,7 +134,7 @@ class TestViews(TestSetUp):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.put(reverse(
             self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
-        ),self.display_item_edit_data,format='json')
+        ),self.display_item_edit_data,format='multipart')
         self.assertEqual(res.status_code,200)
         self.assertEqual(res.data['name'],DisplayItem.objects.get(id=self.global_test_display_item_one.id).name)
     
@@ -142,20 +142,20 @@ class TestViews(TestSetUp):
         self.client.force_authenticate(user=self.global_test_lab_manager_two)
         res=self.client.put(reverse(
             self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
-        ),self.display_item_edit_data,format='json')
+        ),self.display_item_edit_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_authenticated_other_user_cannot_edit_display_item(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.put(reverse(
             self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
-        ),self.display_item_edit_data,format='json')
+        ),self.display_item_edit_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_user_cannot_edit_display_item(self):
         res=self.client.put(reverse(
             self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
-        ),self.display_item_edit_data,format='json')
+        ),self.display_item_edit_data,format='multipart')
         self.assertEqual(res.status_code,401)
     
     def test_description_cannot_be_empty(self):
@@ -164,7 +164,7 @@ class TestViews(TestSetUp):
         data['description']=""
         res=self.client.put(reverse(
             self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
-        ),data,format='json')
+        ),data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_name_cannot_be_empty(self):
@@ -173,7 +173,7 @@ class TestViews(TestSetUp):
         data['name']=""
         res=self.client.put(reverse(
             self.edit_display_item_url_name,kwargs={'id':self.global_test_display_item_one.id}
-        ),data,format='json')
+        ),data,format='multipart')
         self.assertEqual(res.status_code,400)
 
     

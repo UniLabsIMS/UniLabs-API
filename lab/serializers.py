@@ -65,21 +65,12 @@ class LabAssignLecturerSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def save(self,validated_data):
         lecturers = validated_data.get('lecturers')
-        lab_id = validated_data.get('lab')
+        lab = validated_data.get('lab')
         for lecturer_id in lecturers:
-            LabLecturer.objects.create(lab_id=lab_id,lecturer_id=lecturer_id)
+            LabLecturer.objects.create(lab=lab,lecturer_id=lecturer_id)
         return
 
-
-
-'''
-In the serializer
-Not the model serializer we use, we use serialozers.Serializer 
-
-You need to have several method fields which are read only (ex: total_item_count, bo_itm_count,.....)
-
-
-'''
+# lab report
 class LabReportReadSerializer(serializers.Serializer):
     lab_id = serializers.CharField(write_only=True)
     total_item_count = serializers.SerializerMethodField(read_only=True)
@@ -126,3 +117,4 @@ class LabReportReadSerializer(serializers.Serializer):
         return percentage_of_damaged_items
     
 
+            
