@@ -8,42 +8,42 @@ class TestViews(TestSetUp):
     # authenticated user=Lab Manager
     def test_authenticated_user_can_create_item_categories(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
-        res=self.client.post(self.new_item_category_url,self.item_category_data,format='json')
+        res=self.client.post(self.new_item_category_url,self.item_category_data,format='multipart')
         self.assertEqual(res.status_code,201)
         self.assertIsNotNone('id')
         self.assertEqual(res.data["name"],self.item_category_data["name"])
     
     def test_authenticated_other_users_cannot_create_item_category(self):
         self.client.force_authenticate(user=self.global_test_admin)
-        res=self.client.post(self.new_item_category_url,self.item_category_data,format='json')
+        res=self.client.post(self.new_item_category_url,self.item_category_data,format='multipart')
         self.assertEqual(res.status_code,403)
 
     def test_cannot_create_item_category_without_name(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.item_category_data.copy()
         data['name']=""
-        res=self.client.post(self.new_item_category_url,data,format='json')
+        res=self.client.post(self.new_item_category_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
 
     def test_cannot_create_item_category_without_description(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.item_category_data.copy()
         data['description']=""
-        res=self.client.post(self.new_item_category_url,data,format='json')
+        res=self.client.post(self.new_item_category_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     def test_item_category_creation_must_fail_if_lab_id_is_invalid(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.item_category_data.copy()
         data['lab']='123'  #Invalid Lab Id
-        res=self.client.post(self.new_item_category_url,data,format='json')
+        res=self.client.post(self.new_item_category_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
 
     def test_cannot_create_item_category_without_lab(self):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         data=self.item_category_data.copy()
         data['lab']=""
-        res=self.client.post(self.new_item_category_url,data,format='json')
+        res=self.client.post(self.new_item_category_url,data,format='multipart')
         self.assertEqual(res.status_code,400)
     
     #GET - item category
@@ -110,7 +110,7 @@ class TestViews(TestSetUp):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res=self.client.put(reverse(
             self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
-        ),self.item_category_edit_data,format='json')
+        ),self.item_category_edit_data,format='multipart')
         self.assertEqual(res.status_code,200)
         self.assertEqual(res.data['name'],ItemCategory.objects.get(id=self.global_test_item_category.id).name)
     
@@ -118,19 +118,19 @@ class TestViews(TestSetUp):
         self.client.force_authenticate(user=self.global_test_lab_manager_two)
         res=self.client.put(reverse(
             self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
-        ),self.item_category_edit_data,format='json')
+        ),self.item_category_edit_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_authenticated_other_users_can_not_edit_category(self):
         self.client.force_authenticate(user=self.global_test_lab_assistant)
         res=self.client.put(reverse(
             self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
-        ),self.item_category_edit_data,format='json')
+        ),self.item_category_edit_data,format='multipart')
         self.assertEqual(res.status_code,403)
     
     def test_unauthenticated_users_can_not_edit_category(self):
         res=self.client.put(reverse(
             self.edit_item_category_url_name,kwargs={'id':self.global_test_item_category.id}
-        ),self.item_category_edit_data,format='json')
+        ),self.item_category_edit_data,format='multipart')
         self.assertEqual(res.status_code,401)
 
