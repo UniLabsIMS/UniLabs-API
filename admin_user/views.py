@@ -4,7 +4,7 @@ from custom_user.permissions import IsAdmin
 from custom_user.models import User
 from rest_framework import generics,status
 from rest_framework.response import Response
-from .serializers import AdminReadSerializer, AdminRegisterSerializer
+from .serializers import AdminReadSerializer, AdminRegisterSerializer, SystemReportReadSerializer
 from rest_framework.permissions import IsAuthenticated
 
 # Admin Register View
@@ -39,3 +39,13 @@ class AllAdminsAPIView(generics.ListAPIView):
     serializer_class=AdminReadSerializer
     queryset=Admin.objects.all()
     permission_classes=(permissions.IsAuthenticated,IsAdmin)
+
+#GET system report
+class SystemReportAPIView(generics.GenericAPIView):
+    serializer_class =SystemReportReadSerializer
+    permission_classes = (permissions.IsAuthenticated,IsAdmin)
+
+    def get(self,request,*args,**kwargs):
+        serializer = self.serializer_class(data={})
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)

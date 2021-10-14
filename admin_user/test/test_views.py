@@ -55,3 +55,19 @@ class TestViews(TestSetUp):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res = self.client.get(self.all_admins_url,data_format="json")
         self.assertEqual(res.status_code,403)
+
+     # GET - system report
+
+    def test_authenticated_admin_can_get_system_report(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        res=self.client.get(self.system_report_url)
+        self.assertEqual(res.status_code,200)
+    
+    def test_authenticated_other_users_can_not_get_system_report(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(self.system_report_url)
+        self.assertEqual(res.status_code,403)
+
+    def test_unauthenticated_users_can_not_get_system_report(self):
+        res=self.client.get(self.system_report_url)
+        self.assertEqual(res.status_code,401)

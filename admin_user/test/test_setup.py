@@ -9,6 +9,7 @@ class TestSetUp(GlobalTestSetUp):
         super().setUpTestData()
         cls.new_admin_url = reverse('admin-register')
         cls.all_admins_url = reverse('all-admins')
+        cls.system_report_url = reverse('system-report')
         cls.admin_data = {
             'email': cls.fake.email()
         }
