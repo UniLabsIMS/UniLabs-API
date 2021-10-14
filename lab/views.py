@@ -58,6 +58,7 @@ class LabAssignLecturerAPIView(GenericAPIView):
         serializer.save(serializer.validated_data)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
+#GET lab report
 class LabReportAPIView(GenericAPIView):
     serializer_class =LabReportReadSerializer
     permission_classes = (permissions.IsAuthenticated,)
