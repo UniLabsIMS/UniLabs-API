@@ -9,6 +9,7 @@ class TestSetUp(GlobalTestSetUp):
         super().setUpTestData()
         cls.new_lecturer_url = reverse('lecturer-register')
         cls.all_lecturers_url = reverse('all-lecturers')
+        cls.lecturers_of_lab_url_name = 'lecturers-of-lab'
         cls.lecturer_data = {
             'email': cls.fake.email(),
             'department': cls.global_test_department.id,

@@ -67,6 +67,13 @@ class TestViews(TestSetup):
         data["reason"]=""
         res=self.client.post(self.new_request_url,data,format="json")
         self.assertEqual(res.status_code,400)
+
+    def test_cannot_add_request_with_no_requested_items(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        data=self.request_api_view_data.copy()
+        data["display_items_dict"]={}
+        res=self.client.post(self.new_request_url,data,format="json")
+        self.assertEqual(res.status_code,400)
     
     def test_cannot_add_request_with_wrong_display_item_id(self):
         self.client.force_authenticate(user=self.global_test_student)
