@@ -43,15 +43,15 @@ class SystemReportReadSerializer(serializers.Serializer):
     admin_count = serializers.SerializerMethodField(read_only=True)
     lab_assistant_count = serializers.SerializerMethodField(read_only=True)
     lab_manager_count=serializers.SerializerMethodField(read_only=True)
-    total_department_count=serializers.SerializerMethodField(read_only=True)
-    total_lab_count=serializers.SerializerMethodField(read_only=True)
-    total_category_count=serializers.SerializerMethodField(read_only=True)
-    total_display_item_count=serializers.SerializerMethodField(read_only=True)
-    total_item_count = serializers.SerializerMethodField(read_only=True)
+    department_count=serializers.SerializerMethodField(read_only=True)
+    lab_count=serializers.SerializerMethodField(read_only=True)
+    category_count=serializers.SerializerMethodField(read_only=True)
+    display_item_count=serializers.SerializerMethodField(read_only=True)
+    item_count = serializers.SerializerMethodField(read_only=True)
     available_item_count = serializers.SerializerMethodField(read_only=True)
-    borrowed_items_count=serializers.SerializerMethodField(read_only=True)
-    temp_borrowed_items_count=serializers.SerializerMethodField(read_only=True)
-    damaged_items_count=serializers.SerializerMethodField(read_only=True)
+    borrowed_item_count=serializers.SerializerMethodField(read_only=True)
+    temp_borrowed_item_count=serializers.SerializerMethodField(read_only=True)
+    damaged_item_count=serializers.SerializerMethodField(read_only=True)
 
     def get_user_count(self,validated_data):
         user_count = User.objects.all().count()
@@ -77,40 +77,40 @@ class SystemReportReadSerializer(serializers.Serializer):
         admin_count = Admin.objects.all().count()
         return admin_count
     
-    def get_total_department_count(self,validated_data):
-        total_department_count = Department.objects.all().count()
-        return total_department_count
+    def get_department_count(self,validated_data):
+        department_count = Department.objects.all().count()
+        return department_count
 
-    def get_total_lab_count(self,validated_data):
-        total_lab_count = Lab.objects.all().count()
-        return total_lab_count
+    def get_lab_count(self,validated_data):
+        lab_count = Lab.objects.all().count()
+        return lab_count
 
-    def get_total_category_count(self,validated_data):
-        total_category_count = ItemCategory.objects.all().count()
-        return total_category_count
+    def get_category_count(self,validated_data):
+        category_count = ItemCategory.objects.all().count()
+        return category_count
 
-    def get_total_display_item_count(self,validated_data):
-        total_display_item_count = DisplayItem.objects.all().count()
-        return total_display_item_count
+    def get_display_item_count(self,validated_data):
+        display_item_count = DisplayItem.objects.all().count()
+        return display_item_count
 
-    def get_total_item_count(self,validated_data):
-        total_item_count = Item.objects.all().count()
-        return total_item_count
+    def get_item_count(self,validated_data):
+        item_count = Item.objects.all().count()
+        return item_count
 
     def get_available_item_count(self,validated_data):
         available_item_count = Item.objects.filter(state=State.AVAILABLE).count()
         return available_item_count
     
-    def get_borrowed_items_count(self,validated_data):
-        borrowed_items_count = Item.objects.filter(state=State.BORROWED).count()
-        return borrowed_items_count
+    def get_borrowed_item_count(self,validated_data):
+        borrowed_item_count = Item.objects.filter(state=State.BORROWED).count()
+        return borrowed_item_count
     
-    def get_temp_borrowed_items_count(self,validated_data):
-        temp_borrowed_items_count = Item.objects.filter(state=State.TEMP_BORROWED).count()
-        return temp_borrowed_items_count
+    def get_temp_borrowed_item_count(self,validated_data):
+        temp_borrowed_item_count = Item.objects.filter(state=State.TEMP_BORROWED).count()
+        return temp_borrowed_item_count
     
-    def get_damaged_items_count(self,validated_data):
-        damaged_items_count = Item.objects.filter(state=State.DAMAGED).count()
-        return damaged_items_count
+    def get_damaged_item_count(self,validated_data):
+        damaged_item_count = Item.objects.filter(state=State.DAMAGED).count()
+        return damaged_item_count
     
     
