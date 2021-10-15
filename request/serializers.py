@@ -22,6 +22,9 @@ class RequestWriteSerializer(serializers.ModelSerializer):
     
     def validate(self,data):
         display_items_dict=data.get('display_items_dict') # pop the display items dictionary
+        
+        if(len(display_items_dict)==0):
+            raise ValidationError("items requested cannot be empty")
 
         if(Request.objects.filter(student=data.get('student'),lab=data.get('lab'),state=RequestState.NEW).exists()): # one student can have one pending request per lab
              raise ValidationError("Student already has a pending request for the lab")

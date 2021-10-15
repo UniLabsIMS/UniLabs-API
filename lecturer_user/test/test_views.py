@@ -1,3 +1,4 @@
+from django.urls.base import reverse
 from .test_setup import TestSetUp
 
 class TestViews(TestSetUp):
@@ -75,7 +76,7 @@ class TestViews(TestSetUp):
         res = self.client.post(self.new_lecturer_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
     
-    # GET - all students
+    # GET - all lecturers
 
     def test_authenticated_admin_users_can_get_a_list_of_lecturers(self):
         self.client.force_authenticate(user=self.global_test_admin)
@@ -91,3 +92,19 @@ class TestViews(TestSetUp):
         self.client.force_authenticate(user=self.global_test_lab_manager)
         res = self.client.get(self.all_lecturers_url,data_format="json")
         self.assertEqual(res.status_code,403)
+
+    # GET - all lecturers of lab
+
+    def test_authenticated_users_can_get_a_list_of_lecturers_of_a_lab(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res = self.client.get(reverse(
+            self.lecturers_of_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),data_format="json")
+        self.assertEqual(res.status_code,200)
+        self.assertGreaterEqual(len(res.data),2)
+    
+    def test_unauthenticated_users_cannot_get_list_of_lecturers_of_a_lab(self):
+        res = self.client.get(reverse(
+            self.lecturers_of_lab_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),data_format="json")
+        self.assertEqual(res.status_code,401)
