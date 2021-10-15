@@ -36,7 +36,7 @@ class LabInDepthReadSerializer(serializers.ModelSerializer):
 class LabWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lab
-        fields=('id','name','department','location','contact_no','contact_email',)# id wont show up as required, as editable is set to false
+        fields=('id','name','department','location','contact_no','contact_email','image')# id wont show up as required, as editable is set to false
 
 #data for editing and creating lab
 class LabUpdateSerializer(serializers.ModelSerializer):
@@ -81,9 +81,9 @@ class LabReportReadSerializer(serializers.Serializer):
     total_display_item_count=serializers.SerializerMethodField(read_only=True)
     total_item_count = serializers.SerializerMethodField(read_only=True)
     available_item_count = serializers.SerializerMethodField(read_only=True)
-    borrowed_items_count=serializers.SerializerMethodField(read_only=True)
-    temp_borrowed_items_count=serializers.SerializerMethodField(read_only=True)
-    damaged_items_count=serializers.SerializerMethodField(read_only=True)
+    borrowed_item_count=serializers.SerializerMethodField(read_only=True)
+    temp_borrowed_item_count=serializers.SerializerMethodField(read_only=True)
+    damaged_item_count=serializers.SerializerMethodField(read_only=True)
     lab_manager_count=serializers.SerializerMethodField(read_only=True)
     lab_assistant_count = serializers.SerializerMethodField(read_only=True)
 
@@ -120,23 +120,23 @@ class LabReportReadSerializer(serializers.Serializer):
         self.available_item_count=available_item_count
         return available_item_count
     
-    def get_borrowed_items_count(self,validated_data):
+    def get_borrowed_item_count(self,validated_data):
         self.lab_id=validated_data.get('lab_id')
-        borrowed_items_count = Item.objects.filter(lab_id=self.lab_id,state=State.BORROWED).count()
-        self.borrowed_items_count=borrowed_items_count
-        return borrowed_items_count
+        borrowed_item_count = Item.objects.filter(lab_id=self.lab_id,state=State.BORROWED).count()
+        self.borrowed_item_count=borrowed_item_count
+        return borrowed_item_count
     
-    def get_temp_borrowed_items_count(self,validated_data):
+    def get_temp_borrowed_item_count(self,validated_data):
         self.lab_id=validated_data.get('lab_id')
-        temp_borrowed_items_count = Item.objects.filter(lab_id=self.lab_id,state=State.TEMP_BORROWED).count()
-        self.temp_borrowed_items_count=temp_borrowed_items_count
-        return temp_borrowed_items_count
+        temp_borrowed_item_count = Item.objects.filter(lab_id=self.lab_id,state=State.TEMP_BORROWED).count()
+        self.temp_borrowed_item_count=temp_borrowed_item_count
+        return temp_borrowed_item_count
     
-    def get_damaged_items_count(self,validated_data):
+    def get_damaged_item_count(self,validated_data):
         self.lab_id=validated_data.get('lab_id')
-        damaged_items_count = Item.objects.filter(lab_id=self.lab_id,state=State.DAMAGED).count()
-        self.damaged_items_count=damaged_items_count
-        return damaged_items_count
+        damaged_item_count = Item.objects.filter(lab_id=self.lab_id,state=State.DAMAGED).count()
+        self.damaged_item_count=damaged_item_count
+        return damaged_item_count
     
     def get_lab_manager_count(self,validated_data):
         self.lab_id=validated_data.get('lab_id')
