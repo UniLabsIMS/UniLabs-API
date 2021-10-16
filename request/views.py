@@ -18,6 +18,13 @@ class RequestCreateAPIView(CreateAPIView):
     queryset=Request.objects.all()
     permission_classes=(permissions.IsAuthenticated,IsStudent)
 
+#get single request
+class RequestRetrieveAPIView(RetrieveAPIView):
+    serializer_class=RequestInDepthSerializer
+    queryset=Request.objects.all()
+    permission_classes=(permissions.IsAuthenticated,)
+    lookup_field='id'
+
 #Filter requests by student
 class RequestListByStudentView(ListAPIView):
     serializer_class=RequestInDepthSerializer

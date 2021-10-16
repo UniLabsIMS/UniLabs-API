@@ -109,6 +109,29 @@ class TestViews(TestSetup):
         data["display_items_dict"][str(self.global_test_display_item_five.id)] = "rf"
         res=self.client.post(self.new_request_url,data,format="json")
         self.assertEqual(res.status_code,400)
+
+
+    #GET - a request
+
+    def test_authenticated_user_can_get_a_request(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res=self.client.get(reverse(
+            self.retrieve_single_request_url_name,kwargs={'id':self.global_test_request_one.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+    
+    def test_unauthenticated_user_cannot_get_a_request(self):
+        res=self.client.get(reverse(
+            self.retrieve_single_request_url_name,kwargs={'id':self.global_test_request_one.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_user_cannot_get_a_request_with_invalid_id(self):
+        self.client.force_authenticate(user=self.global_test_lecturer)
+        res=self.client.get(reverse(
+            self.retrieve_single_request_url_name,kwargs={'id':"Invalid ID"}
+        ),format='json')
+        self.assertEqual(res.status_code,404)
     
     #GET - all requests by student
 
