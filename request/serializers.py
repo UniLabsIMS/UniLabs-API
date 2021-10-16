@@ -1,6 +1,7 @@
 from custom_user.utils.email import Email
 import pdb
 from display_item.serializers import DisplayItemReadSerializer
+from lab.models import Lab
 from lab.serializers import LabReadSerializer
 from lecturer_user.serializers import LecturerSummarizedReadSerializer
 from django.core.exceptions import ValidationError
@@ -62,7 +63,6 @@ class RequestWriteSerializer(serializers.ModelSerializer):
             raise Exception('Error sending new request email')
 
         return request
-
 
 # display request item data in get requests
 class RequestItemReadSerializer(serializers.ModelSerializer):
@@ -133,6 +133,28 @@ class ClearApprovedRequestItemsFromLabForStudentSerailizer(serializers.ModelSeri
         return
 
 
+class StudentCheckForActiveRequestInLabSerializer(serializers.Serializer):
+    state = serializers.SerializerMethodField(read_only=True)
+    lab_id = serializers.CharField(write_only=True)
+    student_id = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        lab_id=data.get('lab_id')
+        student_id=data.get('student_id')
+        try:
+            lab=Lab.objects.get(id=lab_id)
+        except:
+            raise ValidationError('Lab id should be valid id')
+
+        return data
+    
+    def get_state(self,validated_data):
+        lab_id=validated_data.get('lab_id')
+        student_id=validated_data.get('student_id')
+        count=Request.objects.filter(lab=lab_id,student=student_id,state=RequestState.NEW).count()
+        return count > 0
+
+        
 
 
        

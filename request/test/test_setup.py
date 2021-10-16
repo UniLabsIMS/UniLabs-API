@@ -14,6 +14,7 @@ class TestSetup(GlobalTestSetUp):
         cls.approve_or_decline_url_name='approve-or-decline'
         cls.approved_request_items_url_name='approved-display-items-in-lab-for-student'
         cls.clear_approved_request_items_url_name='clear-approved-display-items'
+        cls.check_student_active_request_url_name = 'check-for-student-active-request-in-lab'
         cls.request_api_view_data = {
             "student": cls.global_test_student.id,
             "lecturer": cls.global_test_lecturer.id,

@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView,ListAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView,GenericAPIView
 from rest_framework import permissions, serializers,generics,status
-from .serializers import ClearApprovedRequestItemsFromLabForStudentSerailizer, RequestInDepthSerializer, RequestItemReadSerializer, RequestWriteSerializer,UpdateRequestStateSerializer
+from .serializers import ClearApprovedRequestItemsFromLabForStudentSerailizer, RequestInDepthSerializer, RequestItemReadSerializer, RequestWriteSerializer, StudentCheckForActiveRequestInLabSerializer,UpdateRequestStateSerializer
 from .models import Request,RequestItem, RequestState
 from custom_user.permissions import IsLabAssistant, IsLabOwner, IsStudent,IsLecturer
 from student_user.models import Student
@@ -34,7 +34,7 @@ class RequestListByStudentView(ListAPIView):
     def get_queryset(self):
         try:
             student=Student.objects.get(id=self.request.user.id)
-            return self.queryset.filter(student=student,state=RequestState.NEW)
+            return self.queryset.filter(student=student,state=RequestState.NEW,)
         except:
             raise ValidationError("Invalid ID")
 
@@ -103,6 +103,19 @@ class ClearApprovedRequestItemsFromLabForStudentAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Endpoint for student to check whether he or she has an active request for a lab
+class StudentCheckForActiveRequestInLabAPIView(GenericAPIView):
+    serializer_class=StudentCheckForActiveRequestInLabSerializer
+    permission_classes=(permissions.IsAuthenticated,IsStudent)
+    lookup_field='lab_id'
+
+    def get(self,request,*args,**kwargs):
+        serializer = self.serializer_class(data={"lab_id":self.kwargs.get('lab_id',None),"student_id":str(request.user.id)})
+        if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

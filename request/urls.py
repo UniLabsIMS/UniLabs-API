@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ApprovedRequestItemsListFromLabForStudentAPIView, ClearApprovedRequestItemsFromLabForStudentAPIView, RequestCreateAPIView,RequestListByStudentView,RequestListByLecturerView, RequestRetrieveAPIView,RequestsListByLabAPIView,RequestUpdateSerializer
+from .views import ApprovedRequestItemsListFromLabForStudentAPIView, ClearApprovedRequestItemsFromLabForStudentAPIView, RequestCreateAPIView,RequestListByStudentView,RequestListByLecturerView, RequestRetrieveAPIView,RequestsListByLabAPIView,RequestUpdateSerializer, StudentCheckForActiveRequestInLabAPIView
 
 urlpatterns=[
     path('create/',RequestCreateAPIView.as_view(),name='new-request'),
@@ -10,4 +10,5 @@ urlpatterns=[
     path('approve-or-decline/<str:id>',RequestUpdateSerializer.as_view(),name='approve-or-decline'),
     path('approved-request-items/<str:lab_id>/<str:student_id>', ApprovedRequestItemsListFromLabForStudentAPIView.as_view(), name='approved-display-items-in-lab-for-student'),
     path('clear-approved-request-items/', ClearApprovedRequestItemsFromLabForStudentAPIView.as_view(), name='clear-approved-display-items'), 
+    path('check-student-active-request/<str:lab_id>', StudentCheckForActiveRequestInLabAPIView.as_view(), name='check-for-student-active-request-in-lab'), 
 ]

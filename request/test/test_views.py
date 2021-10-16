@@ -272,9 +272,35 @@ class TestViews(TestSetup):
         res = self.client.put(reverse(self.clear_approved_request_items_url_name),{"student": self.global_test_student.id,"lab":self.global_test_lab.id},format="multipart")
         self.assertEqual(res.status_code,401)
     
+    # GET - check-for-student-active-request-in-lab
 
+    def test_authenticated_student_check_for_his_or_her_active_request_in_lab(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res=self.client.get(reverse(
+            self.check_student_active_request_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.data["state"],True)
 
+    def test_authenticated_other_users_cannot_check_for_his_or_her_active_request_in_lab(self):
+        self.client.force_authenticate(user=self.global_test_lab_manager)
+        res=self.client.get(reverse(
+            self.check_student_active_request_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,403)
     
+    def test_unauthenticated_users_cannot_check_for_his_or_her_active_request_in_lab(self):
+        res=self.client.get(reverse(
+            self.check_student_active_request_url_name,kwargs={'lab_id':self.global_test_lab.id}
+        ),format='json')
+        self.assertEqual(res.status_code,401)
+    
+    def test_authenticated_students_cannot_check_for_his_or_her_active_request_in_lab_with_invalid_lab_id(self):
+        self.client.force_authenticate(user=self.global_test_student)
+        res=self.client.get(reverse(
+            self.check_student_active_request_url_name,kwargs={'lab_id':"Invalid id"}
+        ),format='json')
+        self.assertEqual(res.status_code,400)
     
 
 
