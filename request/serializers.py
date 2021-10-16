@@ -2,18 +2,15 @@ from custom_user.utils.email import Email
 import pdb
 from display_item.serializers import DisplayItemReadSerializer
 from lab.serializers import LabReadSerializer
-from lecturer_user.serializers import LecturerReadSerializer
+from lecturer_user.serializers import LecturerSummarizedReadSerializer
 from django.core.exceptions import ValidationError
 from display_item.models import DisplayItem
-from django.db.models import fields
 from request.models import Request,RequestItem, RequestItemState, RequestState
 from rest_framework import serializers
 from lecturer_user.models import LabLecturer
 from django.db import transaction
 from student_user.serializers import StudentReadSerializer
 from django.db import transaction
-from student_user.models import Student
-from lab.models import Lab
 class RequestWriteSerializer(serializers.ModelSerializer):
     display_items_dict=serializers.DictField(child=serializers.IntegerField(),write_only=True)
     class Meta:
@@ -77,7 +74,7 @@ class RequestItemReadSerializer(serializers.ModelSerializer):
 class RequestInDepthSerializer(serializers.ModelSerializer):
     lab=LabReadSerializer()
     student=StudentReadSerializer()
-    lecturer=LecturerReadSerializer()
+    lecturer=LecturerSummarizedReadSerializer()
     requested_display_items=serializers.SerializerMethodField()
 
     def get_requested_display_items(self,obj):

@@ -9,6 +9,7 @@ class TestSetup(GlobalTestSetUp):
         cls.new_request_url=reverse('new-request')
         cls.student_requests_url=reverse('student-requests')
         cls.lecturer_requests_url=reverse('lecturer-requests')
+        cls.retrieve_single_request_url_name='get-request'
         cls.requests_of_a_lab_url_name='requests-of-a-lab'
         cls.approve_or_decline_url_name='approve-or-decline'
         cls.approved_request_items_url_name='approved-display-items-in-lab-for-student'
