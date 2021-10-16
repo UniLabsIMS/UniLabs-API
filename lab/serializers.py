@@ -6,6 +6,7 @@ from lab_assistant_user.models import LabAssistant
 from lab_manager_user.models import LabManager
 from lecturer_user.models import LabLecturer, Lecturer
 from department.serializers import DepartmentReadSerializer
+from request.models import Request, RequestState
 from .models import Lab
 from rest_framework import serializers
 from item.models import Item, State
@@ -86,6 +87,8 @@ class LabReportReadSerializer(serializers.Serializer):
     damaged_item_count=serializers.SerializerMethodField(read_only=True)
     lab_manager_count=serializers.SerializerMethodField(read_only=True)
     lab_assistant_count = serializers.SerializerMethodField(read_only=True)
+    request_count=serializers.SerializerMethodField(read_only=True)
+    pending_request_count=serializers.SerializerMethodField(read_only=True)
 
     def validate(self, data):
         lab_id=data.get('lab_id')
@@ -149,6 +152,16 @@ class LabReportReadSerializer(serializers.Serializer):
         lab_assistant_count = LabAssistant.objects.filter(lab_id=self.lab_id).count()
         self.lab_assistant_count=lab_assistant_count
         return lab_assistant_count
+
+    def get_request_count(self,validated_data):
+        self.lab_id=validated_data.get('lab_id')
+        request_count = Request.objects.filter(lab_id=self.lab_id).count()
+        return request_count
+
+    def get_pending_request_count(self,validated_data):
+        self.lab_id=validated_data.get('lab_id')
+        pending_request_count = Request.objects.filter(state=RequestState.NEW,lab_id=self.lab_id).count()
+        return pending_request_count
     
 
             

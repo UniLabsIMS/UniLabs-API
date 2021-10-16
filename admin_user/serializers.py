@@ -2,6 +2,7 @@ from rest_framework import serializers
 from department.models import Department
 
 from lab.models import Lab
+from request.models import Request, RequestState
 from .models import Admin
 from display_item.models import DisplayItem
 from item_category.models import ItemCategory
@@ -52,6 +53,8 @@ class SystemReportReadSerializer(serializers.Serializer):
     borrowed_item_count=serializers.SerializerMethodField(read_only=True)
     temp_borrowed_item_count=serializers.SerializerMethodField(read_only=True)
     damaged_item_count=serializers.SerializerMethodField(read_only=True)
+    request_count=serializers.SerializerMethodField(read_only=True)
+    pending_request_count=serializers.SerializerMethodField(read_only=True)
 
     def get_user_count(self,validated_data):
         user_count = User.objects.all().count()
@@ -113,4 +116,12 @@ class SystemReportReadSerializer(serializers.Serializer):
         damaged_item_count = Item.objects.filter(state=State.DAMAGED).count()
         return damaged_item_count
     
+    
+    def get_request_count(self,validated_data):
+        request_count = Request.objects.all().count()
+        return request_count
+
+    def get_pending_request_count(self,validated_data):
+        pending_request_count = Request.objects.filter(state=RequestState.NEW).count()
+        return pending_request_count
     
