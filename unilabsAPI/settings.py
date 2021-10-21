@@ -87,6 +87,8 @@ MIDDLEWARE = [
 
 SECURE_HSTS_SECONDS = 31536000
 SECURE_SSL_REDIRECT = config('DEBUG',"False")=="False" # if debug false set this to true
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config('DEBUG',"False")=="False"
+SECURE_HSTS_PRELOAD = config('DEBUG',"False")=="False"
 SESSION_COOKIE_SECURE = config('DEBUG',"False")=="False"
 CSRF_COOKIE_SECURE = config('DEBUG',"False")=="False"
 
