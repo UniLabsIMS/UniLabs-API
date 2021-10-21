@@ -84,6 +84,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SECURE_HSTS_SECONDS = 31536000
+SECURE_SSL_REDIRECT = True
+
 ROOT_URLCONF = 'unilabsAPI.urls'
 
 TEMPLATES = [
