@@ -82,6 +82,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware', # thrirdParty from django-csp
 ]
 
 SECURE_HSTS_SECONDS = 31536000
@@ -199,3 +200,34 @@ CORS_ORIGIN_WHITELIST= ('http://localhost:3000', config('FRONTEND_URL'))
 
 # Heroku deployment setup
 django_heroku.settings(locals(), test_runner=False)
+
+
+# content security policy
+
+# default source as self
+CSP_DEFAULT_SRC = ("'self'", )
+
+# style from our domain only
+CSP_STYLE_SRC = ("'self'",)
+
+# scripts from our domain and google analytics
+CSP_SCRIPT_SRC = ("'self'","www.google-analytics.com",)
+
+
+# images from our domain and cloudinary
+CSP_IMG_SRC = ("'self'",
+    config("CLOUDINARY_NAME")+".cloudinary.com",
+    "www.cloudinary.com",
+    "www.google-analytics.com",)
+  
+# loading manifest, workers, frames, etc
+CSP_FONT_SRC = ("'self'", )
+CSP_CONNECT_SRC = ("'self'", "www.google-analytics.com" )
+CSP_OBJECT_SRC = ("'self'", )
+CSP_BASE_URI = ("'self'", )
+CSP_FRAME_ANCESTORS = ("'self'", )
+CSP_FORM_ACTION = ("'self'", )
+CSP_INCLUDE_NONCE_IN = ('script-src', )
+CSP_MANIFEST_SRC = ("'self'", )
+CSP_WORKER_SRC = ("'self'", )
+CSP_MEDIA_SRC = ("'self'", )
