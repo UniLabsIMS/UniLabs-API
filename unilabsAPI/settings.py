@@ -86,6 +86,8 @@ MIDDLEWARE = [
 
 SECURE_HSTS_SECONDS = 31536000
 SECURE_SSL_REDIRECT = config('DEBUG',"False")=="False" # if debug false set this to true
+SESSION_COOKIE_SECURE = config('DEBUG',"False")=="False"
+CSRF_COOKIE_SECURE = config('DEBUG',"False")=="False"
 
 ROOT_URLCONF = 'unilabsAPI.urls'
 
