@@ -66,7 +66,7 @@ class RequestsListByLabAPIView(ListAPIView):
 
 #single endpoints to change request state to approve, decline for lecturers
 
-class RequestUpdateSerializer(GenericAPIView):
+class RequestUpdateAPIView(GenericAPIView):
     serializer_class = UpdateRequestStateSerializer
     permission_classes = (permissions.IsAuthenticated, IsLecturer)
     queryset = Request.objects.all()
