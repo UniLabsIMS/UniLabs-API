@@ -1,5 +1,4 @@
 [run]
-source=admin_user/,custom_user/,department/,display_item/,item/,item_category/,lab/,lab_assistant_user/,lab_manager_user/,lecturer_user/,request/,student_user/,
 omit=
     env
     */migrations/*
