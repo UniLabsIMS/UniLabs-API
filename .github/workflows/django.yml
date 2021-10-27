@@ -40,7 +40,6 @@ jobs:
 #       run: python manage.py test
     - name: Generate Report
       run: |
-        pip install coverage
         coverage run manage.py test && coverage report --fail-under=75 && coverage xml
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v2
