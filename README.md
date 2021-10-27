@@ -1,5 +1,7 @@
 # UniLabs API  :test_tube:
 
+[![DjangoCI](https://github.com/UniLabsIMS/UniLabs-API/actions/workflows/django.yml/badge.svg)](https://github.com/UniLabsIMS/UniLabs-API/actions/workflows/django.yml) [![codecov](https://codecov.io/gh/UniLabsIMS/UniLabs-API/branch/main/graph/badge.svg?token=5KW8FHD65V)](https://codecov.io/gh/UniLabsIMS/UniLabs-API)
+
 This is the API for UniLabs Inventory Management System
 
 
