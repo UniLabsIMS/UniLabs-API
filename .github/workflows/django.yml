@@ -36,5 +36,11 @@ jobs:
         pip install -r requirements.txt
     - name: system checks
       run: python manage.py check
-    - name: Run tests
-      run: python manage.py test
+#     - name: Run tests
+#       run: python manage.py test
+    - name: Generate Report
+      run: |
+        pip install coverage
+        coverage run manage.py test
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v1
