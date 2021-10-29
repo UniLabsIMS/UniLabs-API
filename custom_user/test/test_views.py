@@ -132,10 +132,31 @@ class TestViews(TestSetUp):
         res = self.client.post(self.change_password_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
 
-    def test_new_password_should_be_greater_tha_6_characters(self):
+    def test_new_password_should_be_greater_than_8_characters(self):
         self.client.force_authenticate(user=self.global_test_admin)
         data = self.admin_change_password_data.copy()
-        data["new_password"] = "12345"
+        data["new_password"] = "#newPas"
+        res = self.client.post(self.change_password_url,data,format="multipart")
+        self.assertEqual(res.status_code, 400)
+
+    def test_new_password_should_be_less_than_31_characters(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_change_password_data.copy()
+        data["new_password"] = "#newPas#newPas#newPas#newPas#new"
+        res = self.client.post(self.change_password_url,data,format="multipart")
+        self.assertEqual(res.status_code, 400)
+    
+    def test_new_password_can_not_be_all_numeric_value(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_change_password_data
+        data['new_password'] ="12345"
+        res = self.client.post(self.change_password_url,data,format="multipart")
+        self.assertEqual(res.status_code, 400)
+    
+    def test_new_password_can_not_be_too_common(self):
+        self.client.force_authenticate(user=self.global_test_admin)
+        data = self.admin_change_password_data
+        data['new_password'] ="password"
         res = self.client.post(self.change_password_url,data,format="multipart")
         self.assertEqual(res.status_code, 400)
 
