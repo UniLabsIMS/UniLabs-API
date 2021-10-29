@@ -8,6 +8,7 @@ from rest_framework import serializers
 from .models import Role, User
 from django.contrib import auth
 from decouple import config
+from django.contrib.auth import password_validation
 
 # serializer class to handle login data
 class LoginSerializer(serializers.ModelSerializer):
@@ -84,10 +85,17 @@ class RefreshAuthSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     
     current_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True,min_length=6,max_length=31)
+    new_password = serializers.CharField(required=True,min_length=8,max_length=31)
 
     class Meta:
         fields = ['current_password', 'new_password']
+    
+    def validate(self,data):
+        try:
+            password_validation.validate_password(data.get('new_password'))
+        except ValidationError as exc:
+            raise ValidationError(str(exc))
+        return data
 
 # Serializer to change user profile details
 class UpdateProfileDetailsSerializer(serializers.ModelSerializer):
