@@ -15,7 +15,8 @@ class LecturerManager(BaseUserManager):
     @transaction.atomic
     def create_lecturer(self, email, lecturer_id, department, permitted_labs):
         lecturer=self.model(email=self.normalize_email(email),department=department, lecturer_id=lecturer_id,role= Role.LECTURER)
-        password = DefaultPasswords.DEFAULT_DEBUG_LECTURER_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
+        # TODO: password = DefaultPasswords.DEFAULT_DEBUG_LECTURER_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
+        password = DefaultPasswords.DEFAULT_DEBUG_LECTURER_PASSWORD
         lecturer.set_password(password)
         lecturer.save()
         for lab_id in permitted_labs:
@@ -23,10 +24,10 @@ class LecturerManager(BaseUserManager):
                 raise ValidationError({"permitted_labs":"Duplicate Lab"})
             LabLecturer.objects.create(lab_id=lab_id,lecturer=lecturer)
             
-        try:
-            Email.send_new_registration_email(email,Role.LECTURER,password)
-        except:
-            raise Exception('Error sending new lecturer registration email')
+        # try:
+        #     Email.send_new_registration_email(email,Role.LECTURER,password)
+        # except:
+        #     raise Exception('Error sending new lecturer registration email')
         return lecturer
 
 # Lecturer model which extends User model
