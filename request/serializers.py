@@ -57,10 +57,10 @@ class RequestWriteSerializer(serializers.ModelSerializer):
             item_count=display_items_dict[str(display_item_id)]
             RequestItem.objects.create(request=request,display_item=display_item,student=student,lab=lab,quantity=item_count)
         
-        try:
-            Email.send_new_request_email(validated_data.get('lecturer').email)
-        except Exception as e:
-            raise Exception('Error sending new request email')
+        # TODO: try:
+        #     Email.send_new_request_email(validated_data.get('lecturer').email)
+        # except Exception as e:
+        #     raise Exception('Error sending new request email')
 
         return request
 
@@ -111,10 +111,10 @@ class UpdateRequestStateSerializer(serializers.ModelSerializer):
         for req_item in request_items:
             req_item.state = data.get('state') 
             req_item.save()
-        try:
-            Email.send_request_approve_decline(request.student.email,data.get('state'),request.lab.name)
-        except Exception as e:
-            raise Exception('Error sending request approve decline')
+        # TODO: try:
+        #     Email.send_request_approve_decline(request.student.email,data.get('state'),request.lab.name)
+        # except Exception as e:
+        #     raise Exception('Error sending request approve decline')
         return
 
 class ClearApprovedRequestItemsFromLabForStudentSerailizer(serializers.ModelSerializer):

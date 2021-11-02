@@ -12,13 +12,14 @@ class StudentManager(BaseUserManager):
     @transaction.atomic
     def create_student(self, email, student_id, department):
         student=self.model(email=self.normalize_email(email),department=department, student_id=student_id,role= Role.STUDENT)
-        password = DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
+        # TODO: password = DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
+        password = DefaultPasswords.DEFAULT_DEBUG_STUDENT_PASSWORD
         student.set_password(password)
         student.save()
-        try:
-            Email.send_new_registration_email(email,Role.STUDENT,password)
-        except:
-            raise Exception('Error sending new student registration email')
+        # try:
+        #     Email.send_new_registration_email(email,Role.STUDENT,password)
+        # except:
+        #     raise Exception('Error sending new student registration email')
         return student
 
 #Student model which extends User model
