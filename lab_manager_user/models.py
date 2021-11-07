@@ -14,14 +14,13 @@ class LabManagerUserManager(BaseUserManager):
     @transaction.atomic
     def create_lab_manager(self, email, lab, department):
         lab_manager=self.model(email=self.normalize_email(email),lab=lab, department=department, role= Role.LAB_MANAGER)
-        # TODO: password = DefaultPasswords.DEFAULT_DEBUG_LAB_MANAGER_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
-        password = DefaultPasswords.DEFAULT_DEBUG_LAB_MANAGER_PASSWORD
+        password = DefaultPasswords.DEFAULT_DEBUG_LAB_MANAGER_PASSWORD if (config('DEBUG','True')=='True') else self.make_random_password()
         lab_manager.set_password(password)
         lab_manager.save()
-        # try:
-        #     Email.send_new_registration_email(email,Role.LAB_MANAGER,password)
-        # except:
-        #     raise Exception('Error sending new registration email')
+        try:
+            Email.send_new_registration_email(email,Role.LAB_MANAGER,password)
+        except:
+            raise Exception('Error sending new registration email')
         return lab_manager
 
 #Lab Manager model which extends User model
